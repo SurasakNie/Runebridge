@@ -44,3 +44,23 @@ files_changed:
 test_result: skipped
 human_review_needed: false
 ```
+
+```yaml
+date: 2026-06-19
+agent: Codex
+task_id: phase-0.5a-qwen-led-contract
+summary: Resolved the qwen-led planner, review-stage, artifact, adapter, and final-gate contract.
+files_changed:
+  - .ai/MODEL_ROLES.md
+  - .ai/PROJECT_BRIEF.md
+  - QWEN.md
+  - CLAUDE.md
+  - prompts/plan.md
+  - prompts/qwen-review.md
+  - prompts/final-review.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass
+human_review_needed: true
+```
