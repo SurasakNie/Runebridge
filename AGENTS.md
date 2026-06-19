@@ -9,8 +9,10 @@ Read this file before taking any action in this repository.
 3. `.ai/CODING_RULES.md`
 4. `.ai/SECURITY_RULES.md`
 5. `.ai/MODEL_ROLES.md`
-6. `.ai/TASKS.md`
-7. `.ai/AGENT_HANDOFF.md`
+6. `.ai/MCP_POLICY.md`
+7. `.ai/TASKS.md`
+8. `.ai/AGENT_HANDOFF.md`
+9. `.ai/CHANGELOG_AI.md`
 
 Then read the task-specific files in `.bridge/<task-id>/` if a task ID is given.
 
