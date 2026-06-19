@@ -129,3 +129,26 @@ files_changed:
 test_result: pass
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-19
+agent: Codex
+task_id: phase-0.5b-repository-baseline
+summary: Added the reversible environment, dependency, pre-commit, diagnostic, smoke-test, and setup-documentation baseline for Phase 0.5B.
+files_changed:
+  - .env.example
+  - .pre-commit-config.yaml
+  - tools/requirements.txt
+  - tools/check_environment.py
+  - tests/gates/test_environment.py
+  - docs/Environment-and-Security-Setup.md
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: partial-pass; smoke tests pass, host security tools and GitHub controls remain pending
+human_review_needed: true
+```
+
