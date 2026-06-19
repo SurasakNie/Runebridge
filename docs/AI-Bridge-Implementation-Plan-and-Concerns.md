@@ -70,11 +70,13 @@ All modes must use the same artifact contracts, deterministic gates, secret scan
 
 ```
 The task description may be written in English or Thai.
-Understand the request in whichever language it is written.
-Respond and write all pipeline artifacts (PLAN.md, REVIEW*.json, etc.) in English.
+Detect the language of the task input automatically.
+If the input is in English, respond and write all pipeline artifacts in English.
+If the input is in Thai, respond and write all pipeline artifacts in Thai.
+Match the output language to the input language exactly.
 ```
 
-This means: you write your task naturally in EN or TH → all pipeline output (plans, reviews, reports) comes back in English for consistency.
+This means: you write your task in EN → all pipeline output comes back in EN. You write in TH → all pipeline output comes back in TH.
 
 #### Group 5 — `tools/bridge/gates/` deterministic stop/go scripts (Python)
 
