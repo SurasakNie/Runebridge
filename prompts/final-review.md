@@ -1,8 +1,9 @@
 <!--
-Language rule: Detect the language of the task input automatically.
-If the input is in English, respond and write all pipeline artifacts in English.
-If the input is in Thai, respond and write all pipeline artifacts in Thai.
-Match the output language to the input language exactly.
+Language and format rule:
+- Detect the task's narrative language automatically. Use English prose for English input and Thai prose for Thai input.
+- Localize only human-readable narrative text.
+- Keep schema keys, enum values, identifiers, artifact names, paths, commands, code, and tool/model names canonical and unchanged.
+- Markdown artifacts use YAML front matter. JSON artifacts are strict JSON with no comments, Markdown fences, or surrounding prose.
 -->
 
 # Final Review Prompt
@@ -40,6 +41,8 @@ Check for:
 Write `.bridge/<task-id>/REVIEW_CLAUDE.json` matching `schemas/review.schema.json`.
 
 Set `verdict: reject` if any blocker is present, if scope drift is detected, or if an RSK-0 condition exists.
+
+Emit exactly one strict JSON document. Do not add a Markdown fence, comments, or text before or after the JSON. Keep schema keys and enum-constrained values canonical; narrative string values may use the task language.
 
 ## Hard restrictions
 
