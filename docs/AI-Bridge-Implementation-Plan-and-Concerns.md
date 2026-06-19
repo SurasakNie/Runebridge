@@ -1,7 +1,7 @@
 # AI Bridge — Implementation Plan and Concerns
 
 **Branch:** `claude/latest-drafts-ptdnpq`  
-**Date:** 2026-06-18  
+**Date:** 2026-06-19 (last reviewed)  
 **Status:** Approved for implementation with Phase 0.5 prerequisites
 
 ---
@@ -29,7 +29,7 @@ All modes must use the same artifact contracts, deterministic gates, secret scan
 | `AGENTS.md` | Universal pre-read for all AI agents; lists `.ai/` read order, work process, and restrictions |
 | `CLAUDE.md` | Claude Code-specific: architect + final reviewer role; read-only default for plan/review stages |
 | `QWEN.md` | Qwen Code-specific: builder, first reviewer, refactor agent, bug hunter, qwen-led mode |
-| `.gitignore` | Excludes secrets, local configs, `.bridge/` runtime subdirs, Python cache, logs, local env files |
+| `.gitignore` | Excludes secrets, local configs, Python cache, logs, local env files — does NOT exclude `.bridge/<task-id>/` (artifacts are committed) |
 | `.env.example` | Safe example of required environment variables without real secrets |
 | `.pre-commit-config.yaml` | Local lint/test hooks for Python, Bash, and secrets hygiene |
 
@@ -85,12 +85,12 @@ Exit codes: **0** = pass, **1** = fail, **2** = RSK-0 halt.
 | File | Checks |
 |---|---|
 | `check_plan.py` | `files_to_touch` non-empty, `acceptance_criteria` non-empty, schema validates |
-| `check_scope.py` | Every file in `CHANGES.diff` is listed in `PLAN.md`'s `files_to_touch` |
-| `check_review.py` | `blockers == []`, `scope_drift == false`, verdicts match when both reviewers are required |
-| `check_verify.py` | `VERIFY.json` result is `"pass"` |
+| `check_scope.py` | Enumerates touched files via `git diff --name-only` (not unified-diff parsing — handles renames, unicode, binary); checks every file is in `PLAN.md`'s `files_to_touch` |
+| `check_review.py` | Single: `blockers == []`, `scope_drift == false`, `verdict != reject`. Cross-check: additionally halts when `verdict` enum values differ OR `scope_drift` booleans differ between the two reviews |
+| `check_verify.py` | `VERIFY.json` result is `"pass"` — checks overall suite pass/fail; per-criterion mapping to individual acceptance criteria is a known limitation (H2) |
 | `check_rsk0.py` | No RSK-0 triggers in plan; exits 2 on trip |
 | `check_artifacts.py` | All required artifacts exist and are non-empty for the given mode |
-| `check_no_secrets.py` | Regex scan of `CHANGES.diff` for API keys, tokens, and high-entropy secrets |
+| `check_no_secrets.py` | Supplementary regex scan of `.bridge/` and `.ai/` for secret patterns. Primary controls are gitleaks/trufflehog and GitHub push protection (M3) |
 
 `tools/requirements.txt` already exists in the plan with `jsonschema>=4.0` and `PyYAML>=6.0`. This is not absent, but it is incomplete and must be expanded during Phase 0.5.
 
@@ -109,9 +109,11 @@ Each adapter takes `TASK_ID` as an argument, reads `.bridge/$TASK_ID/` inputs, w
 
 #### Group 7 — `tools/bridge/orchestrate.sh` (Pattern A conductor)
 
-Accepts: `--task`, `--mode` (`safe-default` | `qwen-led` | `dual-builder`), `--planner`, `--builder`, `--first-reviewer`, `--verifier`, `--final-reviewer`.
+**Execution environment:** The conductor runs locally on the developer's machine (or a dedicated CI runner). GitHub Actions CI runs the gate scripts only (`check_artifacts.py`, `check_no_secrets.py`, etc.) to validate PRs. The conductor is not invoked from within GitHub Actions workflows.
 
-Stage sequence:
+Accepts: `--task`, `--mode` (`safe-default` | `qwen-led` | `dual-builder`), `--planner`, `--builder`, `--builder-a`, `--builder-b`, `--first-reviewer`, `--verifier`, `--final-reviewer`.
+
+Stage sequence (`safe-default` and `qwen-led`):
 
 ```text
 Stage  0  Init          — create branch bridge/<task-id>, write TASK.md
@@ -119,27 +121,43 @@ Stage  1  Plan          — run planner adapter
 Stage  2  Gate          — check_plan.py + check_rsk0.py
 Stage  3  Build         — run builder adapter
 Stage  4  Gate          — check_scope.py
-Stage  5  First review  — qwen_review.sh
+Stage  5  First review  — qwen_review.sh (skipped in qwen-led mode — see note)
 Stage  6  Gate          — check_review.py --reviewer qwen
 Stage  7  Verify        — run verifier adapter
 Stage  8  Gate          — check_verify.py
 Stage  9  Final review  — claude_review.sh
 Stage 10  Gate          — check_review.py --reviewer both + check_no_secrets.py
 Stage 11  Final report  — write FINAL_REPORT.md, append CHANGELOG_AI.md
-Stage 12  PR            — commit artifacts + gh pr create
+Stage 12  PR            — git add .bridge/$TASK_ID/ && git commit
+                           git push origin $BRANCH
+                           gh pr create (using RUNEBRIDGE_APP_TOKEN — see §0.5.5)
 ```
+
+`dual-builder` mode replaces Stage 3 with three sub-stages:
+
+```text
+Stage 3a  Build-A       — codex_build.sh on branch $BRANCH-a
+Stage 3b  Build-B       — qwen_build.sh on branch $BRANCH-b (parallel where possible)
+Stage 3c  Select winner — diff comparison gate; choose A or B; merge winner diff to $BRANCH
+```
+
+Pipeline continues from Stage 4 on the winner branch. Both branches are preserved for audit.
 
 Key behaviors:
 
 - Any gate exits non-zero → halt with message.
 - `check_rsk0.py` exit code 2 → `halt_rsk0()` and print `HUMAN_REQUIRED`.
 - Verify retry budget: 2 retries; previous `CHANGES.diff` archived as `CHANGES.diff.attempt-N`.
-- Cross-check disagreement → halt and attach both reviews.
+- Cross-check disagreement = `verdict` enum values differ OR `scope_drift` booleans differ — halt and attach both reviews.
 - `DRY_RUN_MODE=true` must run the full flow using deterministic mock artifacts.
+
+**qwen-led mode note:** In qwen-led mode, Stage 5 (first review) is skipped. This means Qwen reviews its own output at Stage 9 and does not have an independent first-pass reviewer. This weakens review independence compared to safe-default mode. Use qwen-led only when Claude is unavailable for the plan/review stages.
 
 #### Group 8 — `.bridge/.gitkeep`
 
-Tracks the directory in git. Runtime task subdirectories (`.bridge/<task-id>/`) are gitignored via `.bridge/*/`.
+Tracks the `.bridge/` directory root in git. Runtime task subdirectories (`.bridge/<task-id>/`) are **committed to the feature branch** as part of Stage 12 — they are not gitignored. This provides an audit trail: every pipeline run's artifacts (PLAN.md, CHANGES.diff, VERIFY.json, review JSONs, FINAL_REPORT.md) are part of the PR diff and human-reviewable before merge.
+
+`.bridge/*/` must **not** appear in `.gitignore`. The `bridge-gates.yml` workflow validates committed artifacts in PRs.
 
 #### Group 9 — `.github/workflows/`
 
@@ -149,6 +167,8 @@ Tracks the directory in git. Runtime task subdirectories (`.bridge/<task-id>/`) 
 | `bridge-gates.yml` | PR touching `.bridge/` paths | `check_artifacts.py` + `check_no_secrets.py` on bridge PRs |
 
 ### Updated Roadmap
+
+This roadmap supersedes the phase numbering in `README.md`. The README uses phases 0–6 from the original design; this document adds Phase 0.5, Phase 0.6, and expands the later phases. Use the numbering here as the canonical reference.
 
 ```text
 Phase 0    Planning approval
@@ -399,17 +419,19 @@ permissions:
   checks: read
 ```
 
-Escalate to a GitHub App token or temporary PAT only if automation must:
+Escalate to a GitHub App token or temporary PAT when automation must:
 
-- trigger follow-up workflows
+- trigger follow-up workflows (critical: `GITHUB_TOKEN` suppresses `on: pull_request` CI on PRs it creates)
 - perform actions not supported by `GITHUB_TOKEN`
-- create automation-owned PRs without manual workflow approval
+- create automation-owned PRs that must trigger CI
 - operate across repositories
 
-If a temporary PAT is used, store it as a repository secret:
+**Conductor PR requirement (C2):** The conductor's Stage 12 `gh pr create` call must use a GitHub App token (`RUNEBRIDGE_APP_TOKEN`), not `GITHUB_TOKEN`. GitHub's security model suppresses `on: pull_request` and `on: push` workflows on PRs created by `GITHUB_TOKEN`. If the conductor uses `GITHUB_TOKEN`, the `test.yml` and `bridge-gates.yml` checks will not run automatically on its PRs.
+
+Store the GitHub App token as a repository secret:
 
 ```text
-RUNEBRIDGE_AUTOMATION_TOKEN
+RUNEBRIDGE_APP_TOKEN
 ```
 
 ### 0.5.6 Vendor Secret Management
@@ -421,7 +443,7 @@ ANTHROPIC_API_KEY
 OPENAI_API_KEY
 QWEN_API_KEY
 ANTIGRAVITY_API_KEY
-RUNEBRIDGE_AUTOMATION_TOKEN
+RUNEBRIDGE_APP_TOKEN        # GitHub App token — required for conductor PRs to trigger CI (see §0.5.5)
 ```
 
 Rules:
@@ -451,13 +473,14 @@ Before vendor CLI tests, create or verify `.gitignore` includes:
 .env.*
 !.env.example
 .venv/
-.bridge/*/
 *.log
 *.tmp
 .cache/
 __pycache__/
 .pytest_cache/
 ```
+
+Note: `.bridge/*/` is intentionally **not** in `.gitignore`. Task artifact directories are committed to feature branches for audit trail (see Group 8).
 
 Local credential options:
 
@@ -622,7 +645,12 @@ Required checks before PR:
 - gate unit tests
 - shellcheck for Bash scripts
 - JSON schema syntax validation
-- secret scan
+- secret scan (gitleaks or trufflehog as primary; `check_no_secrets.py` as supplementary last line)
+
+Secret scanning strategy (M3): `check_no_secrets.py` uses hand-rolled regex patterns and is not a reliable primary control. Layer it with:
+
+- [gitleaks](https://github.com/gitleaks/gitleaks) or [trufflehog](https://github.com/trufflesecurity/trufflehog) as a pre-commit hook and CI step
+- GitHub push protection (repository setting) as a network-level gate
 
 ### 0.5.14 Antigravity Identity Discovery
 
