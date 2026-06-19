@@ -25,6 +25,7 @@ Implement the plan. Touch only the files listed in `files_to_touch`.
 1. Make the smallest safe change that satisfies every acceptance criterion.
 2. Run available tests before finishing.
 3. Write an implementation summary in `.bridge/<task-id>/EDIT_<tool>.md` matching `schemas/edit-summary.schema.json`.
+4. Write `.bridge/<task-id>/CHANGES.diff` through the builder adapter.
 
 ## DRY_RUN_MODE
 
@@ -36,7 +37,9 @@ If `DRY_RUN_MODE=true`, write deterministic mock outputs instead of running real
 
 ## Hard restrictions
 
-- Do not push to `main`.
 - Do not commit secrets or credentials.
 - Do not touch files not listed in `files_to_touch`.
+- Apart from approved source paths, write only `EDIT_<tool>.md` and `CHANGES.diff`.
+- Do not modify `.ai/AGENT_HANDOFF.md` or `.ai/CHANGELOG_AI.md`.
+- Do not commit, push, or create a pull request; the conductor owns Git and PR operations.
 - Do not run destructive commands without explicit human approval.
