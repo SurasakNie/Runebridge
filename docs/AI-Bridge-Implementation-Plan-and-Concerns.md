@@ -6,7 +6,7 @@
 - **Main commit:** `031deeff78f6158f0cfeba3a8828366c557c6e56`
 - **Audited commit:** `cb50632e0fcfaf299b7ba9c7bb65f648fcbe0a66`
 - **Audit date:** 2026-06-19
-- **Latest contract update:** 2026-06-19 (`qwen-led` flow resolved)
+- **Latest contract update:** 2026-06-19 (`qwen-led` flow and pipeline write ownership resolved)
 
 **Audit result:** **HOLD - initial documentation scaffold is partial; Phase 0.5 and contract corrections are required before executable pipeline work**
 
@@ -132,15 +132,15 @@ The previous report allowed scaffold implementation only after Phase 0.5. The br
 
 Implementation of the newly specified adapter and mode-aware gates remains scheduled for later phases; the Phase 0.5A contract contradiction itself is closed.
 
-### B3 - Read-only roles are also instructed to modify shared files
+### B3 - Read-only roles were also instructed to modify shared files (Resolved 2026-06-19)
 
-**Severity:** Blocking
+**Status:** Resolved in the documentation contract
 
 **Evidence:** `AGENTS.md` requires every agent to update `.ai/AGENT_HANDOFF.md` and `.ai/CHANGELOG_AI.md`. `CLAUDE.md` defines plan and review as read-only, then repeats the requirement to append both files.
 
-Those writes can violate read-only review, create scope drift, and cause concurrent agents to modify shared state outside `files_to_touch`.
+**Resolution:** Planning, verification, and review are source-tree read-only while retaining permission to write their designated task artifact. Builders may edit only `files_to_touch` plus their build artifacts. Role adapters cannot modify shared `.ai/` state or perform Git/PR operations. The conductor alone updates handoff/changelog state and performs branch, commit, push, and PR actions after gates pass. Manual maintenance may update `.ai/` only when explicitly scoped.
 
-**Required correction:** Define source-tree read-only behavior separately from designated artifact writes. The conductor should own shared handoff/changelog updates; role adapters should write only their declared task artifact.
+`AGENTS.md`, model-specific instructions, every role prompt, `.ai/CODING_RULES.md`, `.ai/PROJECT_BRIEF.md`, `.ai/MODEL_ROLES.md`, and `.ai/CHANGELOG_AI.md` now state the same ownership rule.
 
 ### B4 - Machine-readable artifact rules are inconsistent
 
@@ -219,7 +219,7 @@ The three operating modes remain design goals. The `qwen-led` documentation cont
 ### Phase 0.5A - Correct the contracts
 
 1. ~~Resolve the `qwen-led` planner, reviewer, adapter, and artifact flow.~~ Completed 2026-06-19.
-2. Define role write permissions and conductor-owned shared-state updates.
+2. ~~Define role write permissions and conductor-owned shared-state updates.~~ Completed 2026-06-19.
 3. Standardize YAML front matter versus strict JSON.
 4. Preserve schema keys and enum values across EN/TH output.
 5. Align `README.md`, `.ai/PROJECT_BRIEF.md`, `.ai/AGENT_HANDOFF.md`, `.ai/MODEL_ROLES.md`, prompts, and this report.
