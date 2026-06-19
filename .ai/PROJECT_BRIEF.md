@@ -11,6 +11,7 @@
 - No AI tool may merge to `main` directly.
 - Secrets are never committed to any file or artifact.
 - All pipeline artifacts are committed to the feature branch for audit trail.
+- Role adapters write only their designated artifacts; the conductor owns shared `.ai/` state and Git/PR operations.
 
 ## Canonical repository layout
 
