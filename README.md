@@ -3,7 +3,7 @@ Vendor-neutral AI development pipeline coordinating Claude Code, Codex, Qwen Cod
 
 AI Bridge is a planned, vendor-neutral workflow for coordinating multiple AI coding tools through a Git repository. It uses explicit files and Git branches as the shared context between Claude Code, OpenAI Codex CLI, Qwen Code, Google Antigravity, and a human reviewer.
 
-> **Project status:** Phase 0.5A is complete. The reversible Phase 0.5B repository baseline is implemented on `claude/latest-drafts-ptdnpq`; host security tools and human-controlled GitHub settings still require verification. Schemas, pipeline gates, adapters, the conductor, and CI workflows are not yet implemented.
+> **Project status:** Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are verified on `claude/latest-drafts-ptdnpq`; public visibility is intentional and an active `main` protection ruleset is verified. Remaining GitHub security settings still require verification. Schemas, pipeline gates, adapters, the conductor, and CI workflows are not yet implemented.
 
 ## Goal
 
