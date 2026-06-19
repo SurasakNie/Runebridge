@@ -6,9 +6,9 @@
 - **Main commit:** `031deeff78f6158f0cfeba3a8828366c557c6e56`
 - **Audited commit:** `cb50632e0fcfaf299b7ba9c7bb65f648fcbe0a66`
 - **Audit date:** 2026-06-19
-- **Latest contract update:** 2026-06-19 (`qwen-led`, write ownership, artifact formats, and EN/TH invariants resolved)
+- **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **HOLD - initial documentation scaffold is partial; Phase 0.5 and contract corrections are required before executable pipeline work**
+**Audit result:** **HOLD - Phase 0.5A is complete; Phase 0.5B environment, security, permissions, and tooling setup remains required before merge or executable pipeline work**
 
 ---
 
@@ -162,29 +162,29 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Required correction:** Implement the Phase 0.5 repository controls and record GitHub-setting verification evidence before enabling any vendor credential or automated PR path.
 
-### H1 - Handoff status contradicts the branch contents
+### H1 - Handoff status contradicted the branch contents (Resolved 2026-06-19)
 
-**Severity:** High
+**Status:** Resolved
 
 **Evidence:** `.ai/AGENT_HANDOFF.md` says prompts are not yet created, then lists all five prompts as created.
 
-**Required correction:** Regenerate the handoff from the audited inventory and make the next-step list phase-aware.
+**Resolution:** `.ai/AGENT_HANDOFF.md` now reflects the verified scaffold inventory, completed Phase 0.5A contracts, remaining Phase 0.5B work, tests performed, and the next recommended step.
 
-### H2 - README status and roadmap are stale on the draft branch
+### H2 - README status and roadmap were stale on the draft branch (Resolved 2026-06-19)
 
-**Severity:** High
+**Status:** Resolved
 
 **Evidence:** `README.md` says the repository contains only planning documents, even though the draft branch contains root instructions, shared context, prompts, and `.bridge/.gitkeep`. Its phase numbering also differs from the canonical roadmap in this report.
 
-**Required correction:** Update README status and use one roadmap across README, project brief, tasks, handoff, and this report.
+**Resolution:** README now reports Phase 0.5A complete, Phase 0.5B pending, and executable components unimplemented. Its planned layout and Phase 0-7 roadmap match the project brief, task state, handoff, and this report.
 
-### H3 - Required policy files are omitted from agent pre-read
+### H3 - Required policy files were omitted from agent pre-read (Resolved 2026-06-19)
 
-**Severity:** High
+**Status:** Resolved
 
 **Evidence:** `AGENTS.md` omits `.ai/MCP_POLICY.md` and `.ai/CHANGELOG_AI.md` from the ordered pre-read. The Antigravity verification prompt also omits `AGENTS.md` and `.ai/SECURITY_RULES.md`.
 
-**Required correction:** Include all action-governing policies in the pre-read and require the verifier to observe the same security boundary as other roles.
+**Resolution:** `AGENTS.md` now includes `.ai/MCP_POLICY.md` and `.ai/CHANGELOG_AI.md` in the universal read order. The verifier prompt now requires `AGENTS.md`, project, coding, security, MCP, and model-role context before task artifacts.
 
 ### H4 - Repository visibility needs an explicit decision
 
@@ -224,9 +224,9 @@ The three operating modes remain design goals. The `qwen-led` documentation cont
 2. ~~Define role write permissions and conductor-owned shared-state updates.~~ Completed 2026-06-19.
 3. ~~Standardize YAML front matter versus strict JSON.~~ Completed 2026-06-19.
 4. ~~Preserve schema keys and enum values across EN/TH output.~~ Completed 2026-06-19.
-5. Align `README.md`, `.ai/PROJECT_BRIEF.md`, `.ai/AGENT_HANDOFF.md`, `.ai/MODEL_ROLES.md`, prompts, and this report.
+5. ~~Align `README.md`, `.ai/PROJECT_BRIEF.md`, `.ai/AGENT_HANDOFF.md`, `.ai/MODEL_ROLES.md`, prompts, and this report.~~ Completed 2026-06-19.
 
-**Exit gate:** A static consistency review finds no conflicting role, stage, artifact, or language rules.
+**Exit gate:** **PASS (2026-06-19).** Static consistency review found no conflicting role, stage, artifact, language, status, roadmap, or pre-read rules.
 
 ### Phase 0.5B - Establish environment and security
 
@@ -305,16 +305,16 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 | Capability | Decision |
 |---|---|
-| Documentation correction | **GO** |
-| Phase 0.5 environment/security setup | **GO** |
+| Phase 0.5A documentation correction | **COMPLETE** |
+| Phase 0.5B environment/security setup | **GO** |
 | Merge current draft branch as-is | **HOLD** |
-| Schemas and gates | **HOLD until Phase 0.5 exit gates pass** |
+| Schemas and gates | **HOLD until Phase 0.5B exit gates pass** |
 | Adapter and conductor implementation | **HOLD** |
 | Full dry run | **NOT READY** |
 | Live vendor integration | **NOT READY** |
 
 ## Final Decision
 
-**HOLD the current scaffold from merge and do not begin executable pipeline implementation yet.**
+**Phase 0.5A is complete. HOLD the current scaffold from merge until Phase 0.5B setup and repository-control verification pass.**
 
-Proceed only with the contract corrections in Phase 0.5A and the environment/security setup in Phase 0.5B. After those exit gates are verified, complete the documentation scaffold through a reviewed pull request, then continue to schemas and deterministic gates.
+Proceed with Phase 0.5B environment/security setup. Begin with reversible setup files; treat repository visibility, branch protection, required checks, secret scanning, and permission changes as separate human-controlled actions. After Phase 0.5B exit gates pass, open the reviewed scaffold pull request, then continue to schemas and deterministic gates.
