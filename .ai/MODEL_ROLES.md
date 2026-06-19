@@ -26,14 +26,27 @@ The `qwen-led` mode uses this exact sequence:
 
 Claude's final review is the independent review for `qwen-led`. The mode must halt if that review is missing, rejects the change, reports blockers, or reports scope drift.
 
+## Write ownership by stage
+
+| Stage owner | Source-tree writes | Artifact writes | Shared `.ai/` or Git writes |
+|---|---|---|---|
+| Planner | None | `PLAN.md` | None |
+| Builder | `files_to_touch` only | `EDIT_<tool>.md`, `CHANGES.diff` | None |
+| First reviewer | None | `REVIEW_QWEN.json` | None |
+| Verifier | None | `VERIFY.json` | None |
+| Final reviewer | None | `REVIEW_CLAUDE.json` | None |
+| Conductor | None | `TASK.md`, `FINAL_REPORT.md` | Handoff, changelog, branch, commit, push, and PR |
+
+The conductor performs shared-state updates only after all deterministic and review gates pass. Manual maintenance may edit `.ai/` files only when those paths are explicitly scoped.
+
 ## Tool capabilities
 
 | Tool | Write to repo | Push to branch | Merge to main | Run terminal |
 |---|---|---|---|---|
-| Claude Code | Plan/review only (read-only default) | No | No | No |
-| Codex CLI | Yes (workspace only) | With approval | Never | Yes (workspace) |
-| Qwen Code | Yes (workspace only) | With approval | Never | Restricted |
-| Antigravity | No (verify only) | No | No | Read-only |
+| Claude Code | Designated plan/review artifact only | No (conductor only) | No | No |
+| Codex CLI | Approved source paths and build artifacts | No (conductor only) | Never | Yes (workspace) |
+| Qwen Code | Stage-specific source/artifact paths | No (conductor only) | Never | Restricted |
+| Antigravity | `VERIFY.json` only | No (conductor only) | No | Read-only |
 
 ## Notes
 
