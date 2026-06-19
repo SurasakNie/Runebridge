@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phase 0.5A contract and documentation alignment is complete on the draft branch. Phase 0.5B environment, security, permissions, and tooling setup is next. Schemas, gates, adapters, conductor, and CI workflows are not yet created.
+Phase 0.5A is complete. The reversible Phase 0.5B repository baseline is implemented locally: environment template, dependencies, pre-commit hooks, environment diagnostics, smoke tests, and setup documentation. Bash, `jq`, `shellcheck`, a primary secret scanner, and human-controlled GitHub settings remain pending. Schemas, pipeline gates, adapters, conductor, and CI workflows are not yet created.
 
 ## Last Agent
 
@@ -11,45 +11,49 @@ Phase 0.5A contract and documentation alignment is complete on the draft branch.
 | Tool | Codex |
 | Date | 2026-06-19 |
 | Branch | claude/latest-drafts-ptdnpq |
-| Task | Phase 0.5A — complete documentation and pre-read alignment |
+| Task | Phase 0.5B repository environment and security baseline |
 
 ## What Was Changed
 
-- Updated README status, planned layout, and roadmap to match the audited plan.
-- Added MCP policy and AI changelog to the universal pre-read.
-- Added universal, coding, security, MCP, and role policies to the verifier pre-read.
-- Marked H1-H3 and the Phase 0.5A exit gate resolved.
-- Recorded Phase 0.5A completion and Phase 0.5B as the active task.
+- Added a secret-free `.env.example` and documented credential handling.
+- Added Python dependency setup, pre-commit hooks, and an environment diagnostic.
+- Added the Phase 0.5B smoke-test structure and five passing tests.
+- Documented verified host-tool gaps and retained GitHub settings as human-controlled actions.
 
 ## Files Modified
 
-- `AGENTS.md`
+- `.env.example`
+- `.pre-commit-config.yaml`
+- `tools/requirements.txt`
+- `tools/check_environment.py`
+- `tests/gates/test_environment.py`
+- `docs/Environment-and-Security-Setup.md`
 - `README.md`
 - `.ai/PROJECT_BRIEF.md`
 - `.ai/TASKS.md`
-- `prompts/antigravity-verify.md`
 - `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
 
 ## Tests Run
 
-Static cross-file consistency checks and Git diff hygiene. No executable tests exist yet.
+`pytest -q tests/gates` passed all five tests. Python compilation and pre-commit YAML parsing passed. The Python smoke hook passes once its isolated environment is provisioned. The gitleaks hook and manual environment check correctly remain blocked by missing host tools.
 
 ## Known Issues
 
-- Python gate scripts not yet created.
-- Adapter shell scripts not yet created.
-- Conductor not yet created.
-- CI workflows not yet created.
-- JSON schemas not yet created.
-- Phase 0.5B setup files and repository controls are not implemented or verified.
+- Pipeline gate scripts are not yet created; only the Phase 0.5B environment diagnostic exists.
+- Adapter shell scripts are not yet created.
+- Conductor is not yet created.
+- CI workflows are not yet created.
+- JSON schemas are not yet created.
+- Bash, `jq`, `shellcheck`, and gitleaks or trufflehog are not installed on the audit host.
 - Repository visibility, branch protection, required checks, secret scanning, and GitHub App permissions require human decisions or verification.
 
 ## Next Recommended Step
 
-Begin Phase 0.5B with reversible repository files: `.env.example`, `tools/requirements.txt`, `.pre-commit-config.yaml`, `tests/gates/`, and environment setup documentation.
+Install and verify the missing host tools, then obtain human approval before changing or confirming repository visibility, branch protection, required checks, push protection, or app permissions.
 
 ## Warnings
 
 Do not run the conductor until all gates and adapters are in place.
+
