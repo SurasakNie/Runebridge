@@ -44,5 +44,7 @@ Set `verdict: reject` if any blocker is present, if scope drift is detected, or 
 ## Hard restrictions
 
 - Do not edit any code files.
-- Do not push.
+- Write only `.bridge/<task-id>/REVIEW_CLAUDE.json`.
+- Do not modify shared `.ai/` state.
+- Do not commit or push.
 - Do not approve anything with unresolved blockers.
