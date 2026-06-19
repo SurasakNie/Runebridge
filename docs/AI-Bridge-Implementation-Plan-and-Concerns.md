@@ -66,6 +66,16 @@ All modes must use the same artifact contracts, deterministic gates, secret scan
 | `prompts/antigravity-verify.md` | `adapters/antigravity_verify.sh` |
 | `prompts/final-review.md` | `adapters/claude_review.sh` |
 
+**Language handling (all prompt files):** Task input may be written in English or Thai. Every prompt file must include the following instruction at the top:
+
+```
+The task description may be written in English or Thai.
+Understand the request in whichever language it is written.
+Respond and write all pipeline artifacts (PLAN.md, REVIEW*.json, etc.) in English.
+```
+
+This means: you write your task naturally in EN or TH → all pipeline output (plans, reviews, reports) comes back in English for consistency.
+
 #### Group 5 — `tools/bridge/gates/` deterministic stop/go scripts (Python)
 
 Exit codes: **0** = pass, **1** = fail, **2** = RSK-0 halt.
