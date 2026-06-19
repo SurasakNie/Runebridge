@@ -20,7 +20,25 @@ Then read the task-specific files in `.bridge/<task-id>/` if a task ID is given.
 2. Inspect all files in scope before editing any of them.
 3. Make the smallest safe change that satisfies the task.
 4. Run available tests before handing off.
-5. Update `.ai/AGENT_HANDOFF.md` and `.ai/CHANGELOG_AI.md` after completing work.
+5. Write only the files allowed for the current role and stage.
+
+## Pipeline write ownership
+
+During an orchestrated pipeline run:
+
+| Owner | Allowed writes |
+|---|---|
+| Planner adapter | `.bridge/<task-id>/PLAN.md` only |
+| Builder adapter | Approved source paths, `.bridge/<task-id>/EDIT_<tool>.md`, and `.bridge/<task-id>/CHANGES.diff` |
+| Qwen review adapter | `.bridge/<task-id>/REVIEW_QWEN.json` only |
+| Verifier adapter | `.bridge/<task-id>/VERIFY.json` only |
+| Claude final-review adapter | `.bridge/<task-id>/REVIEW_CLAUDE.json` only |
+| Conductor | `TASK.md`, `FINAL_REPORT.md`, shared handoff/changelog state, and Git/PR operations |
+
+- Planning, verification, and review stages are read-only for source files. Writing the designated stage artifact is allowed.
+- Role adapters must not modify `.ai/AGENT_HANDOFF.md` or `.ai/CHANGELOG_AI.md`.
+- The conductor updates those shared files once during final reporting, using validated task artifacts.
+- Manual repository-maintenance tasks may modify `.ai/` files only when those paths are explicitly in task scope.
 
 ## Hard restrictions
 
@@ -29,4 +47,5 @@ Then read the task-specific files in `.bridge/<task-id>/` if a task ID is given.
 - Never delete files unless explicitly instructed to do so.
 - Never make formatting-only changes to files not in scope.
 - Never pass secrets as command-line arguments or write them into artifact files.
+- Never commit, push, create a PR, or update shared `.ai/` state from a role adapter; those actions belong to the conductor.
 - If you encounter an RSK-0 action (merge, deploy, secret rotation, force-push, schema migration, production change), stop and wait for human approval.
