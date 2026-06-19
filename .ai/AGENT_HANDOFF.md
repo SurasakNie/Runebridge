@@ -2,7 +2,7 @@
 
 ## Current State
 
-Repository scaffold — partially created. Root instruction files, `.ai/` context, and prompts are committed. The `qwen-led` documentation contract is resolved. Schemas, gates, adapters, conductor, and CI workflows are not yet created.
+Repository scaffold — partially created. Phase 0.5A contracts for `qwen-led` and pipeline write ownership are resolved. Schemas, gates, adapters, conductor, and CI workflows are not yet created.
 
 ## Last Agent
 
@@ -11,24 +11,27 @@ Repository scaffold — partially created. Root instruction files, `.ai/` contex
 | Tool | Codex |
 | Date | 2026-06-19 |
 | Branch | claude/latest-drafts-ptdnpq |
-| Task | Phase 0.5A — resolve qwen-led contract |
+| Task | Phase 0.5A — resolve pipeline write ownership |
 
 ## What Was Changed
 
-- Defined Qwen as planner and builder in `qwen-led`.
-- Added the planned `qwen_plan.sh` adapter contract.
-- Skipped both the Qwen first-review stage and its gate in `qwen-led`.
-- Made `REVIEW_QWEN.json` optional only in `qwen-led`.
-- Defined Claude as the independent final reviewer and Claude-only final review gate for that mode.
+- Defined source-tree and artifact write boundaries for every role.
+- Assigned shared `.ai/` handoff/changelog updates to the conductor.
+- Assigned branch, commit, push, and PR operations to the conductor.
+- Preserved an explicit exception for manually scoped `.ai/` maintenance.
 
 ## Files Modified
 
-- `.ai/MODEL_ROLES.md`
-- `.ai/PROJECT_BRIEF.md`
-- `QWEN.md`
+- `AGENTS.md`
 - `CLAUDE.md`
+- `QWEN.md`
+- `.ai/CODING_RULES.md`
+- `.ai/PROJECT_BRIEF.md`
+- `.ai/MODEL_ROLES.md`
 - `prompts/plan.md`
+- `prompts/edit-from-plan.md`
 - `prompts/qwen-review.md`
+- `prompts/antigravity-verify.md`
 - `prompts/final-review.md`
 - `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
 - `.ai/AGENT_HANDOFF.md`
@@ -45,11 +48,11 @@ Static cross-file consistency checks and Git diff hygiene. No executable tests e
 - Conductor not yet created.
 - CI workflows not yet created.
 - JSON schemas not yet created.
-- Remaining Phase 0.5A findings B3 and B4 are unresolved.
+- Remaining Phase 0.5A Finding B4 is unresolved.
 
 ## Next Recommended Step
 
-Resolve Phase 0.5A Finding B3: separate role artifact writes from conductor-owned shared-state updates.
+Resolve Phase 0.5A Finding B4: standardize YAML/JSON contracts and preserve machine-readable keys and enums across EN/TH output.
 
 ## Warnings
 
