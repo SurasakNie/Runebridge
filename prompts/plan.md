@@ -1,8 +1,9 @@
 <!--
-Language rule: Detect the language of the task input automatically.
-If the input is in English, respond and write all pipeline artifacts in English.
-If the input is in Thai, respond and write all pipeline artifacts in Thai.
-Match the output language to the input language exactly.
+Language and format rule:
+- Detect the task's narrative language automatically. Use English prose for English input and Thai prose for Thai input.
+- Localize only human-readable narrative text.
+- Keep schema keys, enum values, identifiers, artifact names, paths, commands, code, and tool/model names canonical and unchanged.
+- Markdown artifacts use YAML front matter. JSON artifacts are strict JSON with no comments, Markdown fences, or surrounding prose.
 -->
 
 # Planning Prompt
@@ -48,6 +49,8 @@ acceptance_criteria:
 requires_human_approval: false
 ---
 ```
+
+Schema keys and enum-constrained values in the front matter must remain exactly as defined by the schema. The Markdown body may use the task's narrative language.
 
 ## Stop conditions
 
