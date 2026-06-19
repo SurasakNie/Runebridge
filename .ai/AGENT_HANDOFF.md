@@ -2,48 +2,41 @@
 
 ## Current State
 
-Repository scaffold — partially created. Root instruction files and `.ai/` context committed. Schemas, prompts, gates, adapters, conductor, and CI workflows not yet created.
+Repository scaffold — partially created. Root instruction files, `.ai/` context, and prompts are committed. The `qwen-led` documentation contract is resolved. Schemas, gates, adapters, conductor, and CI workflows are not yet created.
 
 ## Last Agent
 
 | Field | Value |
 |---|---|
-| Tool | Claude Code |
+| Tool | Codex |
 | Date | 2026-06-19 |
 | Branch | claude/latest-drafts-ptdnpq |
-| Task | Phase 1 scaffold — MD files |
+| Task | Phase 0.5A — resolve qwen-led contract |
 
 ## What Was Changed
 
-- Added `.gitignore`, `AGENTS.md`, `CLAUDE.md`, `QWEN.md`
-- Added `.ai/` context directory with all 8 files
-- Added `prompts/` directory with all 5 prompt files
-- Added `.bridge/.gitkeep`
+- Defined Qwen as planner and builder in `qwen-led`.
+- Added the planned `qwen_plan.sh` adapter contract.
+- Skipped both the Qwen first-review stage and its gate in `qwen-led`.
+- Made `REVIEW_QWEN.json` optional only in `qwen-led`.
+- Defined Claude as the independent final reviewer and Claude-only final review gate for that mode.
 
 ## Files Modified
 
-- `.gitignore` (new)
-- `AGENTS.md` (new)
-- `CLAUDE.md` (new)
-- `QWEN.md` (new)
-- `.ai/PROJECT_BRIEF.md` (new)
-- `.ai/CODING_RULES.md` (new)
-- `.ai/TASKS.md` (new)
-- `.ai/AGENT_HANDOFF.md` (new)
-- `.ai/CHANGELOG_AI.md` (new)
-- `.ai/SECURITY_RULES.md` (new)
-- `.ai/MODEL_ROLES.md` (new)
-- `.ai/MCP_POLICY.md` (new)
-- `prompts/plan.md` (new)
-- `prompts/edit-from-plan.md` (new)
-- `prompts/qwen-review.md` (new)
-- `prompts/antigravity-verify.md` (new)
-- `prompts/final-review.md` (new)
-- `.bridge/.gitkeep` (new)
+- `.ai/MODEL_ROLES.md`
+- `.ai/PROJECT_BRIEF.md`
+- `QWEN.md`
+- `CLAUDE.md`
+- `prompts/plan.md`
+- `prompts/qwen-review.md`
+- `prompts/final-review.md`
+- `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
+- `.ai/AGENT_HANDOFF.md`
+- `.ai/CHANGELOG_AI.md`
 
 ## Tests Run
 
-None — scaffold files only, no executable code yet.
+Static cross-file consistency checks and Git diff hygiene. No executable tests exist yet.
 
 ## Known Issues
 
@@ -52,10 +45,11 @@ None — scaffold files only, no executable code yet.
 - Conductor not yet created.
 - CI workflows not yet created.
 - JSON schemas not yet created.
+- Remaining Phase 0.5A findings B3 and B4 are unresolved.
 
 ## Next Recommended Step
 
-Create remaining scaffold files: `schemas/`, `tools/requirements.txt`, `tools/bridge/gates/`, `tools/bridge/adapters/`, `tools/bridge/orchestrate.sh`, `.github/workflows/`.
+Resolve Phase 0.5A Finding B3: separate role artifact writes from conductor-owned shared-state updates.
 
 ## Warnings
 
