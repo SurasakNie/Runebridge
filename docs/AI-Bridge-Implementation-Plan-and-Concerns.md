@@ -6,6 +6,7 @@
 - **Main commit:** `031deeff78f6158f0cfeba3a8828366c557c6e56`
 - **Audited commit:** `cb50632e0fcfaf299b7ba9c7bb65f648fcbe0a66`
 - **Audit date:** 2026-06-19
+- **Latest contract update:** 2026-06-19 (`qwen-led` flow resolved)
 
 **Audit result:** **HOLD - initial documentation scaffold is partial; Phase 0.5 and contract corrections are required before executable pipeline work**
 
@@ -95,7 +96,7 @@ These results describe the audit host only. The project still needs a reproducib
 | Phase 0.5 setup files (`.env.example`, pre-commit, requirements, gate tests) | 4 | 0 | Missing |
 | JSON schemas | 5 | 0 | Missing |
 | Python gates | 7 | 0 | Missing |
-| Vendor adapters | 6 | 0 | Missing |
+| Vendor adapters | 7 | 0 | Missing |
 | Pattern A conductor | 1 | 0 | Missing |
 | GitHub Actions workflows | 2 | 0 | Missing |
 
@@ -115,9 +116,9 @@ The previous report allowed scaffold implementation only after Phase 0.5. The br
 
 **Required correction:** Complete and verify Phase 0.5 before schemas, gates, adapters, or orchestration are added.
 
-### B2 - `qwen-led` mode is internally contradictory
+### B2 - `qwen-led` mode was internally contradictory (Resolved 2026-06-19)
 
-**Severity:** Blocking
+**Status:** Resolved in the documentation contract
 
 **Evidence:**
 
@@ -127,9 +128,9 @@ The previous report allowed scaffold implementation only after Phase 0.5. The br
 - The mode note says Qwen self-reviews at Stage 9, while Stage 9 is defined as Claude final review.
 - `QWEN.md` and `prompts/qwen-review.md` still describe Qwen self-review behavior.
 
-The mode cannot be implemented deterministically from the current contract.
+**Resolution:** Qwen plans through the planned `qwen_plan.sh` adapter and builds through `qwen_build.sh`. The Qwen first-review stage and its gate are both skipped, so `REVIEW_QWEN.json` is not produced or required. Antigravity verifies the build, Claude performs the independent final review, and the final review gate validates Claude only. `.ai/MODEL_ROLES.md`, `.ai/PROJECT_BRIEF.md`, `QWEN.md`, `CLAUDE.md`, and the affected prompts now state the same flow.
 
-**Required correction:** Choose one explicit `qwen-led` flow, add every required adapter and artifact, and make the stage table, model-role table, prompts, and gate requirements identical.
+Implementation of the newly specified adapter and mode-aware gates remains scheduled for later phases; the Phase 0.5A contract contradiction itself is closed.
 
 ### B3 - Read-only roles are also instructed to modify shared files
 
@@ -209,7 +210,7 @@ The audit does not overturn these approved design decisions:
 - Humans approve merges and all RSK-0 actions.
 - Live Antigravity integration remains blocked until the product identity, installation, authentication, invocation, output, and exit behavior are verified.
 
-The three operating modes remain design goals, but `qwen-led` is not implementation-ready until Finding B2 is resolved.
+The three operating modes remain design goals. The `qwen-led` documentation contract is resolved, but its adapter and gates are not implemented yet.
 
 ---
 
@@ -217,7 +218,7 @@ The three operating modes remain design goals, but `qwen-led` is not implementat
 
 ### Phase 0.5A - Correct the contracts
 
-1. Resolve the `qwen-led` planner, reviewer, adapter, and artifact flow.
+1. ~~Resolve the `qwen-led` planner, reviewer, adapter, and artifact flow.~~ Completed 2026-06-19.
 2. Define role write permissions and conductor-owned shared-state updates.
 3. Standardize YAML front matter versus strict JSON.
 4. Preserve schema keys and enum values across EN/TH output.
