@@ -7,7 +7,7 @@
 | Task ID | P05B-001 |
 | Goal | Establish environment, security, permissions, and tooling setup |
 | Owner | Human + Codex |
-| Status | In progress; reversible baseline implemented, host tools and GitHub controls pending |
+| Status | In progress; baseline and host tools verified, public visibility decided, active `main` ruleset verified; remaining GitHub controls pending |
 | Branch | claude/latest-drafts-ptdnpq |
 | Related files | `.env.example`, `tools/requirements.txt`, `.pre-commit-config.yaml`, `tests/gates/`, setup documentation |
 | Risk level | RSK-1 for files; RSK-0 for visibility, protection, or permission changes |
