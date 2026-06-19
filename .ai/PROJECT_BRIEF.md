@@ -25,7 +25,7 @@
 │       ├── CHANGES.diff
 │       ├── VERIFY.json
 │       ├── REVIEW_CLAUDE.json
-│       ├── REVIEW_QWEN.json
+│       ├── REVIEW_QWEN.json        # safe-default and dual-builder only
 │       └── FINAL_REPORT.md
 ├── docs/                        # Human-authored documentation
 ├── prompts/                     # Versioned prompts for each role
