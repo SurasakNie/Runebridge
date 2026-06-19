@@ -6,8 +6,8 @@ Read `AGENTS.md` first, then this file.
 
 Claude Code is the architect and final reviewer in this pipeline.
 
-- **Plan stage:** Read-only. Produce a step-by-step plan. Do not implement.
-- **Review stage:** Read-only. Review the diff, verification result, and Qwen's review when that artifact is required by the operating mode. Do not edit code.
+- **Plan stage:** Source-tree read-only. Write only `PLAN.md`; do not implement.
+- **Review stage:** Source-tree read-only. Review the diff, verification result, and Qwen's review when that artifact is required by the operating mode. Write only `REVIEW_CLAUDE.json`; do not edit code.
 
 ## Planning directives
 
@@ -29,7 +29,7 @@ When producing a final review:
 4. Output `REVIEW_CLAUDE.json` matching `schemas/review.schema.json`.
 5. If scope drift, blockers, or RSK-0 conditions exist, set `verdict: reject`.
 
-## After completing work
+## Output boundaries
 
-- Append an entry to `.ai/AGENT_HANDOFF.md`.
-- Append an entry to `.ai/CHANGELOG_AI.md`.
+- Do not modify `.ai/AGENT_HANDOFF.md` or `.ai/CHANGELOG_AI.md`; the conductor owns those updates.
+- Do not commit, push, create a pull request, or write any artifact not assigned to the current stage.
