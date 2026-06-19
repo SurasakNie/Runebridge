@@ -7,7 +7,7 @@
 | Task ID | P05B-001 |
 | Goal | Establish environment, security, permissions, and tooling setup |
 | Owner | Human + Codex |
-| Status | Ready; human approval required for GitHub setting changes |
+| Status | In progress; reversible baseline implemented, host tools and GitHub controls pending |
 | Branch | claude/latest-drafts-ptdnpq |
 | Related files | `.env.example`, `tools/requirements.txt`, `.pre-commit-config.yaml`, `tests/gates/`, setup documentation |
 | Risk level | RSK-1 for files; RSK-0 for visibility, protection, or permission changes |
@@ -29,3 +29,4 @@
 | P05A-002 | Define pipeline write ownership | 2026-06-19 | Role artifacts separated from conductor-owned shared state and Git operations |
 | P05A-003 | Standardize artifact and EN/TH contracts | 2026-06-19 | YAML/JSON formats and canonical machine-readable values aligned |
 | P05A-004 | Align documentation and pre-read chains | 2026-06-19 | README, project state, agent pre-read, verifier pre-read, and audit status aligned |
+
