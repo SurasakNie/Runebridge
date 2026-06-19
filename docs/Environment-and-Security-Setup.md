@@ -62,8 +62,8 @@ The environment check fails until all required commands and at least one support
 
 The following actions are not performed by repository files and require explicit human approval and verification:
 
-- choose public or private repository visibility
-- protect `main` and prohibit direct pushes and force pushes
+- [x] keep Runebridge public so the required repository ruleset capability is available
+- [x] protect `main` through active ruleset `Protect main`; prohibit deletion and force pushes and require a pull request with one approval
 - require pull requests, reviews, resolved conversations, and passing checks
 - enable secret scanning and push protection
 - install and permission the Runebridge GitHub App
