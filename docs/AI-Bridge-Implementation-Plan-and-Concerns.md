@@ -1,722 +1,317 @@
-# AI Bridge — Implementation Plan and Concerns
+# AI Bridge Initial Setup Audit and Revised Implementation Plan
 
-**Branch:** `claude/latest-drafts-ptdnpq`  
-**Date:** 2026-06-19 (last reviewed)  
-**Status:** Approved for implementation with Phase 0.5 prerequisites
+- **Repository:** `SurasakNie/Runebridge`
+- **Default branch:** `main`
+- **Audited branch:** `claude/latest-drafts-ptdnpq`
+- **Main commit:** `031deeff78f6158f0cfeba3a8828366c557c6e56`
+- **Audited commit:** `cb50632e0fcfaf299b7ba9c7bb65f648fcbe0a66`
+- **Audit date:** 2026-06-19
 
----
-
-## Part 1 — Implementation Plan
-
-### What Is Being Built
-
-A full repository scaffold for the Runebridge AI Bridge Pipeline, covering shared `.ai/` context, root instruction files, artifact schemas, deterministic gates, adapter stubs, GitHub workflows, dry-run support, and the Pattern A conductor.
-
-The scaffold is intended to support three operating modes from the start:
-
-- `safe-default` — recommended mode
-- `qwen-led`
-- `dual-builder`
-
-All modes must use the same artifact contracts, deterministic gates, secret scanning, RSK enforcement, dry-run behavior, and human approval rules.
-
-### Files to Create
-
-#### Group 1 — Root instruction files
-
-| File | Purpose |
-|---|---|
-| `AGENTS.md` | Universal pre-read for all AI agents; lists `.ai/` read order, work process, and restrictions |
-| `CLAUDE.md` | Claude Code-specific: architect + final reviewer role; read-only default for plan/review stages |
-| `QWEN.md` | Qwen Code-specific: builder, first reviewer, refactor agent, bug hunter, qwen-led mode |
-| `.gitignore` | Excludes secrets, local configs, Python cache, logs, local env files — does NOT exclude `.bridge/<task-id>/` (artifacts are committed) |
-| `.env.example` | Safe example of required environment variables without real secrets |
-| `.pre-commit-config.yaml` | Local lint/test hooks for Python, Bash, and secrets hygiene |
-
-#### Group 2 — `.ai/` shared context (committed, versioned)
-
-| File | Purpose |
-|---|---|
-| `.ai/PROJECT_BRIEF.md` | Project purpose, stack, constraints, definition of success, canonical repo layout including `docs/` |
-| `.ai/CODING_RULES.md` | Style rules all agents follow |
-| `.ai/TASKS.md` | Active task tracking and backlog |
-| `.ai/AGENT_HANDOFF.md` | Cross-agent handoff state and decisions log |
-| `.ai/CHANGELOG_AI.md` | AI-generated change log; appended by conductor in final report stage |
-| `.ai/SECURITY_RULES.md` | Dangerous actions policy; defines RSK-0/RSK-1/RSK-2 and enforcement |
-| `.ai/MODEL_ROLES.md` | Role assignments per model for each operating mode |
-| `.ai/MCP_POLICY.md` | MCP permission policy: allowed servers, per-tool access map, banned defaults |
-
-#### Group 3 — `schemas/` artifact contracts (JSON Schema draft-07)
-
-| File | Validates |
-|---|---|
-| `schemas/task.schema.json` | `TASK.md` YAML front matter |
-| `schemas/plan.schema.json` | `PLAN.md` YAML front matter; enforces non-empty `files_to_touch` and `acceptance_criteria` |
-| `schemas/edit-summary.schema.json` | `EDIT_*.md` build summary |
-| `schemas/verify.schema.json` | `VERIFY.json` |
-| `schemas/review.schema.json` | `REVIEW_CLAUDE.json` and `REVIEW_QWEN.json` |
-
-#### Group 4 — `prompts/` versioned role prompts
-
-| File | Used by |
-|---|---|
-| `prompts/plan.md` | `adapters/claude_plan.sh` |
-| `prompts/edit-from-plan.md` | `adapters/codex_build.sh`, `adapters/qwen_build.sh` |
-| `prompts/qwen-review.md` | `adapters/qwen_review.sh` |
-| `prompts/antigravity-verify.md` | `adapters/antigravity_verify.sh` |
-| `prompts/final-review.md` | `adapters/claude_review.sh` |
-
-**Language handling (all prompt files):** Task input may be written in English or Thai. Every prompt file must include the following instruction at the top:
-
-```
-The task description may be written in English or Thai.
-Detect the language of the task input automatically.
-If the input is in English, respond and write all pipeline artifacts in English.
-If the input is in Thai, respond and write all pipeline artifacts in Thai.
-Match the output language to the input language exactly.
-```
-
-This means: you write your task in EN → all pipeline output comes back in EN. You write in TH → all pipeline output comes back in TH.
-
-#### Group 5 — `tools/bridge/gates/` deterministic stop/go scripts (Python)
-
-Exit codes: **0** = pass, **1** = fail, **2** = RSK-0 halt.
-
-| File | Checks |
-|---|---|
-| `check_plan.py` | `files_to_touch` non-empty, `acceptance_criteria` non-empty, schema validates |
-| `check_scope.py` | Enumerates touched files via `git diff --name-only` (not unified-diff parsing — handles renames, unicode, binary); checks every file is in `PLAN.md`'s `files_to_touch` |
-| `check_review.py` | Single: `blockers == []`, `scope_drift == false`, `verdict != reject`. Cross-check: additionally halts when `verdict` enum values differ OR `scope_drift` booleans differ between the two reviews |
-| `check_verify.py` | `VERIFY.json` result is `"pass"` — checks overall suite pass/fail; per-criterion mapping to individual acceptance criteria is a known limitation (H2) |
-| `check_rsk0.py` | No RSK-0 triggers in plan; exits 2 on trip |
-| `check_artifacts.py` | All required artifacts exist and are non-empty for the given mode |
-| `check_no_secrets.py` | Supplementary regex scan of `.bridge/` and `.ai/` for secret patterns. Primary controls are gitleaks/trufflehog and GitHub push protection (M3) |
-
-`tools/requirements.txt` already exists in the plan with `jsonschema>=4.0` and `PyYAML>=6.0`. This is not absent, but it is incomplete and must be expanded during Phase 0.5.
-
-#### Group 6 — `tools/bridge/adapters/` vendor CLI wrappers (bash)
-
-Each adapter takes `TASK_ID` as an argument, reads `.bridge/$TASK_ID/` inputs, writes `.bridge/$TASK_ID/` outputs, and exits 0/non-zero. All vendor CLI invocations are isolated here; the conductor never calls vendor CLIs directly.
-
-| File | Wraps | I/O |
-|---|---|---|
-| `claude_plan.sh` | Claude Code (`claude -p`) | In: `TASK.md` → Out: `PLAN.md` |
-| `codex_build.sh` | OpenAI Codex CLI (`codex exec`) | In: `PLAN.md` → Out: `EDIT_CODEX.md`, `CHANGES.diff` |
-| `qwen_build.sh` | Qwen Code (`qwen`) | In: `PLAN.md` → Out: `EDIT_QWEN.md`, `CHANGES.diff` |
-| `qwen_review.sh` | Qwen Code — read-only | In: `PLAN.md`, `CHANGES.diff` → Out: `REVIEW_QWEN.json` |
-| `antigravity_verify.sh` | Google Antigravity | In: `PLAN.md`, `CHANGES.diff` → Out: `VERIFY.json` |
-| `claude_review.sh` | Claude Code — read-only | In: `PLAN.md`, `CHANGES.diff`, `REVIEW_QWEN.json`, `VERIFY.json` → Out: `REVIEW_CLAUDE.json` |
-
-#### Group 7 — `tools/bridge/orchestrate.sh` (Pattern A conductor)
-
-**Execution environment:** The conductor runs locally on the developer's machine (or a dedicated CI runner). GitHub Actions CI runs the gate scripts only (`check_artifacts.py`, `check_no_secrets.py`, etc.) to validate PRs. The conductor is not invoked from within GitHub Actions workflows.
-
-Accepts: `--task`, `--mode` (`safe-default` | `qwen-led` | `dual-builder`), `--planner`, `--builder`, `--builder-a`, `--builder-b`, `--first-reviewer`, `--verifier`, `--final-reviewer`.
-
-Stage sequence (`safe-default` and `qwen-led`):
-
-```text
-Stage  0  Init          — create branch bridge/<task-id>, write TASK.md
-Stage  1  Plan          — run planner adapter
-Stage  2  Gate          — check_plan.py + check_rsk0.py
-Stage  3  Build         — run builder adapter
-Stage  4  Gate          — check_scope.py
-Stage  5  First review  — qwen_review.sh (skipped in qwen-led mode — see note)
-Stage  6  Gate          — check_review.py --reviewer qwen
-Stage  7  Verify        — run verifier adapter
-Stage  8  Gate          — check_verify.py
-Stage  9  Final review  — claude_review.sh
-Stage 10  Gate          — check_review.py --reviewer both + check_no_secrets.py
-Stage 11  Final report  — write FINAL_REPORT.md, append CHANGELOG_AI.md
-Stage 12  PR            — git add .bridge/$TASK_ID/ && git commit
-                           git push origin $BRANCH
-                           gh pr create (using RUNEBRIDGE_APP_TOKEN — see §0.5.5)
-```
-
-`dual-builder` mode replaces Stage 3 with three sub-stages:
-
-```text
-Stage 3a  Build-A       — codex_build.sh on branch $BRANCH-a
-Stage 3b  Build-B       — qwen_build.sh on branch $BRANCH-b (parallel where possible)
-Stage 3c  Select winner — diff comparison gate; choose A or B; merge winner diff to $BRANCH
-```
-
-Pipeline continues from Stage 4 on the winner branch. Both branches are preserved for audit.
-
-Key behaviors:
-
-- Any gate exits non-zero → halt with message.
-- `check_rsk0.py` exit code 2 → `halt_rsk0()` and print `HUMAN_REQUIRED`.
-- Verify retry budget: 2 retries; previous `CHANGES.diff` archived as `CHANGES.diff.attempt-N`.
-- Cross-check disagreement = `verdict` enum values differ OR `scope_drift` booleans differ — halt and attach both reviews.
-- `DRY_RUN_MODE=true` must run the full flow using deterministic mock artifacts.
-
-**qwen-led mode note:** In qwen-led mode, Stage 5 (first review) is skipped. This means Qwen reviews its own output at Stage 9 and does not have an independent first-pass reviewer. This weakens review independence compared to safe-default mode. Use qwen-led only when Claude is unavailable for the plan/review stages.
-
-#### Group 8 — `.bridge/.gitkeep`
-
-Tracks the `.bridge/` directory root in git. Runtime task subdirectories (`.bridge/<task-id>/`) are **committed to the feature branch** as part of Stage 12 — they are not gitignored. This provides an audit trail: every pipeline run's artifacts (PLAN.md, CHANGES.diff, VERIFY.json, review JSONs, FINAL_REPORT.md) are part of the PR diff and human-reviewable before merge.
-
-`.bridge/*/` must **not** appear in `.gitignore`. The `bridge-gates.yml` workflow validates committed artifacts in PRs.
-
-#### Group 9 — `.github/workflows/`
-
-| File | Triggers | Checks |
-|---|---|---|
-| `test.yml` | push + PR to main | shellcheck on adapters + conductor; `py_compile` on gates; JSON schema syntax validation; gate unit tests |
-| `bridge-gates.yml` | PR touching `.bridge/` paths | `check_artifacts.py` + `check_no_secrets.py` on bridge PRs |
-
-### Updated Roadmap
-
-This roadmap supersedes the phase numbering in `README.md`. The README uses phases 0–6 from the original design; this document adds Phase 0.5, Phase 0.6, and expands the later phases. Use the numbering here as the canonical reference.
-
-```text
-Phase 0    Planning approval
-Phase 0.5  Environment, security, permissions, and tooling setup
-Phase 0.6  Vendor identity and CLI validation
-Phase 1    Repository scaffold
-Phase 2    Schemas and deterministic gates
-Phase 3    Adapter stubs and dry-run outputs
-Phase 4    Pattern A conductor
-Phase 5    Full dry-run pipeline validation
-Phase 6    Live vendor integration
-Phase 7    Mode benchmarking: safe-default, qwen-led, dual-builder
-```
+**Audit result:** **HOLD - initial documentation scaffold is partial; Phase 0.5 and contract corrections are required before executable pipeline work**
 
 ---
 
-## Part 2 — Decisions and Concerns
+## 1. Scope and Assumptions
 
-Reviewed against the three planning documents (`aibridgepipelineplan1qwen.md`, `aibridgepipelineplan2qwen.md`, `aibridgepipelineplan3qwen.md`) and `docs/Runebridge-Private-Repository-Architecture.md`.
+This report replaces the earlier pre-implementation approval report. It audits the repository state after the first scaffold commit and revises the implementation sequence from observed evidence.
 
-### Concern 1 — Naming conflict: session recovery files vs. `.ai/` convention (Approved)
+The audit covers:
 
-**Decision:** Use `.ai/` as the canonical session recovery and shared-context system.
+- repository and branch state
+- files committed on `main` and the draft branch
+- Phase 0.5 environment and security prerequisites
+- root agent instructions and shared `.ai/` context
+- role prompts and operating-mode consistency
+- planned schemas, gates, adapters, conductor, tests, and CI
+- local tool availability relevant to the planned workflow
 
-Do not create duplicate root-level files:
+The following GitHub settings could not be verified through the available repository interface and remain human verification items:
 
-- `PROJECT_CONTEXT.md`
-- `ARCHITECTURE.md`
-- `DECISIONS.md`
-- `OPEN_TASKS.md`
+- branch protection or rulesets for `main`
+- GitHub secret names and values
+- GitHub App installation and token permissions
+- secret scanning and push-protection settings
+- required status-check configuration
 
-Map any unique content from those concepts into:
-
-- `.ai/PROJECT_BRIEF.md`
-- `.ai/TASKS.md`
-- `.ai/AGENT_HANDOFF.md`
-- `AGENTS.md`
-- `CLAUDE.md`
-
-### Concern 2 — `docs/` directory not in the planned repo layout (Approved)
-
-**Decision:** Add `docs/` to the canonical repository layout.
-
-Update:
-
-- `README.md`
-- `.ai/PROJECT_BRIEF.md`
-- repository structure diagrams
-
-### Concern 3 — Operating modes (Approved: keep all for now)
-
-**Decision:** Keep all planned operating modes in the implementation:
-
-- `safe-default`
-- `qwen-led`
-- `dual-builder`
-
-**Condition:** All modes must use the same safety guarantees:
-
-- artifact contracts
-- schema validation
-- scope gate
-- RSK-0 halt behavior
-- verification gate
-- independent review gate
-- secret scanning
-- human approval before merge or irreversible action
-
-No mode may bypass deterministic gates or human approval requirements.
-
-### Concern 4 — Dashboard scope not in Phase 1–3 (Approved: defer)
-
-**Decision:** Defer dashboard development.
-
-Add to `.ai/TASKS.md` backlog only:
-
-- token usage dashboard
-- cost dashboard
-- pipeline visualization dashboard
-- agent activity dashboard
-
-### Concern 5 — AI Replacement Matrix (Approved: no concern)
-
-Appendix A's replacement matrix is consistent with the planned `MODEL_ROLES.md` design. No action needed.
-
-### Concern 6 — GitHub Actions minute budget on private repos (Approved: monitor after implementation)
-
-**Decision:** Proceed with the current GitHub Actions design and monitor usage after implementation.
-
-Potential future options if Actions minutes become a constraint:
-
-- GitHub Pro
-- reduced workflow triggers
-- self-hosted runners
-- public Runebridge repository with private project repositories
-
-### Concern 7 — Dry-run mode before real vendor CLI use (Approved: add)
-
-**Decision:** Add `DRY_RUN_MODE=true` support before real vendor CLI use is enabled.
-
-When dry-run mode is active:
-
-- adapter scripts must skip real Claude/Codex/Qwen/Antigravity CLI calls
-- adapter scripts must write deterministic mock artifacts instead
-- gates must run normally against the mock artifacts
-- branch creation, artifact flow, retry behavior, halt behavior, final report generation, and PR creation logic can be tested safely
-- dry-run output must clearly state `DRY_RUN_MODE=true`
-
-This allows validation of:
-
-- artifact flow
-- gate logic
-- retry loops
-- branch creation
-- final report generation
-- PR creation
-- CI workflow behavior
-
-without spending tokens or depending on vendor CLI behavior.
+No claim in this report treats those settings as configured.
 
 ---
 
-## Part 3 — Accepted Phase 0.5 Conditions
+## 2. Evidence Collected
 
-These additions are accepted with two corrections:
+### Repository state
 
-1. Python environment management is not completely absent. The plan already mentions `tools/requirements.txt` with `jsonschema` and `PyYAML`, but it is incomplete and must be expanded.
-2. A PAT is not required immediately. Start with `GITHUB_TOKEN` using explicit least-privilege permissions. Escalate to a GitHub App token or temporary PAT only if required.
+- The repository is currently **public**.
+- `main` contains four tracked files: `README.md`, `LICENSE`, and two documents under `docs/`.
+- The draft branch is four commits ahead of `main`.
+- The draft branch changes 19 files: 18 additions and this report modification.
+- No pull request for `claude/latest-drafts-ptdnpq` was located by the GitHub connector search.
 
-### 0.5.1 Environment and Tooling Setup
+### Verification commands
 
-Add **Phase 0.5 — Environment, Security, Permissions, and Tooling Setup** before scaffold implementation.
+The audit used the following read-only checks:
 
-Phase 0.5 must define:
+```text
+git ls-tree -r --name-only <ref>
+git diff --name-status main...claude/latest-drafts-ptdnpq
+git diff --numstat main...claude/latest-drafts-ptdnpq
+git check-ignore -v <representative paths>
+git grep <common credential signatures>
+```
 
-- Python version
-- virtual environment setup
-- dependency installation
-- Bash/system dependencies
-- GitHub CLI requirement
-- local credential handling
-- baseline `.gitignore`
-- pre-commit tooling
-- gate test tooling
+Results:
 
-Recommended files:
+- `.gitignore` correctly ignores `.env`, `.env.*`, `.venv/`, logs, private-key extensions, and cache paths.
+- `.env.example` is correctly exempted from ignore rules, but the file does not exist.
+- The targeted credential-signature search found no committed token or private-key value.
+- A full gitleaks or trufflehog scan was not run because neither tool is installed on the audit host.
+- No functional tests exist or can run because schemas, gates, adapters, and the conductor are absent.
 
-- `tools/requirements.txt`
-- optional future `pyproject.toml`
-- `.gitignore`
-- `.env.example`
+### Local audit-host tools
+
+| Tool | Result |
+|---|---|
+| Python | Present (`3.13` installation) |
+| Git | Present |
+| GitHub CLI | Present, not authenticated |
+| Bash | Not available on `PATH` |
+| `jq` | Missing |
+| `shellcheck` | Missing |
+| gitleaks | Missing |
+| trufflehog | Missing |
+
+These results describe the audit host only. The project still needs a reproducible bootstrap check for every supported developer or runner environment.
+
+---
+
+## 3. Implementation Inventory
+
+| Area | Planned | Present on draft branch | Status |
+|---|---:|---:|---|
+| Root instructions and `.gitignore` | 4 | 4 | Present |
+| Shared `.ai/` context | 8 | 8 | Present |
+| Versioned role prompts | 5 | 5 | Present |
+| `.bridge/.gitkeep` | 1 | 1 | Present |
+| Phase 0.5 setup files (`.env.example`, pre-commit, requirements, gate tests) | 4 | 0 | Missing |
+| JSON schemas | 5 | 0 | Missing |
+| Python gates | 7 | 0 | Missing |
+| Vendor adapters | 6 | 0 | Missing |
+| Pattern A conductor | 1 | 0 | Missing |
+| GitHub Actions workflows | 2 | 0 | Missing |
+
+The current branch is a documentation scaffold, not an executable MVP and not a completed Phase 0.5 environment.
+
+---
+
+## 4. Audit Findings
+
+### B1 - Phase ordering was bypassed
+
+**Severity:** Blocking
+
+**Evidence:** Phase 1 root instructions, `.ai/` files, prompts, and `.bridge/.gitkeep` were committed while every audited Phase 0.5 setup file is absent.
+
+The previous report allowed scaffold implementation only after Phase 0.5. The branch therefore does not satisfy its own entry condition. This is reversible because the changes remain on a draft branch, but no additional executable pipeline work should build on an undefined environment.
+
+**Required correction:** Complete and verify Phase 0.5 before schemas, gates, adapters, or orchestration are added.
+
+### B2 - `qwen-led` mode is internally contradictory
+
+**Severity:** Blocking
+
+**Evidence:**
+
+- `.ai/MODEL_ROLES.md` assigns Qwen as the `qwen-led` planner.
+- The planned adapter list contains `claude_plan.sh` but no Qwen planning adapter.
+- The stage table skips Qwen review at Stage 5 but still runs a Qwen-review gate at Stage 6.
+- The mode note says Qwen self-reviews at Stage 9, while Stage 9 is defined as Claude final review.
+- `QWEN.md` and `prompts/qwen-review.md` still describe Qwen self-review behavior.
+
+The mode cannot be implemented deterministically from the current contract.
+
+**Required correction:** Choose one explicit `qwen-led` flow, add every required adapter and artifact, and make the stage table, model-role table, prompts, and gate requirements identical.
+
+### B3 - Read-only roles are also instructed to modify shared files
+
+**Severity:** Blocking
+
+**Evidence:** `AGENTS.md` requires every agent to update `.ai/AGENT_HANDOFF.md` and `.ai/CHANGELOG_AI.md`. `CLAUDE.md` defines plan and review as read-only, then repeats the requirement to append both files.
+
+Those writes can violate read-only review, create scope drift, and cause concurrent agents to modify shared state outside `files_to_touch`.
+
+**Required correction:** Define source-tree read-only behavior separately from designated artifact writes. The conductor should own shared handoff/changelog updates; role adapters should write only their declared task artifact.
+
+### B4 - Machine-readable artifact rules are inconsistent
+
+**Severity:** Blocking
+
+**Evidence:** `CLAUDE.md` requires "JSON front matter" for `PLAN.md`; the plan and `prompts/plan.md` require YAML front matter.
+
+The EN/TH prompt rule also says to translate all pipeline artifacts. Without an exception for schema keys and enum values, a Thai response can translate fields such as `risk_level`, `verdict`, `pass`, or `reject` and fail deterministic validation.
+
+**Required correction:** Standardize Markdown artifacts on YAML front matter, JSON artifacts on strict JSON, and keep all schema keys and enum values language-neutral and unchanged. Only human-readable prose should follow the task language.
+
+### B5 - Security and repository controls are not established
+
+**Severity:** Blocking
+
+**Evidence:** `.gitignore` exists and passed representative ignore checks, but `.env.example`, pre-commit hooks, dependency lock or requirements, secret-scanner configuration, CI workflows, and gate tests are missing. Branch protection, push protection, required checks, GitHub App permissions, and secrets could not be verified.
+
+**Required correction:** Implement the Phase 0.5 repository controls and record GitHub-setting verification evidence before enabling any vendor credential or automated PR path.
+
+### H1 - Handoff status contradicts the branch contents
+
+**Severity:** High
+
+**Evidence:** `.ai/AGENT_HANDOFF.md` says prompts are not yet created, then lists all five prompts as created.
+
+**Required correction:** Regenerate the handoff from the audited inventory and make the next-step list phase-aware.
+
+### H2 - README status and roadmap are stale on the draft branch
+
+**Severity:** High
+
+**Evidence:** `README.md` says the repository contains only planning documents, even though the draft branch contains root instructions, shared context, prompts, and `.bridge/.gitkeep`. Its phase numbering also differs from the canonical roadmap in this report.
+
+**Required correction:** Update README status and use one roadmap across README, project brief, tasks, handoff, and this report.
+
+### H3 - Required policy files are omitted from agent pre-read
+
+**Severity:** High
+
+**Evidence:** `AGENTS.md` omits `.ai/MCP_POLICY.md` and `.ai/CHANGELOG_AI.md` from the ordered pre-read. The Antigravity verification prompt also omits `AGENTS.md` and `.ai/SECURITY_RULES.md`.
+
+**Required correction:** Include all action-governing policies in the pre-read and require the verifier to observe the same security boundary as other roles.
+
+### H4 - Repository visibility needs an explicit decision
+
+**Severity:** High
+
+**Evidence:** GitHub reports the repository as public, while `docs/Runebridge-Private-Repository-Architecture.md` describes deployment using private repositories.
+
+This may be intentional, but it is not documented as a decision.
+
+**Required correction:** Record whether Runebridge itself is public with private downstream projects, or whether this repository must become private before credentials and live integration are introduced.
+
+---
+
+## 5. Decisions Retained from the Original Plan
+
+The audit does not overturn these approved design decisions:
+
+- `.ai/` is the canonical shared-context and session-recovery location.
+- `docs/` is part of the canonical repository layout.
+- Runtime artifacts under `.bridge/<task-id>/` are committed to feature branches for auditability.
+- Dashboard work remains deferred to Phase 7 or later.
+- `DRY_RUN_MODE=true` is required before live vendor execution.
+- The conductor runs locally or on a dedicated runner; GitHub Actions validates pull requests.
+- gitleaks or trufflehog is the primary secret scanner; custom regex checks are supplementary.
+- Humans approve merges and all RSK-0 actions.
+- Live Antigravity integration remains blocked until the product identity, installation, authentication, invocation, output, and exit behavior are verified.
+
+The three operating modes remain design goals, but `qwen-led` is not implementation-ready until Finding B2 is resolved.
+
+---
+
+## 6. Revised Implementation Sequence
+
+### Phase 0.5A - Correct the contracts
+
+1. Resolve the `qwen-led` planner, reviewer, adapter, and artifact flow.
+2. Define role write permissions and conductor-owned shared-state updates.
+3. Standardize YAML front matter versus strict JSON.
+4. Preserve schema keys and enum values across EN/TH output.
+5. Align `README.md`, `.ai/PROJECT_BRIEF.md`, `.ai/AGENT_HANDOFF.md`, `.ai/MODEL_ROLES.md`, prompts, and this report.
+
+**Exit gate:** A static consistency review finds no conflicting role, stage, artifact, or language rules.
+
+### Phase 0.5B - Establish environment and security
+
+Create and verify:
+
+- `.env.example` with names only and no secrets
+- `tools/requirements.txt` with `jsonschema`, `PyYAML`, and `pytest`
 - `.pre-commit-config.yaml`
-- `tests/gates/`
+- documented Python and Bash setup
+- checks for `git`, `gh`, `jq`, `shellcheck`, and the selected secret scanner
+- `tests/gates/` test structure
+- explicit least-privilege GitHub workflow permissions
+- documented verification of branch protection, required checks, secret scanning, push protection, and repository visibility
 
-### 0.5.2 Python Dependency Management
+**Exit gate:** A clean environment can install dependencies, run pre-commit, and execute an empty or smoke-test gate suite without credentials.
 
-Corrected status: partially covered, but incomplete.
+### Phase 1 - Complete the documentation scaffold
 
-The plan already includes:
+1. Apply the Phase 0.5A corrections.
+2. Update task and handoff state from verified repository inventory.
+3. Open a pull request for the scaffold; do not push the changes directly to `main`.
 
-- `jsonschema>=4.0`
-- `PyYAML>=6.0`
+**Exit gate:** The PR contains only approved documentation and setup files, and all available checks pass.
 
-Add required dependencies:
+### Phase 2 - Implement schemas and deterministic gates
 
-- `pytest`
+1. Add the five draft-07 schemas.
+2. Add the seven Python gate scripts.
+3. Add unit tests for valid input, missing fields, invalid JSON/YAML, RSK-0 exit 2, scope drift, review blockers, verification failure, and secret detection.
+4. Add CI syntax, schema, gate, and scanner checks.
 
-Recommended optional tooling:
+**Exit gate:** All gate tests pass locally and in CI; every gate has verified exit codes 0, 1, and 2 where applicable.
 
-- `ruff`
-- `black`
-- `pre-commit`
-- `requests` only if HTTP API fallback is needed
+### Phase 3 - Add adapters with deterministic dry-run output
 
-Local virtual environment rule:
+1. Implement one wrapper per approved role and mode.
+2. Make `DRY_RUN_MODE=true` skip every external vendor call.
+3. Validate every mock artifact against its schema.
+4. Keep vendor credentials optional and unused in dry-run mode.
+
+**Exit gate:** Adapter contract tests produce byte-stable, schema-valid artifacts without network access or vendor credentials.
+
+### Phase 4 - Implement the Pattern A conductor
+
+1. Implement stage sequencing, halt behavior, retries, artifact archival, scope checks, and final reporting.
+2. Use explicit per-mode stage maps rather than implicit skips.
+3. Keep merges and RSK-0 actions human-controlled.
+
+**Exit gate:** Fault-injection tests prove that every failed gate halts at the correct stage and that no later stage executes.
+
+### Phase 5 - Validate the full dry-run pipeline
+
+Required command:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r tools/requirements.txt
+DRY_RUN_MODE=true bash tools/bridge/orchestrate.sh --task T001 --mode safe-default
 ```
 
-CI rule:
+Repeat for each approved mode only after its contract is complete.
 
-GitHub Actions must install the same requirements before running gate scripts or tests.
+**Exit gate:** The pipeline creates all required artifacts, passes gates and CI, opens a test PR through the approved authentication path, and performs no live vendor call.
 
-### 0.5.3 Bash and System Dependencies
+### Phase 6 - Validate live vendors
 
-Required tools:
+Verify each CLI independently, beginning with identity, version, authentication, structured output, timeout, and exit codes. Enable one adapter at a time.
 
-- `bash`
-- `git`
-- `gh`
-- `jq`
-- `shellcheck`
+**Exit gate:** Each live adapter has a recorded successful test and a recorded failure-path test with sanitized logs.
 
-GitHub-hosted Ubuntu runners may include some tools by default, but workflows should explicitly install or verify required tools.
+### Phase 7 - Benchmark modes and consider dashboards
 
-### 0.5.4 Branch Protection Rules
-
-Add branch protection requirements for `main`:
-
-- no direct push to `main`
-- pull request required before merge
-- required status checks must pass
-- required review before merge
-- conversation resolution required
-- force push disabled
-- branch deletion disabled
-- optional: require signed commits
-- optional: apply rules to administrators
-
-Required checks should include at minimum:
-
-- `test.yml`
-- `bridge-gates.yml`
-
-No generated branch may bypass protected `main`.
-
-### 0.5.5 GitHub Permissions and Token Strategy
-
-Corrected strategy: do not require a PAT first.
-
-Preferred order:
-
-1. `GITHUB_TOKEN`
-2. GitHub App token
-3. temporary PAT only if needed
-
-Default rule:
-
-Use `GITHUB_TOKEN` with explicit least-privilege permissions wherever possible.
-
-For CI-only workflows:
-
-```yaml
-permissions:
-  contents: read
-```
-
-For PR creation and branch automation:
-
-```yaml
-permissions:
-  contents: write
-  pull-requests: write
-  actions: read
-  checks: read
-```
-
-Escalate to a GitHub App token or temporary PAT when automation must:
-
-- trigger follow-up workflows (critical: `GITHUB_TOKEN` suppresses `on: pull_request` CI on PRs it creates)
-- perform actions not supported by `GITHUB_TOKEN`
-- create automation-owned PRs that must trigger CI
-- operate across repositories
-
-**Conductor PR requirement (C2):** The conductor's Stage 12 `gh pr create` call must use a GitHub App token (`RUNEBRIDGE_APP_TOKEN`), not `GITHUB_TOKEN`. GitHub's security model suppresses `on: pull_request` and `on: push` workflows on PRs created by `GITHUB_TOKEN`. If the conductor uses `GITHUB_TOKEN`, the `test.yml` and `bridge-gates.yml` checks will not run automatically on its PRs.
-
-Store the GitHub App token as a repository secret:
-
-```text
-RUNEBRIDGE_APP_TOKEN
-```
-
-### 0.5.6 Vendor Secret Management
-
-Potential GitHub Repository Secrets:
-
-```text
-ANTHROPIC_API_KEY
-OPENAI_API_KEY
-QWEN_API_KEY
-ANTIGRAVITY_API_KEY
-RUNEBRIDGE_APP_TOKEN        # GitHub App token — required for conductor PRs to trigger CI (see §0.5.5)
-```
-
-Rules:
-
-- no vendor key may be committed
-- no vendor key may be written into `.bridge/` artifacts
-- no vendor key may appear in logs
-- no vendor key may be passed as a command-line argument
-- keys must be injected through environment variables
-
-Example CI injection:
-
-```yaml
-env:
-  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-```
-
-When `DRY_RUN_MODE=true`, vendor keys are not required.
-
-### 0.5.7 Local Phase 0 Credential Strategy
-
-Before vendor CLI tests, create or verify `.gitignore` includes:
-
-```gitignore
-.env
-.env.*
-!.env.example
-.venv/
-*.log
-*.tmp
-.cache/
-__pycache__/
-.pytest_cache/
-```
-
-Note: `.bridge/*/` is intentionally **not** in `.gitignore`. Task artifact directories are committed to feature branches for audit trail (see Group 8).
-
-Local credential options:
-
-- `.env` file ignored by git
-- `direnv`
-- shell session environment variables
-- password manager injection
-
-Prohibited:
-
-- pasting API keys directly into terminal commands
-- committing local credential files
-- storing keys in markdown handoff files
-
-### 0.5.8 Agent Identity and Commit Attribution
-
-Each automated commit and artifact must identify:
-
-- operating mode
-- planner
-- builder
-- verifier
-- reviewer
-- dry-run vs live mode
-- tool adapter used
-- timestamp
-- task ID
-
-Recommended git author:
-
-```text
-Runebridge Bot <runebridge-bot@users.noreply.github.com>
-```
-
-Artifact-level attribution example:
-
-```yaml
-agent_role: builder
-agent_tool: codex
-mode: safe-default
-dry_run: true
-task_id: RB-0001
-```
-
-### 0.5.9 Structured Output and Parsing Strategy
-
-Do not rely on free-form AI text for gate inputs.
-
-Required strategy:
-
-- Markdown artifacts with YAML front matter for `TASK.md`, `PLAN.md`, and `EDIT_*.md`
-- strict JSON for `VERIFY.json`, `REVIEW_CLAUDE.json`, and `REVIEW_QWEN.json`
-- prompts must clearly require the expected artifact format
-- gates must reject invalid JSON, missing required fields, and invalid front matter
-
-Gate behavior:
-
-- fail with clear error messages
-- reject conversational filler outside expected strict artifact boundaries when strict mode is enabled
-- rely on schema validation instead of model trust
-
-Structured-output libraries may be considered later, but Phase 1 should use deterministic parsing and schema validation.
-
-### 0.5.10 Failure, Retry, and Escalation Policy
-
-Default retry budget:
-
-```text
-max_retries = 2
-```
-
-Retry allowed for:
-
-- verification failure
-- build failure caused by implementation error
-- schema-format correction
-
-Retry not allowed for:
-
-- RSK-0 trigger
-- secret detected
-- scope drift
-- branch protection failure
-- missing credentials
-- unknown vendor identity
-- repeated invalid model output after retry budget
-
-Human escalation required when:
-
-- retries are exhausted
-- reviewers disagree
-- RSK-0 action appears
-- secret is detected
-- vendor tool cannot be verified
-- protected branch rule blocks automation unexpectedly
-
-### 0.5.11 Log and Artifact Retention
-
-Logs should include:
-
-- task ID
-- stage name
-- adapter name
-- exit code
-- gate result
-- timestamp
-- dry-run flag
-
-Logs must not include:
-
-- API keys
-- tokens
-- raw secrets
-- sensitive customer data
-- full hidden prompts if they contain sensitive information
-
-Recommended storage:
-
-- GitHub Actions logs for CI execution
-- `.bridge/<task-id>/FINAL_REPORT.md` for summarized pipeline result
-- optional `.bridge/<task-id>/logs/` only if logs are sanitized
-
-Initial retention:
-
-Use GitHub Actions default retention first. Define custom retention later if needed.
-
-### 0.5.12 Gate Test Strategy
-
-Use `pytest` to test Python gates before live model integration.
-
-Required test cases:
-
-- valid plan passes
-- missing `files_to_touch` fails
-- missing `acceptance_criteria` fails
-- RSK-0 deployment request exits 2
-- scope drift fails
-- secret pattern fails
-- valid verification passes
-- review blocker fails
-- invalid JSON fails
-
-Directory:
-
-```text
-tests/gates/
-```
-
-### 0.5.13 Local Developer Tooling
-
-Recommended tools:
-
-- `pre-commit`
-- `ruff`
-- `black`
-- `shellcheck`
-- `pytest`
-
-Required checks before PR:
-
-- Python syntax check
-- gate unit tests
-- shellcheck for Bash scripts
-- JSON schema syntax validation
-- secret scan (gitleaks or trufflehog as primary; `check_no_secrets.py` as supplementary last line)
-
-Secret scanning strategy (M3): `check_no_secrets.py` uses hand-rolled regex patterns and is not a reliable primary control. Layer it with:
-
-- [gitleaks](https://github.com/gitleaks/gitleaks) or [trufflehog](https://github.com/trufflesecurity/trufflehog) as a pre-commit hook and CI step
-- GitHub push protection (repository setting) as a network-level gate
-
-### 0.5.14 Antigravity Identity Discovery
-
-The exact Google Antigravity tool identity, installation method, CLI behavior, and invocation method are unconfirmed.
-
-Before live verification mode:
-
-- identify exact tool
-- confirm install method
-- confirm authentication
-- confirm CLI/API invocation
-- confirm output format
-- confirm exit codes
-
-Blocking rule:
-
-Antigravity uncertainty does not block dry-run scaffold implementation. It blocks live verification mode.
-
-### 0.5.15 Phase 0 Security Checklist
-
-Before any vendor CLI validation:
-
-- `.gitignore` exists
-- `.env` is ignored
-- no key is pasted into terminal command history
-- local logs are excluded
-- local cache folders are excluded
-- dry-run mode is tested first where possible
-- billing/quota is checked for each vendor
+Benchmark cost, latency, correctness, disagreement rate, and human review burden. Implement dashboards only after the artifact contracts and metrics are stable.
 
 ---
 
-## Summary of Actions Before Implementation
+## 7. Readiness Decision
 
-| # | Action | Owner | Priority | Decision |
-|---|---|---|---|---|
-| 1 | Use `.ai/` as canonical session recovery/shared context system | Human | Blocking | Approved |
-| 2 | Add `docs/` to canonical repo layout | Claude Code | Low | Approved |
-| 3 | Keep all operating modes (`safe-default`, `qwen-led`, `dual-builder`) | Claude Code | High | Approved |
-| 4 | Defer dashboard to backlog | Agreed | Low | Approved |
-| 5 | Proceed with current GitHub Actions design and monitor minutes | Human | High | Approved |
-| 6 | Add `DRY_RUN_MODE=true` support for safe pipeline validation | Claude Code | High | Approved |
-| 7 | Add Phase 0.5 environment, security, permissions, and tooling setup | Claude Code | High | Approved with corrections |
-| 8 | Start with `GITHUB_TOKEN`; escalate to GitHub App/PAT only if needed | Claude Code | High | Approved correction |
-| 9 | Expand existing Python requirements instead of treating dependency management as absent | Claude Code | High | Approved correction |
-
-## Updated Readiness Status
-
-Architecture: ready.  
-Safety model: ready.  
-Dry-run scaffold implementation: ready after Phase 0.5 environment and security setup is added.  
-Vendor validation: not ready until Phase 0.6.  
-Live model integration: not ready until vendor CLI validation and credential strategy are confirmed.
+| Capability | Decision |
+|---|---|
+| Documentation correction | **GO** |
+| Phase 0.5 environment/security setup | **GO** |
+| Merge current draft branch as-is | **HOLD** |
+| Schemas and gates | **HOLD until Phase 0.5 exit gates pass** |
+| Adapter and conductor implementation | **HOLD** |
+| Full dry run | **NOT READY** |
+| Live vendor integration | **NOT READY** |
 
 ## Final Decision
 
-**GO — Approved to proceed with Phase 0.5.**
+**HOLD the current scaffold from merge and do not begin executable pipeline implementation yet.**
 
-Do not proceed to live vendor integration until:
-
-- environment/tooling setup is complete
-- branch protection is configured
-- local credential strategy is confirmed
-- GitHub secrets strategy is confirmed
-- structured output parsing is implemented
-- gate tests exist
-- Antigravity identity is confirmed
-
-Dry-run scaffold implementation may proceed after Phase 0.5 is completed.
+Proceed only with the contract corrections in Phase 0.5A and the environment/security setup in Phase 0.5B. After those exit gates are verified, complete the documentation scaffold through a reviewed pull request, then continue to schemas and deterministic gates.
