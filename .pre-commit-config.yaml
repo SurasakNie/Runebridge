@@ -1,0 +1,39 @@
+repos:
+  - repo: local
+    hooks:
+      - id: python-compile
+        name: Compile Python sources
+        entry: python -m compileall -q tools tests
+        language: system
+        pass_filenames: false
+        types: [python]
+
+      - id: gate-smoke-tests
+        name: Run gate smoke tests
+        entry: python -m pytest -q tests/gates
+        language: python
+        additional_dependencies: [pytest]
+        pass_filenames: false
+        always_run: true
+
+      - id: shellcheck
+        name: Check Bash scripts
+        entry: shellcheck
+        language: system
+        types: [shell]
+
+      - id: gitleaks
+        name: Scan staged content for secrets
+        entry: gitleaks git --pre-commit --staged --redact
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: environment-check
+        name: Check Runebridge environment
+        entry: python tools/check_environment.py
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [manual]
+
