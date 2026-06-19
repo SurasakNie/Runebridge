@@ -88,3 +88,26 @@ files_changed:
 test_result: pass
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-19
+agent: Codex
+task_id: phase-0.5a-artifact-language-contract
+summary: Standardized YAML and strict-JSON artifacts while preserving canonical machine-readable values across English and Thai output.
+files_changed:
+  - AGENTS.md
+  - CLAUDE.md
+  - QWEN.md
+  - .ai/CODING_RULES.md
+  - .ai/PROJECT_BRIEF.md
+  - prompts/plan.md
+  - prompts/edit-from-plan.md
+  - prompts/antigravity-verify.md
+  - prompts/qwen-review.md
+  - prompts/final-review.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass
+human_review_needed: true
+```
