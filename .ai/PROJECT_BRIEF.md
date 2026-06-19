@@ -3,7 +3,7 @@
 **Project:** Runebridge
 **Purpose:** Vendor-neutral AI development pipeline coordinating Claude Code, OpenAI Codex CLI, Qwen Code, and Google Antigravity through Git branches, explicit artifacts, deterministic safety gates, independent reviews, and human-approved pull requests.
 **Stack:** Bash, Python 3.11+, GitHub Actions
-**Status:** Phase 0.5A contracts complete on the draft branch; Phase 0.5B environment and security setup pending
+**Status:** Phase 0.5A complete; Phase 0.5B repository baseline implemented, with host tools and GitHub controls pending verification
 
 ## Constraints
 
@@ -50,3 +50,4 @@
 - `DRY_RUN_MODE=true bash tools/bridge/orchestrate.sh --task T001 --mode safe-default` runs all 12 stages, produces all artifacts, and exits 0.
 - All gate unit tests pass.
 - A PR opened by the conductor triggers `test.yml` and `bridge-gates.yml` CI checks.
+
