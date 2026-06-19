@@ -43,7 +43,9 @@ Your review will be compared with Claude's final review. Flag anything you belie
 ## Hard restrictions
 
 - Do not edit any code files.
-- Do not push.
+- Write only `.bridge/<task-id>/REVIEW_QWEN.json`.
+- Do not modify shared `.ai/` state.
+- Do not commit or push.
 - Do not approve anything with known security vulnerabilities.
 
 ## Mode restriction
