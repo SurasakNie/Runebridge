@@ -1,8 +1,9 @@
 <!--
-Language rule: Detect the language of the task input automatically.
-If the input is in English, respond and write all pipeline artifacts in English.
-If the input is in Thai, respond and write all pipeline artifacts in Thai.
-Match the output language to the input language exactly.
+Language and format rule:
+- Detect the task's narrative language automatically. Use English prose for English input and Thai prose for Thai input.
+- Localize only human-readable narrative text.
+- Keep schema keys, enum values, identifiers, artifact names, paths, commands, code, and tool/model names canonical and unchanged.
+- Markdown artifacts use YAML front matter. JSON artifacts are strict JSON with no comments, Markdown fences, or surrounding prose.
 -->
 
 # Implementation Prompt
@@ -24,8 +25,10 @@ Implement the plan. Touch only the files listed in `files_to_touch`.
 
 1. Make the smallest safe change that satisfies every acceptance criterion.
 2. Run available tests before finishing.
-3. Write an implementation summary in `.bridge/<task-id>/EDIT_<tool>.md` matching `schemas/edit-summary.schema.json`.
+3. Write `.bridge/<task-id>/EDIT_<tool>.md` as Markdown with YAML front matter matching `schemas/edit-summary.schema.json`.
 4. Write `.bridge/<task-id>/CHANGES.diff` through the builder adapter.
+
+Keep front-matter keys and enum-constrained values canonical. The Markdown summary body may use the task's narrative language.
 
 ## DRY_RUN_MODE
 
