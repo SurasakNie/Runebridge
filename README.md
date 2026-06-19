@@ -1,10 +1,9 @@
-# Runebridge
-# AI Bridge
+# Runebridge AI Bridge
 Vendor-neutral AI development pipeline coordinating Claude Code, Codex, Qwen Code, and Antigravity through Git branches, explicit artifacts, deterministic safety gates, independent reviews, and human-approved pull requests.
 
 AI Bridge is a planned, vendor-neutral workflow for coordinating multiple AI coding tools through a Git repository. It uses explicit files and Git branches as the shared context between Claude Code, OpenAI Codex CLI, Qwen Code, Google Antigravity, and a human reviewer.
 
-> **Project status:** Design phase. The repository currently contains planning documents; the conductor, adapters, gates, and CI workflows have not yet been implemented.
+> **Project status:** Phase 0.5A documentation and contract alignment is complete on `claude/latest-drafts-ptdnpq`. Phase 0.5B environment, security, permissions, and tooling setup is next. Schemas, gates, adapters, the conductor, tests, and CI workflows are not yet implemented.
 
 ## Goal
 
@@ -19,9 +18,9 @@ Turn one task specification into a reviewed pull request through a controlled pi
 - **Permissions follow least privilege.**
 - **Retries are bounded.**
 
-## Supported Operating Modes
+## Planned Operating Modes
 
-The repository supports three operating modes:
+The pipeline contract defines three operating modes:
 
 - `safe-default` (recommended)
 - `qwen-led`
@@ -46,13 +45,18 @@ No operating mode may bypass safety controls.
 .
 |-- .ai/
 |-- .bridge/
+|-- .github/workflows/
 |-- docs/                        # Architecture, planning, and design documents
 |-- prompts/
 |-- schemas/
+|-- tests/gates/
+|-- tools/requirements.txt
 |-- tools/bridge/
 |   |-- adapters/
 |   |-- gates/
 |   `-- orchestrate.sh
+|-- .env.example
+|-- .pre-commit-config.yaml
 |-- AGENTS.md
 |-- CLAUDE.md
 |-- QWEN.md
@@ -88,13 +92,17 @@ When enabled:
 
 ## Rollout
 
-- Phase 0: Manual validation and vendor CLI verification
-- Phase 1: Shared `.ai/` context and repository scaffold
-- Phase 2: CI and deterministic gates
-- Phase 3: Pattern A conductor
-- Phase 4: Dry-run validation
-- Phase 5: Optimize and benchmark supported operating modes (`safe-default`, `qwen-led`, `dual-builder`)
-- Phase 6: Evaluate advanced orchestration options
+- Phase 0: Planning approval
+- Phase 0.5A: Contract and documentation alignment — complete on the draft branch
+- Phase 0.5B: Environment, security, permissions, and tooling setup
+- Phase 0.6: Vendor identity and CLI validation
+- Phase 1: Repository scaffold
+- Phase 2: Schemas and deterministic gates
+- Phase 3: Adapter stubs and deterministic dry-run outputs
+- Phase 4: Pattern A conductor
+- Phase 5: Full dry-run pipeline validation
+- Phase 6: Live vendor integration
+- Phase 7: Mode benchmarking and deferred dashboard evaluation
 
 ## Current Documentation
 
