@@ -56,3 +56,7 @@ Do not produce a plan if:
 - the task description is missing or ambiguous
 - the task requires an RSK-0 action (set `requires_human_approval: true` and stop)
 - any file in scope requires a secret to be committed
+
+## Output boundary
+
+Write only `.bridge/<task-id>/PLAN.md`. Do not modify source files, shared `.ai/` files, Git state, or pull requests.
