@@ -8,7 +8,7 @@
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **HOLD - Phase 0.5A and the reversible Phase 0.5B repository baseline are complete; host security tools and GitHub repository controls remain required before merge or executable pipeline work**
+**Audit result:** **HOLD - Phase 0.5A, the Phase 0.5B repository baseline, host tools, visibility decision, and `main` protection ruleset are verified; remaining GitHub security controls are required before merge or executable pipeline work**
 
 ---
 
@@ -26,15 +26,14 @@ The audit covers:
 - planned schemas, gates, adapters, conductor, tests, and CI
 - local tool availability relevant to the planned workflow
 
-The following GitHub settings could not be verified through the available repository interface and remain human verification items:
+The following GitHub settings remain human verification items:
 
-- branch protection or rulesets for `main`
 - GitHub secret names and values
 - GitHub App installation and token permissions
 - secret scanning and push-protection settings
 - required status-check configuration
 
-No claim in this report treats those settings as configured.
+No claim in this report treats the remaining listed settings as configured.
 
 ---
 
@@ -65,7 +64,7 @@ Results:
 - `.gitignore` correctly ignores `.env`, `.env.*`, `.venv/`, logs, private-key extensions, and cache paths.
 - `.env.example` is correctly exempted from ignore rules and contains names only, with safe defaults or blank values.
 - The targeted credential-signature search found no committed token or private-key value.
-- A full gitleaks or trufflehog scan was not run because neither tool is installed on the audit host.
+- Gitleaks 8.30.1 scanned approximately 27.8 MB of the working tree and found no leaks.
 - Five Phase 0.5B environment smoke tests pass. Functional pipeline tests remain unavailable because schemas, gates, adapters, and the conductor are absent.
 
 ### Local audit-host tools
@@ -75,10 +74,10 @@ Results:
 | Python | Present (`3.13` installation) |
 | Git | Present |
 | GitHub CLI | Present, not authenticated |
-| Bash | Not available on `PATH` |
-| `jq` | Missing |
-| `shellcheck` | Missing |
-| gitleaks | Missing |
+| Bash | Present (`5.2.37`) |
+| `jq` | Present (`1.8.1`) |
+| `shellcheck` | Present (`0.11.0`) |
+| gitleaks | Present (`8.30.1`) |
 | trufflehog | Missing |
 | pytest | Installed in the project virtual environment; five smoke tests pass |
 | pre-commit | Installed in the project virtual environment; configuration parses successfully |
@@ -95,7 +94,7 @@ These results describe the audit host only. The project still needs a reproducib
 | Shared `.ai/` context | 8 | 8 | Present |
 | Versioned role prompts | 5 | 5 | Present |
 | `.bridge/.gitkeep` | 1 | 1 | Present |
-| Phase 0.5 setup files (`.env.example`, pre-commit, requirements, gate tests) | 4 | 4 | Present; host-tool verification pending |
+| Phase 0.5 setup files (`.env.example`, pre-commit, requirements, gate tests) | 4 | 4 | Present and host-tool verified |
 | JSON schemas | 5 | 0 | Missing |
 | Python gates | 7 | 0 | Missing |
 | Vendor adapters | 7 | 0 | Missing |
@@ -160,7 +159,7 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Severity:** Blocking
 
-**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. Five smoke tests pass, but Bash, `jq`, `shellcheck`, and the selected primary secret scanner are missing on the audit host. CI workflows are not yet implemented. Branch protection, push protection, required checks, GitHub App permissions, and secrets could not be verified.
+**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. The environment diagnostic, five smoke tests, complete pre-commit suite, and gitleaks scan pass. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, and requires pull requests with one approval. CI workflows, required status checks, conversation resolution, push protection, GitHub App permissions, and secrets remain unimplemented or unverified.
 
 **Required correction:** Implement the Phase 0.5 repository controls and record GitHub-setting verification evidence before enabling any vendor credential or automated PR path.
 
@@ -188,15 +187,13 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Resolution:** `AGENTS.md` now includes `.ai/MCP_POLICY.md` and `.ai/CHANGELOG_AI.md` in the universal read order. The verifier prompt now requires `AGENTS.md`, project, coding, security, MCP, and model-role context before task artifacts.
 
-### H4 - Repository visibility needs an explicit decision
+### H4 - Repository visibility needs an explicit decision (Resolved 2026-06-19)
 
-**Severity:** High
+**Status:** Resolved
 
 **Evidence:** GitHub reports the repository as public, while `docs/Runebridge-Private-Repository-Architecture.md` describes deployment using private repositories.
 
-This may be intentional, but it is not documented as a decision.
-
-**Required correction:** Record whether Runebridge itself is public with private downstream projects, or whether this repository must become private before credentials and live integration are introduced.
+**Resolution:** Runebridge remains public so the required repository ruleset capability is available for this setup. Private downstream project repositories remain part of the deployment architecture. No live credential may be committed to Runebridge.
 
 ---
 
@@ -240,8 +237,10 @@ Create and verify:
 - [x] documented Python and Bash setup
 - [x] diagnostic checks for `git`, `gh`, Bash, `jq`, `shellcheck`, and the selected secret scanner
 - [x] `tests/gates/` test structure
+- [x] public repository visibility decision recorded
+- [x] active default-branch ruleset verified
 - explicit least-privilege GitHub workflow permissions
-- documented verification of branch protection, required checks, secret scanning, push protection, and repository visibility
+- documented verification of required checks, secret scanning, and push protection
 
 **Exit gate:** A clean environment can install dependencies, run pre-commit, and execute an empty or smoke-test gate suite without credentials.
 
@@ -309,7 +308,9 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 |---|---|
 | Phase 0.5A documentation correction | **COMPLETE** |
 | Phase 0.5B reversible repository baseline | **COMPLETE** |
-| Phase 0.5B host tools and GitHub controls | **HOLD pending installation, approval, and verification** |
+| Phase 0.5B host tools | **COMPLETE** |
+| Phase 0.5B visibility and `main` protection | **COMPLETE** |
+| Phase 0.5B remaining GitHub controls | **HOLD pending implementation, approval, and verification** |
 | Merge current draft branch as-is | **HOLD** |
 | Schemas and gates | **HOLD until Phase 0.5B exit gates pass** |
 | Adapter and conductor implementation | **HOLD** |
@@ -318,7 +319,7 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 ## Final Decision
 
-**Phase 0.5A and the reversible Phase 0.5B repository baseline are complete. HOLD the current scaffold from merge until host-tool and repository-control verification pass.**
+**Phase 0.5A, the Phase 0.5B repository baseline, host tools, visibility decision, and `main` protection are complete. HOLD the current scaffold from merge until remaining repository-control verification passes.**
 
-Complete Phase 0.5B by installing the missing host tools and verifying the environment diagnostic and all pre-commit hooks. Treat repository visibility, branch protection, required checks, secret scanning, and permission changes as separate human-controlled actions. After the Phase 0.5B exit gate passes, open the reviewed scaffold pull request, then continue to schemas and deterministic gates.
+Complete Phase 0.5B by defining and verifying required checks, secret scanning, push protection, and least-privilege app permissions. Treat every settings change as a separate human-controlled action. After the Phase 0.5B exit gate passes, open the reviewed scaffold pull request, then continue to schemas and deterministic gates.
 
