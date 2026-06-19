@@ -19,7 +19,9 @@ Read the following files in order:
 4. `.bridge/<task-id>/PLAN.md`
 5. `.bridge/<task-id>/CHANGES.diff`
 6. `.bridge/<task-id>/VERIFY.json`
-7. `.bridge/<task-id>/REVIEW_QWEN.json`
+7. `.bridge/<task-id>/REVIEW_QWEN.json` when the mode is `safe-default` or `dual-builder`
+
+In `qwen-led`, `REVIEW_QWEN.json` is intentionally absent. Do not fail the review because that optional artifact is missing.
 
 ## Your task
 
@@ -31,7 +33,7 @@ Check for:
 - Scope: does the diff touch only files in `files_to_touch`?
 - Risk: is the actual risk level consistent with the plan's `risk_level`?
 - Security: are there any secrets, injections, or unsafe operations?
-- Qwen's review: is there anything it missed or flagged incorrectly?
+- Qwen's review, when present: is there anything it missed or flagged incorrectly?
 
 ## Output
 
