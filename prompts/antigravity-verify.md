@@ -31,6 +31,10 @@ Write `.bridge/<task-id>/VERIFY.json` matching `schemas/verify.schema.json`.
 
 Set `result: fail` if any required check fails.
 
+## Output boundary
+
+Write only `.bridge/<task-id>/VERIFY.json`. Test commands may read and execute the workspace but must not modify source files, shared `.ai/` state, Git state, or pull requests.
+
 ## DRY_RUN_MODE
 
 If `DRY_RUN_MODE=true`, produce a realistic mock `VERIFY.json` with all checks passing. Mark `dry_run: true` in the artifact.
