@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phase 0.5A is complete. The reversible Phase 0.5B repository baseline is implemented locally: environment template, dependencies, pre-commit hooks, environment diagnostics, smoke tests, and setup documentation. Bash, `jq`, `shellcheck`, a primary secret scanner, and human-controlled GitHub settings remain pending. Schemas, pipeline gates, adapters, conductor, and CI workflows are not yet created.
+Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are verified. Runebridge will remain public so the required ruleset capability is available. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, and requires pull requests with one approval. Required checks, conversation resolution, secret scanning, push protection, and GitHub App permissions remain pending. Schemas, pipeline gates, adapters, conductor, and CI workflows are not yet created.
 
 ## Last Agent
 
@@ -18,7 +18,8 @@ Phase 0.5A is complete. The reversible Phase 0.5B repository baseline is impleme
 - Added a secret-free `.env.example` and documented credential handling.
 - Added Python dependency setup, pre-commit hooks, and an environment diagnostic.
 - Added the Phase 0.5B smoke-test structure and five passing tests.
-- Documented verified host-tool gaps and retained GitHub settings as human-controlled actions.
+- Installed and verified Bash, `jq`, `shellcheck`, and gitleaks.
+- Recorded the public-visibility decision and verified the active `main` ruleset read-only.
 
 ## Files Modified
 
@@ -37,7 +38,7 @@ Phase 0.5A is complete. The reversible Phase 0.5B repository baseline is impleme
 
 ## Tests Run
 
-`pytest -q tests/gates` passed all five tests. Python compilation and pre-commit YAML parsing passed. The Python smoke hook passes once its isolated environment is provisioned. The gitleaks hook and manual environment check correctly remain blocked by missing host tools.
+`pytest -q tests/gates` passed all five tests. Python compilation, pre-commit YAML parsing, the complete pre-commit suite, and the manual environment hook passed. Gitleaks 8.30.1 scanned approximately 27.8 MB and found no leaks.
 
 ## Known Issues
 
@@ -46,12 +47,12 @@ Phase 0.5A is complete. The reversible Phase 0.5B repository baseline is impleme
 - Conductor is not yet created.
 - CI workflows are not yet created.
 - JSON schemas are not yet created.
-- Bash, `jq`, `shellcheck`, and gitleaks or trufflehog are not installed on the audit host.
-- Repository visibility, branch protection, required checks, secret scanning, and GitHub App permissions require human decisions or verification.
+- Required status checks and conversation resolution are not enabled in the verified ruleset.
+- Secret scanning, push protection, and GitHub App permissions still require verification.
 
 ## Next Recommended Step
 
-Install and verify the missing host tools, then obtain human approval before changing or confirming repository visibility, branch protection, required checks, push protection, or app permissions.
+Define the required CI checks, then obtain human approval before adding them or changing conversation-resolution, secret-scanning, push-protection, or app-permission settings.
 
 ## Warnings
 
