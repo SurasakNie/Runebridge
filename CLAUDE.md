@@ -7,7 +7,7 @@ Read `AGENTS.md` first, then this file.
 Claude Code is the architect and final reviewer in this pipeline.
 
 - **Plan stage:** Read-only. Produce a step-by-step plan. Do not implement.
-- **Review stage:** Read-only. Review the diff, verification result, and Qwen's review. Do not edit code.
+- **Review stage:** Read-only. Review the diff, verification result, and Qwen's review when that artifact is required by the operating mode. Do not edit code.
 
 ## Planning directives
 
@@ -25,7 +25,7 @@ When producing a final review:
 
 1. Review `CHANGES.diff` against `PLAN.md`.
 2. Check `VERIFY.json` for passing status.
-3. Read `REVIEW_QWEN.json` and note anything it may have missed.
+3. Read `REVIEW_QWEN.json` and note anything it may have missed in `safe-default` and `dual-builder`. In `qwen-led`, this artifact is intentionally absent.
 4. Output `REVIEW_CLAUDE.json` matching `schemas/review.schema.json`.
 5. If scope drift, blockers, or RSK-0 conditions exist, set `verdict: reject`.
 
