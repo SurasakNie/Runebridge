@@ -152,3 +152,20 @@ test_result: partial-pass; smoke tests pass, host security tools and GitHub cont
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-19
+agent: Codex
+task_id: phase-0.5b-visibility-ruleset-audit
+summary: Verified the host toolchain, recorded the public visibility decision, and verified the active default-branch protection ruleset read-only.
+files_changed:
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - docs/Environment-and-Security-Setup.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; environment, pre-commit, gitleaks, public visibility, and active Protect main ruleset verified
+human_review_needed: true
+```
+
