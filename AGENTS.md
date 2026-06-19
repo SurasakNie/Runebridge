@@ -40,6 +40,14 @@ During an orchestrated pipeline run:
 - The conductor updates those shared files once during final reporting, using validated task artifacts.
 - Manual repository-maintenance tasks may modify `.ai/` files only when those paths are explicitly in task scope.
 
+## Artifact format and language
+
+- `TASK.md`, `PLAN.md`, and `EDIT_*.md` are Markdown with YAML front matter.
+- `VERIFY.json` and `REVIEW_*.json` are strict JSON with no comments, Markdown fences, or surrounding prose.
+- Human-readable narrative follows the task language: English input produces English prose; Thai input produces Thai prose.
+- Never translate schema keys, enum values, identifiers, artifact names, file paths, commands, code, or tool/model names.
+- Values constrained by a schema enum remain exactly as defined by that schema, including `RSK-0`, `RSK-1`, `RSK-2`, `pass`, `fail`, `approve`, and `reject`.
+
 ## Hard restrictions
 
 - Never commit API keys, passwords, access tokens, SSH keys, private certificates, or customer data.
@@ -47,5 +55,6 @@ During an orchestrated pipeline run:
 - Never delete files unless explicitly instructed to do so.
 - Never make formatting-only changes to files not in scope.
 - Never pass secrets as command-line arguments or write them into artifact files.
+- Never add conversational text outside a machine-readable artifact boundary.
 - Never commit, push, create a PR, or update shared `.ai/` state from a role adapter; those actions belong to the conductor.
 - If you encounter an RSK-0 action (merge, deploy, secret rotation, force-push, schema migration, production change), stop and wait for human approval.
