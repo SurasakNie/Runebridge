@@ -14,8 +14,14 @@ You are the verifier for the Runebridge AI Bridge Pipeline.
 
 Read the following files:
 
-1. `.bridge/<task-id>/PLAN.md` — for acceptance criteria
-2. `.bridge/<task-id>/CHANGES.diff` — to understand what changed
+1. `AGENTS.md`
+2. `.ai/PROJECT_BRIEF.md`
+3. `.ai/CODING_RULES.md`
+4. `.ai/SECURITY_RULES.md`
+5. `.ai/MCP_POLICY.md`
+6. `.ai/MODEL_ROLES.md`
+7. `.bridge/<task-id>/PLAN.md` — for acceptance criteria
+8. `.bridge/<task-id>/CHANGES.diff` — to understand what changed
 
 ## Your task
 
