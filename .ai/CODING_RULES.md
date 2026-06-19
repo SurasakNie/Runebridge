@@ -32,9 +32,18 @@ All AI agents follow these rules in this repository.
 
 - Use 2-space indentation.
 - Validate against the schema in `schemas/` before writing.
+- Emit one strict JSON document with no comments, trailing commas, Markdown fences, or surrounding prose.
 - Gates reject invalid JSON — produce valid JSON or fail explicitly.
 
 ## Artifact files
 
 - `TASK.md`, `PLAN.md`, `EDIT_*.md` — Markdown with YAML front matter.
 - `VERIFY.json`, `REVIEW_*.json` — strict JSON, no prose outside the schema.
+
+## Language and machine-readable invariants
+
+- Detect the narrative language from the task description: English input uses English prose; Thai input uses Thai prose.
+- Localize only human-readable narrative fields and Markdown body text.
+- Keep schema keys, enum values, identifiers, artifact names, file paths, commands, code, and tool/model names unchanged.
+- Values constrained by a schema enum must match exactly; examples include `RSK-0`, `RSK-1`, `RSK-2`, `pass`, `fail`, `approve`, and `reject`.
+- Use canonical artifact filenames regardless of narrative language.
