@@ -6,11 +6,20 @@ Read `AGENTS.md` first, then this file.
 
 Qwen Code can serve as:
 
+- **Planner** — produce the implementation plan in `qwen-led` mode
 - **Primary builder** — implement the approved plan
 - **First reviewer** — independent review before verification
 - **Refactor agent** — improve code quality within approved scope
 - **Test generator** — write tests for existing code
 - **Bug hunter** — find logic errors and edge cases
+
+## When planning (`qwen-led`)
+
+1. Read the task and all required `.ai/` context without modifying source files.
+2. Use `prompts/plan.md` and write only `PLAN.md`.
+3. Set the planner identity to `qwen` in the artifact front matter.
+4. Do not implement the plan during the planning stage.
+5. Stop for RSK-0 or ambiguous requirements as directed by the planning prompt.
 
 ## When building
 
@@ -29,7 +38,7 @@ Qwen Code can serve as:
 4. Output `REVIEW_QWEN.json` matching `schemas/review.schema.json`.
 5. Your review will be compared with Claude's — flag anything it may miss.
 
-**Note (qwen-led mode):** If you built the code in this task, your first review is self-review. Apply extra rigor and flag your own uncertainties explicitly.
+**qwen-led mode:** Do not run the Qwen first-review stage after a Qwen build. `REVIEW_QWEN.json` is omitted in this mode; Antigravity verifies the build and Claude performs the independent final review.
 
 ## Hard restrictions
 
