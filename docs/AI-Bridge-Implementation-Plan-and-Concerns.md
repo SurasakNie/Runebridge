@@ -4,11 +4,11 @@
 - **Default branch:** `main`
 - **Audited branch:** `claude/latest-drafts-ptdnpq`
 - **Main commit:** `031deeff78f6158f0cfeba3a8828366c557c6e56`
-- **Audited commit:** `cb50632e0fcfaf299b7ba9c7bb65f648fcbe0a66`
+- **Baseline commit:** `3df9277c01d2dd528325528edacbc66e3f1fb885`
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **HOLD - Phase 0.5A is complete; Phase 0.5B environment, security, permissions, and tooling setup remains required before merge or executable pipeline work**
+**Audit result:** **HOLD - Phase 0.5A and the reversible Phase 0.5B repository baseline are complete; host security tools and GitHub repository controls remain required before merge or executable pipeline work**
 
 ---
 
@@ -63,10 +63,10 @@ git grep <common credential signatures>
 Results:
 
 - `.gitignore` correctly ignores `.env`, `.env.*`, `.venv/`, logs, private-key extensions, and cache paths.
-- `.env.example` is correctly exempted from ignore rules, but the file does not exist.
+- `.env.example` is correctly exempted from ignore rules and contains names only, with safe defaults or blank values.
 - The targeted credential-signature search found no committed token or private-key value.
 - A full gitleaks or trufflehog scan was not run because neither tool is installed on the audit host.
-- No functional tests exist or can run because schemas, gates, adapters, and the conductor are absent.
+- Five Phase 0.5B environment smoke tests pass. Functional pipeline tests remain unavailable because schemas, gates, adapters, and the conductor are absent.
 
 ### Local audit-host tools
 
@@ -80,6 +80,8 @@ Results:
 | `shellcheck` | Missing |
 | gitleaks | Missing |
 | trufflehog | Missing |
+| pytest | Installed in the project virtual environment; five smoke tests pass |
+| pre-commit | Installed in the project virtual environment; configuration parses successfully |
 
 These results describe the audit host only. The project still needs a reproducible bootstrap check for every supported developer or runner environment.
 
@@ -93,14 +95,14 @@ These results describe the audit host only. The project still needs a reproducib
 | Shared `.ai/` context | 8 | 8 | Present |
 | Versioned role prompts | 5 | 5 | Present |
 | `.bridge/.gitkeep` | 1 | 1 | Present |
-| Phase 0.5 setup files (`.env.example`, pre-commit, requirements, gate tests) | 4 | 0 | Missing |
+| Phase 0.5 setup files (`.env.example`, pre-commit, requirements, gate tests) | 4 | 4 | Present; host-tool verification pending |
 | JSON schemas | 5 | 0 | Missing |
 | Python gates | 7 | 0 | Missing |
 | Vendor adapters | 7 | 0 | Missing |
 | Pattern A conductor | 1 | 0 | Missing |
 | GitHub Actions workflows | 2 | 0 | Missing |
 
-The current branch is a documentation scaffold, not an executable MVP and not a completed Phase 0.5 environment.
+The current branch is a documentation and environment scaffold, not an executable MVP. Phase 0.5B remains open until host tools and GitHub controls are verified.
 
 ---
 
@@ -158,7 +160,7 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Severity:** Blocking
 
-**Evidence:** `.gitignore` exists and passed representative ignore checks, but `.env.example`, pre-commit hooks, dependency lock or requirements, secret-scanner configuration, CI workflows, and gate tests are missing. Branch protection, push protection, required checks, GitHub App permissions, and secrets could not be verified.
+**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. Five smoke tests pass, but Bash, `jq`, `shellcheck`, and the selected primary secret scanner are missing on the audit host. CI workflows are not yet implemented. Branch protection, push protection, required checks, GitHub App permissions, and secrets could not be verified.
 
 **Required correction:** Implement the Phase 0.5 repository controls and record GitHub-setting verification evidence before enabling any vendor credential or automated PR path.
 
@@ -232,12 +234,12 @@ The three operating modes remain design goals. The `qwen-led` documentation cont
 
 Create and verify:
 
-- `.env.example` with names only and no secrets
-- `tools/requirements.txt` with `jsonschema`, `PyYAML`, and `pytest`
-- `.pre-commit-config.yaml`
-- documented Python and Bash setup
-- checks for `git`, `gh`, `jq`, `shellcheck`, and the selected secret scanner
-- `tests/gates/` test structure
+- [x] `.env.example` with names only and no secrets
+- [x] `tools/requirements.txt` with `jsonschema`, `PyYAML`, `pytest`, and `pre-commit`
+- [x] `.pre-commit-config.yaml`
+- [x] documented Python and Bash setup
+- [x] diagnostic checks for `git`, `gh`, Bash, `jq`, `shellcheck`, and the selected secret scanner
+- [x] `tests/gates/` test structure
 - explicit least-privilege GitHub workflow permissions
 - documented verification of branch protection, required checks, secret scanning, push protection, and repository visibility
 
@@ -306,7 +308,8 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 | Capability | Decision |
 |---|---|
 | Phase 0.5A documentation correction | **COMPLETE** |
-| Phase 0.5B environment/security setup | **GO** |
+| Phase 0.5B reversible repository baseline | **COMPLETE** |
+| Phase 0.5B host tools and GitHub controls | **HOLD pending installation, approval, and verification** |
 | Merge current draft branch as-is | **HOLD** |
 | Schemas and gates | **HOLD until Phase 0.5B exit gates pass** |
 | Adapter and conductor implementation | **HOLD** |
@@ -315,6 +318,7 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 ## Final Decision
 
-**Phase 0.5A is complete. HOLD the current scaffold from merge until Phase 0.5B setup and repository-control verification pass.**
+**Phase 0.5A and the reversible Phase 0.5B repository baseline are complete. HOLD the current scaffold from merge until host-tool and repository-control verification pass.**
 
-Proceed with Phase 0.5B environment/security setup. Begin with reversible setup files; treat repository visibility, branch protection, required checks, secret scanning, and permission changes as separate human-controlled actions. After Phase 0.5B exit gates pass, open the reviewed scaffold pull request, then continue to schemas and deterministic gates.
+Complete Phase 0.5B by installing the missing host tools and verifying the environment diagnostic and all pre-commit hooks. Treat repository visibility, branch protection, required checks, secret scanning, and permission changes as separate human-controlled actions. After the Phase 0.5B exit gate passes, open the reviewed scaffold pull request, then continue to schemas and deterministic gates.
+
