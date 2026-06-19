@@ -6,7 +6,7 @@
 - **Main commit:** `031deeff78f6158f0cfeba3a8828366c557c6e56`
 - **Audited commit:** `cb50632e0fcfaf299b7ba9c7bb65f648fcbe0a66`
 - **Audit date:** 2026-06-19
-- **Latest contract update:** 2026-06-19 (`qwen-led` flow and pipeline write ownership resolved)
+- **Latest contract update:** 2026-06-19 (`qwen-led`, write ownership, artifact formats, and EN/TH invariants resolved)
 
 **Audit result:** **HOLD - initial documentation scaffold is partial; Phase 0.5 and contract corrections are required before executable pipeline work**
 
@@ -142,15 +142,17 @@ Implementation of the newly specified adapter and mode-aware gates remains sched
 
 `AGENTS.md`, model-specific instructions, every role prompt, `.ai/CODING_RULES.md`, `.ai/PROJECT_BRIEF.md`, `.ai/MODEL_ROLES.md`, and `.ai/CHANGELOG_AI.md` now state the same ownership rule.
 
-### B4 - Machine-readable artifact rules are inconsistent
+### B4 - Machine-readable artifact rules were inconsistent (Resolved 2026-06-19)
 
-**Severity:** Blocking
+**Status:** Resolved in the documentation contract
 
 **Evidence:** `CLAUDE.md` requires "JSON front matter" for `PLAN.md`; the plan and `prompts/plan.md` require YAML front matter.
 
-The EN/TH prompt rule also says to translate all pipeline artifacts. Without an exception for schema keys and enum values, a Thai response can translate fields such as `risk_level`, `verdict`, `pass`, or `reject` and fail deterministic validation.
+The EN/TH prompt rule also said to translate all pipeline artifacts. Without an exception for schema keys and enum values, a Thai response could translate fields such as `risk_level`, `verdict`, `pass`, or `reject` and fail deterministic validation.
 
-**Required correction:** Standardize Markdown artifacts on YAML front matter, JSON artifacts on strict JSON, and keep all schema keys and enum values language-neutral and unchanged. Only human-readable prose should follow the task language.
+**Resolution:** `TASK.md`, `PLAN.md`, and `EDIT_*.md` use Markdown with YAML front matter. `VERIFY.json` and `REVIEW_*.json` use strict JSON with no comments, fences, or surrounding prose. English/Thai selection applies only to narrative text; schema keys, enum values, identifiers, artifact names, paths, commands, code, filenames, and tool/model names remain canonical.
+
+`AGENTS.md`, model instructions, `.ai/CODING_RULES.md`, `.ai/PROJECT_BRIEF.md`, and all five role prompts now state the same serialization and localization rules.
 
 ### B5 - Security and repository controls are not established
 
@@ -220,8 +222,8 @@ The three operating modes remain design goals. The `qwen-led` documentation cont
 
 1. ~~Resolve the `qwen-led` planner, reviewer, adapter, and artifact flow.~~ Completed 2026-06-19.
 2. ~~Define role write permissions and conductor-owned shared-state updates.~~ Completed 2026-06-19.
-3. Standardize YAML front matter versus strict JSON.
-4. Preserve schema keys and enum values across EN/TH output.
+3. ~~Standardize YAML front matter versus strict JSON.~~ Completed 2026-06-19.
+4. ~~Preserve schema keys and enum values across EN/TH output.~~ Completed 2026-06-19.
 5. Align `README.md`, `.ai/PROJECT_BRIEF.md`, `.ai/AGENT_HANDOFF.md`, `.ai/MODEL_ROLES.md`, prompts, and this report.
 
 **Exit gate:** A static consistency review finds no conflicting role, stage, artifact, or language rules.
