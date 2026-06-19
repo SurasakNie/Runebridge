@@ -39,7 +39,7 @@ The first block of `PLAN.md` must be valid YAML front matter matching `schemas/p
 ```yaml
 ---
 task_id: <task-id>
-planner: claude
+planner: <claude-or-qwen>
 risk_level: RSK-1
 files_to_touch:
   - path/to/file.py
