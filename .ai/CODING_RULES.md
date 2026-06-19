@@ -11,7 +11,7 @@ All AI agents follow these rules in this repository.
 - Add comments only where the WHY is non-obvious.
 - Write small functions with a single responsibility.
 - Run available tests before handing off.
-- Work on a feature branch. Never push to `main`.
+- Work on a feature branch. Role adapters do not commit or push; the conductor owns those operations. Manual maintenance may push a feature branch only when explicitly instructed. Never push to `main`.
 
 ## Bash
 
