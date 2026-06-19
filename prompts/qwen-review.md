@@ -46,6 +46,6 @@ Your review will be compared with Claude's final review. Flag anything you belie
 - Do not push.
 - Do not approve anything with known security vulnerabilities.
 
-## Note on qwen-led mode
+## Mode restriction
 
-If you also built this code, apply extra rigor. Explicitly state your uncertainties in the `notes` field.
+Do not run this prompt in `qwen-led` mode. That mode skips the Qwen first-review stage and does not produce `REVIEW_QWEN.json`; Claude performs its independent final review after verification.
