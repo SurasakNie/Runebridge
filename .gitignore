@@ -1,0 +1,44 @@
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.token
+*.p12
+*.pfx
+
+# Local AI tool configs
+.claude-local/
+.codex-local/
+.mcp-secrets/
+.mcp-local/
+
+# Sensitive directories
+secrets/
+private/
+
+# OS and IDE
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+
+# Build artifacts
+node_modules/
+dist/
+build/
+coverage/
+.cache/
+
+# Logs and temp
+*.log
+*.tmp
+
+# NOTE: .bridge/*/ is intentionally NOT listed here.
+# Task artifact directories are committed to feature branches for audit trail.
