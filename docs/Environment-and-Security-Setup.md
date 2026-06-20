@@ -96,7 +96,7 @@ Required baseline workflow checks:
 - `Bridge Gates / Security baseline`
 - `Bridge Gates / Pre-commit baseline`
 
-All three checks passed on draft PR #2 and are required by `Protect main` through GitHub Actions app ID `15368`.
+All three checks passed on PR #2 and are required by `Protect main` through GitHub Actions app ID `15368`.
 
 Record evidence for each setting before Phase 0.5B is marked complete.
 
