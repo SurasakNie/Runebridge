@@ -26,7 +26,7 @@ Runebridge uses active branch ruleset `Protect main`, targeting the default bran
 - blocks branch deletion
 - blocks non-fast-forward updates and force pushes
 - requires changes through a pull request
-- requires one approving review
+- requires a pull request with zero approvals under the solo-project policy; merge remains a manual owner action
 
 Required status checks, resolved-conversation enforcement, secret scanning, and push protection are enabled. Repository-level Actions restrictions and GitHub App installation remain separate pre-automation controls.
 
