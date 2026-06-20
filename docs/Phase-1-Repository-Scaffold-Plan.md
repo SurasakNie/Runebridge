@@ -40,7 +40,7 @@ Empty directories must contain a minimal `.gitkeep` file. The conductor placehol
 - Every planned Phase 1 path exists with no unapproved executable behavior.
 - `tools/bridge/orchestrate.sh` is syntactically valid and always fails closed.
 - No JSON Schema, gate logic, vendor invocation, retry loop, GitHub mutation, or credential handling is implemented.
-- Generated `.bridge/` artifacts remain ignored except for approved documentation or placeholders.
+- `.bridge/<task-id>/` audit artifacts remain committable on feature branches; credentials, local configuration, and transient logs remain prohibited.
 - Tests verify the scaffold paths and fail-closed placeholder behavior.
 - The full pre-commit suite and all required GitHub checks pass.
 - The pull-request diff contains only Phase 1 scaffold, documentation, tests, and shared-state updates.

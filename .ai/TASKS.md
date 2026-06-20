@@ -7,8 +7,8 @@
 | Task ID | P1-001 |
 | Goal | Implement the approved repository scaffold |
 | Owner | Human + Codex |
-| Status | Ready; Phase 0.6 complete |
-| Branch | To be created from `main` |
+| Status | In progress; scaffold implemented pending PR checks and merge |
+| Branch | codex/phase-1-scaffold |
 | Related files | `docs/Phase-1-Repository-Scaffold-Plan.md`, planned repository layout in `README.md` |
 | Risk level | RSK-2 for reversible scaffold files |
 | Required mode | Manual repository maintenance |
@@ -17,13 +17,13 @@
 
 | ID | Task | Status | Dependency / approval |
 |---|---|---|---|
-| P1-001A | Reserve `schemas/` | Planned | Phase 1 PR branch |
-| P1-001B | Reserve `tools/bridge/adapters/` | Planned | Phase 1 PR branch |
-| P1-001C | Reserve `tools/bridge/gates/` | Planned | Phase 1 PR branch |
-| P1-001D | Add fail-closed `tools/bridge/orchestrate.sh` placeholder | Planned | ShellCheck available |
-| P1-001E | Document `.bridge/` runtime-artifact layout | Planned | Existing ignore policy reviewed |
-| P1-001F | Document directory ownership | Planned | P1-001A through P1-001E |
-| P1-001G | Add scaffold verification and run protected checks | Planned | All scaffold deliverables |
+| P1-001A | Reserve `schemas/` | Complete | Local verification passed |
+| P1-001B | Reserve `tools/bridge/adapters/` | Complete | Local verification passed |
+| P1-001C | Reserve `tools/bridge/gates/` | Complete | Local verification passed |
+| P1-001D | Add fail-closed `tools/bridge/orchestrate.sh` placeholder | Complete | Exit 2, Bash syntax, and ShellCheck passed |
+| P1-001E | Document `.bridge/` runtime-artifact layout | Complete | Policy consistency passed |
+| P1-001F | Document directory ownership | Complete | Policy consistency passed |
+| P1-001G | Add scaffold verification and run protected checks | In progress | Seven local tests passed; protected checks pending |
 
 ## Phase 0.6 Work Items
 

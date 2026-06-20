@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A, 0.5B, and 0.6 are complete. Claude Code and Codex CLI live paths are verified. The owner approved deterministic mock-only Qwen work until Phase 6 and deferred Antigravity until a supported headless interface exists. Phase 1 repository scaffold is next.
+Phases 0.5A, 0.5B, and 0.6 are complete. Phase 1 scaffold paths, runtime-artifact documentation, directory ownership, fail-closed conductor placeholder, and focused tests are implemented on `codex/phase-1-scaffold` pending verification and protected PR checks.
 
 ## Last Agent
 
@@ -10,8 +10,8 @@ Phases 0.5A, 0.5B, and 0.6 are complete. Claude Code and Codex CLI live paths ar
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-20 |
-| Branch | codex/complete-phase-0.6 |
-| Task | Close Phase 0.6 decisions and validation matrix |
+| Branch | codex/phase-1-scaffold |
+| Task | Implement Phase 1 repository scaffold |
 
 ## What Was Changed
 
@@ -64,7 +64,7 @@ Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, struc
 
 ## Next Recommended Step
 
-Execute `docs/Phase-1-Repository-Scaffold-Plan.md` from an updated `main` after the current documentation PR is merged.
+Complete Phase 1 verification and merge its protected pull request before starting Phase 2.
 
 ## Warnings
 
