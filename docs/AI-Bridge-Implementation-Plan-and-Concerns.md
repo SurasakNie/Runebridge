@@ -8,7 +8,7 @@
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **PASS - Phases 0.5A and 0.5B are complete; PR #2 is ready for an eligible human reviewer**
+**Audit result:** **PASS - Phases 0.5A and 0.5B are complete; PR #2 is ready for the owner's final review and manual merge decision**
 
 ---
 
@@ -159,7 +159,7 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Severity:** Blocking
 
-**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. The environment diagnostic, five smoke tests, complete pre-commit suite, and gitleaks scan pass. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, requires pull requests with one approval and resolved conversations, and requires three passing baseline checks. Secret scanning and push protection are enabled; no repository secrets exist. Repository-level Actions restrictions and GitHub App installation remain pending decisions.
+**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. The environment diagnostic, five smoke tests, complete pre-commit suite, and gitleaks scan pass. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, requires pull requests with zero approvals under the solo-project policy, requires resolved conversations, and requires three passing baseline checks. Secret scanning and push protection are enabled; no repository secrets exist.
 
 **Required correction:** Implement the Phase 0.5 repository controls and record GitHub-setting verification evidence before enabling any vendor credential or automated PR path.
 
@@ -324,7 +324,7 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 ## Final Decision
 
-**Phases 0.5A and 0.5B are complete. PR #2 is ready for independent human review; merge remains human-controlled.**
+**Phases 0.5A and 0.5B are complete. PR #2 is ready for the owner's final review; merge remains human-controlled.**
 
-Assign an eligible independent reviewer to PR #2. After approval and final required checks pass, the human may merge the scaffold and begin the next approved phase. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
+The owner reviews PR #2 and may explicitly squash-merge after final required checks pass. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
 
