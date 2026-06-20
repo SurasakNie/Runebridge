@@ -3,7 +3,7 @@
 **Project:** Runebridge
 **Purpose:** Vendor-neutral AI development pipeline coordinating Claude Code, OpenAI Codex CLI, Qwen Code, and Google Antigravity through Git branches, explicit artifacts, deterministic safety gates, independent reviews, and human-approved pull requests.
 **Stack:** Bash, Python 3.11+, GitHub Actions
-**Status:** Phases 0.5A and 0.5B complete on the draft branch; draft PR #2 is ready for human review
+**Status:** Phases 0.5A and 0.5B complete; PR #2 is ready for human review
 
 ## Constraints
 
