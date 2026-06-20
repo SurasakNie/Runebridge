@@ -44,6 +44,7 @@ Phases 0.5A, 0.5B, and 0.6 are complete. Claude Code and Codex CLI live paths ar
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
 - `docs/Vendor-CLI-Validation.md`
+- `docs/Phase-1-Repository-Scaffold-Plan.md`
 
 ## Tests Run
 
@@ -63,7 +64,7 @@ Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, struc
 
 ## Next Recommended Step
 
-Start Phase 1 repository scaffold from the approved planned layout.
+Execute `docs/Phase-1-Repository-Scaffold-Plan.md` from an updated `main` after the current documentation PR is merged.
 
 ## Warnings
 

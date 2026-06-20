@@ -9,9 +9,21 @@
 | Owner | Human + Codex |
 | Status | Ready; Phase 0.6 complete |
 | Branch | To be created from `main` |
-| Related files | Planned repository layout in `README.md` and the implementation plan |
+| Related files | `docs/Phase-1-Repository-Scaffold-Plan.md`, planned repository layout in `README.md` |
 | Risk level | RSK-2 for reversible scaffold files |
 | Required mode | Manual repository maintenance |
+
+## Phase 1 Work Items
+
+| ID | Task | Status | Dependency / approval |
+|---|---|---|---|
+| P1-001A | Reserve `schemas/` | Planned | Phase 1 PR branch |
+| P1-001B | Reserve `tools/bridge/adapters/` | Planned | Phase 1 PR branch |
+| P1-001C | Reserve `tools/bridge/gates/` | Planned | Phase 1 PR branch |
+| P1-001D | Add fail-closed `tools/bridge/orchestrate.sh` placeholder | Planned | ShellCheck available |
+| P1-001E | Document `.bridge/` runtime-artifact layout | Planned | Existing ignore policy reviewed |
+| P1-001F | Document directory ownership | Planned | P1-001A through P1-001E |
+| P1-001G | Add scaffold verification and run protected checks | Planned | All scaffold deliverables |
 
 ## Phase 0.6 Work Items
 

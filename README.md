@@ -110,6 +110,7 @@ When enabled:
 - `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
 - `docs/Environment-and-Security-Setup.md`
 - `docs/Vendor-CLI-Validation.md`
+- `docs/Phase-1-Repository-Scaffold-Plan.md`
 - Pipeline planning documents
 
 ## License

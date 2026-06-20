@@ -249,13 +249,11 @@ Create and verify:
 
 **Exit gate:** A clean environment can install dependencies, run pre-commit, and execute an empty or smoke-test gate suite without credentials.
 
-### Phase 1 - Complete the documentation scaffold
+### Phase 1 - Create the repository scaffold
 
-1. Apply the Phase 0.5A corrections.
-2. Update task and handoff state from verified repository inventory.
-3. Open a pull request for the scaffold; do not push the changes directly to `main`.
+Follow `docs/Phase-1-Repository-Scaffold-Plan.md`. Reserve the approved schema, gate, adapter, runtime-artifact, and conductor paths without implementing later-phase behavior. Add focused scaffold and fail-closed placeholder tests.
 
-**Exit gate:** The PR contains only approved documentation and setup files, and all available checks pass.
+**Exit gate:** The protected PR contains only approved scaffold, documentation, tests, and shared-state updates; all required checks pass.
 
 ### Phase 2 - Implement schemas and deterministic gates
 
