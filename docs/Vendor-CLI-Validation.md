@@ -10,8 +10,8 @@ Phase 0.6 validates vendor identity, installation, authentication readiness, non
 |---|---|---:|---|---|---|---|
 | Claude Code | `claude` | 2.1.183 | Verified through Claude.ai | JSON result envelope verified | Success `0`; budget halt `1` | Ready for adapter contract work |
 | Codex CLI | `codex.cmd` on Windows | 0.141.0 | Verified through ChatGPT | JSONL events verified | Success `0`; invalid argument `2` | Ready for adapter contract work |
-| Qwen Code | `qwen.cmd` on Windows | 0.18.4 | Not configured | JSON, stream JSON, and JSON Schema advertised | Budget exit `55` advertised; live path not tested | Blocked on provider decision |
-| Antigravity IDE | `antigravity-ide.cmd` | 1.107.0 | Not verifiable from launcher | No headless structured-output contract exposed | Not tested | Blocked on interface decision |
+| Qwen Code | `qwen.cmd` on Windows | 0.18.4 | Provider selected: Alibaba Cloud Coding Plan; configuration pending | JSON, stream JSON, and JSON Schema advertised | Budget exit `55` advertised; live path not tested | Provider decided; auth configuration and live validation pending |
+| Antigravity IDE | `antigravity-ide.cmd` | 1.107.0 | Not verifiable from launcher | No headless structured-output contract exposed | Not tested | Deferred: IDE-only surface rejected; awaiting headless interface |
 
 ## Claude Code Evidence
 
@@ -37,27 +37,28 @@ Phase 0.6 validates vendor identity, installation, authentication readiness, non
 - PowerShell execution policy blocks the generated `qwen.ps1`; Windows adapters must invoke `qwen.cmd` explicitly.
 - Help output advertises JSON, stream JSON, JSON Schema, wall-time limits, tool-call limits, and exit code 55 for budget termination.
 - Official Qwen documentation states that the Qwen OAuth free tier was discontinued on 2026-04-15.
-- A provider must be selected before live validation: Alibaba Cloud Coding Plan or an approved API-key provider.
-- Never store a provider key in repository files or `settings.json`; use an approved environment or secret store.
+- Provider decision: standardize on the Alibaba Cloud Coding Plan. Live validation is pending plan subscription and credential provisioning.
+- Never store a provider key in repository files or `settings.json`; supply Coding Plan credentials only through an approved environment or secret store.
 
 ## Antigravity Evidence and Blocker
 
 - Antigravity IDE 1.107.0 is installed and exposes `antigravity-ide.cmd chat`.
 - The launcher can open IDE chat in `ask`, `edit`, or `agent` mode.
 - The launcher does not advertise headless JSON output, schema validation, bounded execution, or authentication status.
-- Do not implement a production adapter until a supported headless interface, authentication method, output contract, and exit-code contract are identified.
+- Interface decision: the IDE-only chat surface is not an acceptable integration point. A supported headless API or CLI with a structured-output and exit-code contract is required.
+- Antigravity is deferred until such a headless interface is available; no production adapter will be implemented against the IDE launcher.
 
 ## Phase 0.6 Exit Criteria
 
 - [x] Claude installation, authentication, success output, and failure exit verified
 - [x] Codex installation, authentication, success output, and failure exit verified
-- [ ] Qwen provider selected and authentication configured outside the repository
+- [x] Qwen provider selected (Alibaba Cloud Coding Plan); authentication configuration outside the repository pending
 - [ ] Qwen success JSON and bounded failure exit verified
-- [ ] Antigravity supported automation interface identified
+- [x] Antigravity automation-interface decision made: IDE-only rejected, headless interface required (deferred)
 - [ ] Antigravity authentication, structured output, timeout, and failure exit verified
 - [ ] Sanitized final validation matrix approved
 
-## Decisions Needed
+## Decisions Resolved
 
-1. Select the Qwen provider and credential source.
-2. Decide whether Antigravity IDE automation is acceptable or a different supported API/CLI is required.
+1. Qwen provider and credential source: Alibaba Cloud Coding Plan, credentials supplied via an approved environment or secret store.
+2. Antigravity integration surface: the IDE-only chat surface is rejected; a supported headless API/CLI is required, so Antigravity is deferred until one is available.
