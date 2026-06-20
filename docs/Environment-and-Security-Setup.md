@@ -64,9 +64,9 @@ The following actions are not performed by repository files and require explicit
 
 - [x] keep Runebridge public so the required repository ruleset capability is available
 - [x] protect `main` through active ruleset `Protect main`; prohibit deletion and force pushes and require a pull request with one approval
-- [ ] require resolved review conversations; authenticated audit found this disabled
-- [ ] define and require passing checks after the Phase 2 workflows exist and succeed
-- [ ] enable secret scanning and push protection; authenticated audit found both disabled
+- [x] require resolved review conversations
+- [ ] run and require the Phase 0.5B baseline workflow checks
+- [x] enable secret scanning and push protection
 - [ ] install and permission the Runebridge GitHub App using the minimum contract in `.ai/SECURITY_RULES.md`
 - create repository secrets for approved live integrations
 
@@ -84,11 +84,17 @@ They must remain read-only unless an additional permission is separately justifi
 - default Actions token permission: `read`
 - Actions may approve pull-request reviews: `false`
 - repository secrets: none
-- secret scanning: disabled
-- push protection: disabled
-- ruleset resolved-conversation enforcement: disabled
+- secret scanning: enabled
+- push protection: enabled
+- ruleset resolved-conversation enforcement: enabled
 - allowed Actions policy: all actions
 - repository SHA-pinning enforcement: disabled
+
+Baseline workflow checks to observe before adding ruleset requirements:
+
+- `Test / Python baseline`
+- `Bridge Gates / Security baseline`
+- `Bridge Gates / Pre-commit baseline`
 
 Record evidence for each setting before Phase 0.5B is marked complete.
 
