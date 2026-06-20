@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are verified. Runebridge will remain public, and active ruleset `Protect main` is verified. Least-privilege GitHub Actions and conductor App permission contracts are complete. Conversation resolution, authenticated secret-scanning and push-protection verification, and eventual App installation remain pending. Required CI checks are explicitly deferred until Phase 2 workflows exist and succeed.
+Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are verified. Runebridge will remain public, and active ruleset `Protect main` is verified. Least-privilege GitHub Actions and conductor App permission contracts are complete. Authenticated audit confirmed that secret scanning, push protection, and resolved-conversation enforcement are disabled. Required CI checks and repository-level Actions restrictions are explicitly deferred until Phase 2 workflows exist and succeed.
 
 ## Last Agent
 
@@ -22,6 +22,7 @@ Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are ve
 - Recorded the public-visibility decision and verified the active `main` ruleset read-only.
 - Defined least-privilege GitHub Actions and conductor App permission contracts.
 - Split the remaining Phase 0.5B work into approval and dependency-aware subtasks.
+- Authenticated as `SurasakNie` and audited repository security settings read-only.
 
 ## Files Modified
 
@@ -51,11 +52,13 @@ Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are ve
 - CI workflows are not yet created.
 - JSON schemas are not yet created.
 - Required status checks and conversation resolution are not enabled in the verified ruleset.
-- Secret scanning, push protection, and GitHub App permissions still require verification.
+- Secret scanning and push protection are disabled and require approval before enabling.
+- Actions permits all actions and does not enforce SHA pinning; restriction is deferred until Phase 2 dependencies are known.
+- GitHub App installation state remains unverified because the OAuth token cannot access installation inventory.
 
 ## Next Recommended Step
 
-Authenticate GitHub settings access to verify secret scanning and push protection. Obtain explicit human approval before enabling those controls or changing the `Protect main` conversation-resolution rule.
+Obtain explicit human approval before enabling secret scanning, push protection, or resolved-conversation enforcement. Preserve the rest of `Protect main` unchanged.
 
 ## Warnings
 
