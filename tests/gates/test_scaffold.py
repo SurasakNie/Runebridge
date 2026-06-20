@@ -16,7 +16,7 @@ def test_reserved_scaffold_paths_exist() -> None:
         assert (ROOT / relative_path).is_dir(), relative_path
 
     for relative_path in (
-        "tools/bridge/adapters/.gitkeep",
+        "tools/bridge/adapters/claude_plan.sh",
         "schemas/plan.schema.json",
         "tools/bridge/gates/check_plan.py",
         ".bridge/README.md",

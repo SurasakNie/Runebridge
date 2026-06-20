@@ -36,6 +36,6 @@ jobs:
       - name: Compile Python sources
         run: python -m compileall -q tools tests
 
-      - name: Run smoke tests
-        run: python -m pytest -q -p no:cacheprovider tests/gates
+      - name: Run test suite
+        run: python -m pytest -q -p no:cacheprovider tests
 
