@@ -229,7 +229,41 @@ files_changed:
   - docs/Environment-and-Security-Setup.md
   - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
   - .ai/CHANGELOG_AI.md
-test_result: pass; actionlint, workflow YAML parsing, Python compilation, five smoke tests, and diff hygiene passed
+test_result: pass; actionlint, workflow YAML parsing, Python compilation, five smoke tests, full pre-commit, and all three GitHub checks passed
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.5b-required-checks
+summary: Fixed the Gitleaks workflow history depth and required all three verified baseline checks in Protect main with human approval.
+files_changed:
+  - .github/workflows/bridge-gates.yml
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - docs/Environment-and-Security-Setup.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - docs/Runebridge-Private-Repository-Architecture.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; Python baseline, Security baseline, and Pre-commit baseline passed on draft PR #2
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.5b-final-audit
+summary: Completed the Phase 0.5B audit and moved draft PR #2 to the human-review gate with explicit pre-automation deferrals.
+files_changed:
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - docs/Environment-and-Security-Setup.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; full local audit and all three required GitHub checks passed before final documentation sync
 human_review_needed: true
 ```
 
