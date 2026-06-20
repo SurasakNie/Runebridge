@@ -8,7 +8,7 @@
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **HOLD - Phase 0.5A, the Phase 0.5B repository baseline, host tools, visibility decision, and `main` protection ruleset are verified; remaining GitHub security controls are required before merge or executable pipeline work**
+**Audit result:** **PASS - Phases 0.5A and 0.5B are complete on the draft branch; draft PR #2 is ready for human review**
 
 ---
 
@@ -159,7 +159,7 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Severity:** Blocking
 
-**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. The environment diagnostic, five smoke tests, complete pre-commit suite, and gitleaks scan pass. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, requires pull requests with one approval, and now requires resolved conversations. Secret scanning and push protection are enabled; no repository secrets exist. Read-only baseline CI workflows are added, while required status checks, repository-level Actions restrictions, and GitHub App installation remain pending.
+**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. The environment diagnostic, five smoke tests, complete pre-commit suite, and gitleaks scan pass. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, requires pull requests with one approval and resolved conversations, and requires three passing baseline checks. Secret scanning and push protection are enabled; no repository secrets exist. Repository-level Actions restrictions and GitHub App installation remain pending decisions.
 
 **Required correction:** Implement the Phase 0.5 repository controls and record GitHub-setting verification evidence before enabling any vendor credential or automated PR path.
 
@@ -177,7 +177,7 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Evidence:** `README.md` says the repository contains only planning documents, even though the draft branch contains root instructions, shared context, prompts, and `.bridge/.gitkeep`. Its phase numbering also differs from the canonical roadmap in this report.
 
-**Resolution:** README now reports Phase 0.5A complete, Phase 0.5B pending, and executable components unimplemented. Its planned layout and Phase 0-7 roadmap match the project brief, task state, handoff, and this report.
+**Resolution:** At the time of resolution, README reported Phase 0.5A complete and Phase 0.5B pending. It now reports both phases complete, while its layout and roadmap remain aligned with the project brief, task state, handoff, and this report.
 
 ### H3 - Required policy files were omitted from agent pre-read (Resolved 2026-06-19)
 
@@ -245,7 +245,7 @@ Create and verify:
 - [x] authenticated audit of resolved-conversation enforcement; disabled
 - [x] enable secret scanning and push protection after human approval
 - [x] enable resolved-conversation enforcement in `Protect main` after human approval
-- [ ] run the baseline workflows and require their successful checks
+- [x] run the baseline workflows and require their successful checks
 
 **Exit gate:** A clean environment can install dependencies, run pre-commit, and execute an empty or smoke-test gate suite without credentials.
 
@@ -315,16 +315,16 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 | Phase 0.5B reversible repository baseline | **COMPLETE** |
 | Phase 0.5B host tools | **COMPLETE** |
 | Phase 0.5B visibility and `main` protection | **COMPLETE** |
-| Phase 0.5B remaining GitHub controls | **HOLD pending implementation, approval, and verification** |
-| Merge current draft branch as-is | **HOLD** |
-| Schemas and gates | **HOLD until Phase 0.5B exit gates pass** |
+| Phase 0.5B remaining GitHub controls | **COMPLETE; pre-automation controls explicitly deferred** |
+| Merge current draft branch as-is | **HOLD pending human PR approval** |
+| Schemas and gates | **GO after the scaffold PR is approved** |
 | Adapter and conductor implementation | **HOLD** |
 | Full dry run | **NOT READY** |
 | Live vendor integration | **NOT READY** |
 
 ## Final Decision
 
-**Phase 0.5A, the Phase 0.5B repository baseline, host tools, visibility decision, and `main` protection are complete. HOLD the current scaffold from merge until remaining repository-control verification passes.**
+**Phases 0.5A and 0.5B are complete. Draft PR #2 may proceed to human review; merge remains human-controlled.**
 
-Complete Phase 0.5B by publishing and successfully running the baseline workflows, then obtain human approval before requiring their exact check names in `Protect main`. Repository-level Actions restrictions and GitHub App installation remain separate human-controlled actions.
+Review draft PR #2. After approval and final required checks pass, the human may merge the scaffold and begin the next approved phase. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
 
