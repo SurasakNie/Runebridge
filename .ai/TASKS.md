@@ -4,14 +4,24 @@
 
 | Field | Value |
 |---|---|
-| Task ID | P1-001 |
-| Goal | Implement the approved repository scaffold |
+| Task ID | P2-001 |
+| Goal | Implement five artifact schemas and seven deterministic gates |
 | Owner | Human + Codex |
-| Status | In progress; scaffold implemented pending PR checks and merge |
-| Branch | codex/phase-1-scaffold |
-| Related files | `docs/Phase-1-Repository-Scaffold-Plan.md`, planned repository layout in `README.md` |
-| Risk level | RSK-2 for reversible scaffold files |
+| Status | In progress; implementation and local verification complete, protected PR checks pending |
+| Branch | codex/phase-2-schemas-gates |
+| Related files | `schemas/`, `tools/bridge/gates/`, `tests/gates/`, `docs/Phase-2-Schemas-and-Gates-Plan.md` |
+| Risk level | RSK-1 for shared artifact and gate contracts |
 | Required mode | Manual repository maintenance |
+
+## Phase 2 Work Items
+
+| ID | Task | Status | Dependency / approval |
+|---|---|---|---|
+| P2-001A | Define five draft-07 artifact schemas | Complete | JSON parse and schema tests passed |
+| P2-001B | Implement seven deterministic gate CLIs | Complete | Exit behavior tests passed |
+| P2-001C | Add pass/fail/RSK-0 gate tests | Complete | Fourteen total gate tests passed |
+| P2-001D | Run local and protected CI verification | In progress | Local suite passed; PR checks pending |
+| P2-001E | Review repository Actions restrictions | Pending | Human approval required for settings changes |
 
 ## Phase 1 Work Items
 
@@ -65,4 +75,5 @@
 | P05A-003 | Standardize artifact and EN/TH contracts | 2026-06-19 | YAML/JSON formats and canonical machine-readable values aligned |
 | P05A-004 | Align documentation and pre-read chains | 2026-06-19 | README, project state, agent pre-read, verifier pre-read, and audit status aligned |
 | P05B-001 | Establish environment, security, permissions, and tooling setup | 2026-06-20 | Baseline, host tools, security controls, CI checks, and final audit complete |
+| P1-001 | Implement approved repository scaffold | 2026-06-20 | PR #5 merged with seven tests and protected checks passing |
 
