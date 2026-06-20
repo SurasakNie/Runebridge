@@ -26,6 +26,7 @@ Antigravity remains deferred. No production adapter is implemented until a suppo
 - Repeated identical runs produce identical bytes.
 - Role adapters write only their designated artifacts.
 - Phase 2 gates validate every generated artifact.
+- Every generated artifact's `task_id` must match `TASK.md`.
 
 ## Tests
 
@@ -34,6 +35,7 @@ Antigravity remains deferred. No production adapter is implemented until a suppo
 - Run each adapter twice and compare SHA-256 hashes.
 - Verify live mode exits `2` and produces no role artifact.
 - Verify Qwen-led flow omits `REVIEW_QWEN.json` by not invoking that adapter.
+- Verify safe-default, qwen-led, and dual-builder artifact matrices.
 
 ## Exit Gate
 

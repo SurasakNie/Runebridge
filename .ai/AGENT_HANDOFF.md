@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 2 are complete. Phase 3 deterministic dry-run adapters and byte-stability/schema contract tests are implemented on `codex/phase-3-adapter-plan`; 25 local tests and the full pre-commit suite pass, with protected PR checks pending.
+Phases 0.5A through 2 are complete. Phase 3 deterministic dry-run adapters and byte-stability/schema contract tests are implemented on `codex/phase-3-adapter-plan`; 27 local tests and the full pre-commit suite pass, with protected PR checks pending after review fixes.
 
 ## Last Agent
 
@@ -48,7 +48,7 @@ Phases 0.5A through 2 are complete. Phase 3 deterministic dry-run adapters and b
 
 ## Tests Run
 
-`pytest -q tests` passed all 25 tests. Python compilation, schema validation, ShellCheck, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
+`pytest -q tests` passed all 27 tests. Python compilation, schema validation, ShellCheck, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
 
 Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, structured live calls and explicit failure exits. Qwen Code and Antigravity were inspected without consuming model tokens or exposing credentials.
 

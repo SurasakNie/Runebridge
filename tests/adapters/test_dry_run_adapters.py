@@ -106,3 +106,36 @@ def test_qwen_led_does_not_create_qwen_review(tmp_path: Path) -> None:
         assert run_adapter(adapter, task_dir).returncode == 0
     assert not (task_dir / "REVIEW_QWEN.json").exists()
     assert run_gate("check_artifacts.py", task_dir, "--mode", "qwen-led") == 0
+
+
+def test_dual_builder_artifact_matrix(tmp_path: Path) -> None:
+    task_dir = tmp_path / "T003"
+    task_dir.mkdir()
+    write_task(task_dir / "TASK.md", "dual-builder")
+    for adapter in (
+        "claude_plan.sh",
+        "codex_build.sh",
+        "qwen_build.sh",
+        "qwen_review.sh",
+        "mock_verify.sh",
+        "claude_review.sh",
+    ):
+        assert run_adapter(adapter, task_dir).returncode == 0
+    assert run_gate("check_artifacts.py", task_dir, "--mode", "dual-builder") == 0
+
+
+def test_artifact_gate_rejects_task_id_mismatch(tmp_path: Path) -> None:
+    task_dir = tmp_path / "T003"
+    task_dir.mkdir()
+    write_task(task_dir / "TASK.md", "safe-default")
+    for adapter in (
+        "claude_plan.sh",
+        "codex_build.sh",
+        "qwen_review.sh",
+        "mock_verify.sh",
+        "claude_review.sh",
+    ):
+        assert run_adapter(adapter, task_dir).returncode == 0
+    task = (task_dir / "TASK.md").read_text(encoding="utf-8").replace("task_id: T003", "task_id: OTHER")
+    (task_dir / "TASK.md").write_text(task, encoding="utf-8")
+    assert run_gate("check_artifacts.py", task_dir, "--mode", "safe-default") == 1

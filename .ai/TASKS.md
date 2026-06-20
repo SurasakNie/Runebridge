@@ -19,7 +19,7 @@
 |---|---|---|---|
 | P3-001A | Implement seven deterministic adapter stubs | Complete | Phase 2 schemas and gates |
 | P3-001B | Enforce dry-run-only fail-closed behavior | Complete | Live mode exits 2 before writing |
-| P3-001C | Add schema-valid and byte-stability tests | Complete | Twenty-five total tests pass |
+| P3-001C | Add schema-valid and byte-stability tests | Complete | Twenty-seven total tests pass |
 | P3-001D | Run local and protected verification | In progress | Local suite passed; PR checks pending |
 
 ## Phase 2 Work Items
