@@ -283,3 +283,20 @@ test_result: pass; diff hygiene, Python compilation, and five smoke tests passed
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.5b-solo-review-policy
+summary: Applied the approved solo-project policy by setting required GitHub approvals to zero while preserving manual merge control and all deterministic protections.
+files_changed:
+  - README.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - docs/Environment-and-Security-Setup.md
+  - docs/Runebridge-Private-Repository-Architecture.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; ruleset read-back, current-state Markdown consistency, Python compilation, and five smoke tests passed
+human_review_needed: true
+```
+
