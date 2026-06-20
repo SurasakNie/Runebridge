@@ -350,3 +350,18 @@ test_result: pass; Markdown consistency, Python compilation, five smoke tests, a
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.6-contract-reconciliation
+summary: Reconciled verifier role contracts with the approved Antigravity deferral and preserved the qwen-led omitted-review contract.
+files_changed:
+  - .ai/MODEL_ROLES.md
+  - .ai/MCP_POLICY.md
+  - QWEN.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; contradiction scan, Python compilation, five smoke tests, and full pre-commit suite passed
+human_review_needed: true
+```
+

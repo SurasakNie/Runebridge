@@ -129,7 +129,7 @@ The previous report allowed scaffold implementation only after Phase 0.5. The br
 - The mode note says Qwen self-reviews at Stage 9, while Stage 9 is defined as Claude final review.
 - `QWEN.md` and `prompts/qwen-review.md` still describe Qwen self-review behavior.
 
-**Resolution:** Qwen plans through the planned `qwen_plan.sh` adapter and builds through `qwen_build.sh`. The Qwen first-review stage and its gate are both skipped, so `REVIEW_QWEN.json` is not produced or required. Antigravity verifies the build, Claude performs the independent final review, and the final review gate validates Claude only. `.ai/MODEL_ROLES.md`, `.ai/PROJECT_BRIEF.md`, `QWEN.md`, `CLAUDE.md`, and the affected prompts now state the same flow.
+**Resolution:** Qwen plans through the planned `qwen_plan.sh` adapter and builds through `qwen_build.sh`. The Qwen first-review stage and its gate are both skipped, so `REVIEW_QWEN.json` is not produced or required. A deterministic mock verifier verifies the build until live verifier integration is approved, Claude performs the independent final review, and the final review gate validates Claude only. `.ai/MODEL_ROLES.md`, `.ai/PROJECT_BRIEF.md`, `QWEN.md`, `CLAUDE.md`, and the affected prompts state the same flow.
 
 Implementation of the newly specified adapter and mode-aware gates remains scheduled for later phases; the Phase 0.5A contract contradiction itself is closed.
 

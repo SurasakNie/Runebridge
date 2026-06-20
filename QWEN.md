@@ -42,7 +42,7 @@ Qwen Code can serve as:
 6. Do not modify source files or shared `.ai/` state.
 7. Emit strict JSON only, with canonical schema keys and enum values and no Markdown fence or surrounding prose.
 
-**qwen-led mode:** Do not run the Qwen first-review stage after a Qwen build. `REVIEW_QWEN.json` is omitted in this mode; Antigravity verifies the build and Claude performs the independent final review.
+**qwen-led mode:** Do not run the Qwen first-review stage after a Qwen build. `REVIEW_QWEN.json` is omitted in this mode; the deterministic mock verifier verifies the build until live verifier integration is approved, and Claude performs the independent final review.
 
 ## Hard restrictions
 

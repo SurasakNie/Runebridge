@@ -7,7 +7,7 @@
 | Planner | Claude | Qwen | Claude |
 | Builder | Codex | Qwen | Codex (A) + Qwen (B) |
 | First reviewer | Qwen | None (stage skipped) | Qwen |
-| Verifier | Antigravity | Antigravity | Antigravity |
+| Verifier | Deterministic mock verifier | Deterministic mock verifier | Deterministic mock verifier |
 | Final reviewer | Claude | Claude | Claude |
 | Approver | Human | Human | Human |
 
@@ -20,7 +20,7 @@ The `qwen-led` mode uses this exact sequence:
 3. `qwen_build.sh` writes `EDIT_QWEN.md` and `CHANGES.diff`.
 4. `check_scope.py` validates the changed-file scope.
 5. First review and its gate are skipped. `REVIEW_QWEN.json` is not produced or required.
-6. `antigravity_verify.sh` writes `VERIFY.json`; `check_verify.py` validates it.
+6. The deterministic mock verifier writes `VERIFY.json`; `check_verify.py` validates it.
 7. `claude_review.sh` writes `REVIEW_CLAUDE.json` without requiring `REVIEW_QWEN.json`.
 8. `check_review.py --reviewer claude` and the secret gate run before final reporting.
 
@@ -46,10 +46,11 @@ The conductor performs shared-state updates only after all deterministic and rev
 | Claude Code | Designated plan/review artifact only | No (conductor only) | No | No |
 | Codex CLI | Approved source paths and build artifacts | No (conductor only) | Never | Yes (workspace) |
 | Qwen Code | Stage-specific source/artifact paths | No (conductor only) | Never | Restricted |
-| Antigravity | `VERIFY.json` only | No (conductor only) | No | Read-only |
+| Antigravity | None while deferred | No | No | No production adapter until a supported headless interface is validated |
 
 ## Notes
 
 - **qwen-led mode:** Qwen does not review its own build. The Qwen first-review stage and artifact are omitted; Claude provides the independent final review.
 - **dual-builder mode:** Two independent builds (Codex on branch-A, Qwen on branch-B) are compared; the winner is selected before verification and review.
 - All modes share the same safety gates, RSK enforcement, and human approval requirements.
+- **Antigravity deferral:** Use a deterministic mock verifier until a supported headless interface passes Phase 6 live validation.
