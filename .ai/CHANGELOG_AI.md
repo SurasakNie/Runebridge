@@ -300,3 +300,20 @@ test_result: pass; ruleset read-back, current-state Markdown consistency, Python
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.6-initial-cli-validation
+summary: Started Phase 0.6, installed Codex and Qwen CLIs, and validated Claude and Codex live success and failure paths.
+files_changed:
+  - README.md
+  - docs/Vendor-CLI-Validation.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; documentation consistency, Python compilation, smoke tests, and pre-commit suite passed
+human_review_needed: true
+```
+
