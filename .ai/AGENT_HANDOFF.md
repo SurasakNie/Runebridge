@@ -29,6 +29,7 @@ Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are ve
 - `tools/check_environment.py`
 - `tests/gates/test_environment.py`
 - `docs/Environment-and-Security-Setup.md`
+- `docs/Runebridge-Private-Repository-Architecture.md`
 - `README.md`
 - `.ai/PROJECT_BRIEF.md`
 - `.ai/TASKS.md`
