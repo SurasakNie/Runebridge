@@ -7,7 +7,7 @@
 | Task ID | P05B-001 |
 | Goal | Establish environment, security, permissions, and tooling setup |
 | Owner | Human + Codex |
-| Status | In progress; baseline and host tools verified, public visibility decided, active `main` ruleset verified; remaining GitHub controls pending |
+| Status | Complete; draft PR #2 awaiting human review |
 | Branch | claude/latest-drafts-ptdnpq |
 | Related files | `.env.example`, `tools/requirements.txt`, `.pre-commit-config.yaml`, `tests/gates/`, `.ai/SECURITY_RULES.md`, `.ai/MCP_POLICY.md`, setup documentation |
 | Risk level | RSK-1 for files; RSK-0 for visibility, protection, or permission changes |
@@ -23,8 +23,8 @@
 | P05B-001D | Minimum GitHub App permission contract | Complete | Reversible documentation |
 | P05B-001E | Verify secret scanning and push protection | Complete; both enabled | Human approval recorded 2026-06-20 |
 | P05B-001F | Require resolved review conversations | Complete; enabled | Human approval recorded 2026-06-20 |
-| P05B-001G | Define required CI checks and Actions restrictions | In progress; baseline workflows added | Checks must run successfully before ruleset requirement |
-| P05B-001H | Final Phase 0.5B audit | Pending | P05B-001C through P05B-001F complete; P05B-001G explicitly deferred |
+| P05B-001G | Define and require CI status checks | Complete; three passing checks required | Human approval recorded 2026-06-20 |
+| P05B-001H | Final Phase 0.5B audit | Complete | Actions restrictions deferred to Phase 2; conductor App required before automation |
 
 ## Backlog
 
@@ -42,4 +42,5 @@
 | P05A-002 | Define pipeline write ownership | 2026-06-19 | Role artifacts separated from conductor-owned shared state and Git operations |
 | P05A-003 | Standardize artifact and EN/TH contracts | 2026-06-19 | YAML/JSON formats and canonical machine-readable values aligned |
 | P05A-004 | Align documentation and pre-read chains | 2026-06-19 | README, project state, agent pre-read, verifier pre-read, and audit status aligned |
+| P05B-001 | Establish environment, security, permissions, and tooling setup | 2026-06-20 | Baseline, host tools, security controls, CI checks, and final audit complete |
 
