@@ -1,33 +1,43 @@
-# Runebridge Private Repository Architecture
+# Runebridge Public Framework and Private Project Repository Architecture
 
 ## Purpose
 
-This document describes a recommended deployment architecture for Runebridge (AI Bridge) using GitHub private repositories.
+This document describes the approved deployment architecture: the Runebridge framework repository remains public so the required GitHub ruleset capability is available for this setup, while downstream engineering project repositories remain private.
 
-## High-Level Architecture
+## Repository Model
 
 ```text
 GitHub
-│
-├── Runebridge (Private)
-├── Project-AirPump (Private)
-├── Project-PhoneHolder (Private)
-├── Project-MedicalDevice (Private)
-└── Additional Projects
+|-- Runebridge (Public framework)
+|-- Project-AirPump (Private)
+|-- Project-PhoneHolder (Private)
+|-- Project-MedicalDevice (Private)
+`-- Additional Projects (Private by default)
 ```
 
-Runebridge acts as the AI orchestration framework.
-Project repositories contain the actual engineering work.
+Runebridge contains the vendor-neutral orchestration framework, public documentation, prompts, schemas, gates, and non-secret tooling. Project repositories contain actual engineering work, customer data, private artifacts, and approved credentials.
+
+The public Runebridge repository must never contain live credentials, private project artifacts, customer data, or proprietary downstream source files.
+
+## Repository Controls
+
+Runebridge uses active branch ruleset `Protect main`, targeting the default branch. The verified ruleset:
+
+- blocks branch deletion
+- blocks non-fast-forward updates and force pushes
+- requires changes through a pull request
+- requires one approving review
+
+Required status checks, resolved-conversation enforcement, secret scanning, push protection, and GitHub App permissions remain separate Phase 0.5B controls.
 
 ## Local Development Layout
 
 ```text
 D:\Projects\
-│
-├── Runebridge
-├── AirPump
-├── PhoneHolder
-└── MedicalDevice
+|-- Runebridge
+|-- AirPump
+|-- PhoneHolder
+`-- MedicalDevice
 ```
 
 ## Dashboard Strategy
@@ -38,22 +48,24 @@ Use a local HTML dashboard.
 
 ```text
 Runebridge
-└── dashboard/
-    └── index.html
+`-- dashboard/
+    `-- index.html
 ```
 
-Access locally through localhost.
+Access it locally through `localhost`.
 
 ## GitHub Plan Recommendation
 
-Start with GitHub Free.
+Use the GitHub plan that provides the required ruleset and security controls for each repository type.
 
-Features:
-- Unlimited private repositories
-- Unlimited collaborators
-- Pull requests
-- Issues
-- Basic GitHub Actions
+Required capabilities:
+
+- public Runebridge framework repository
+- private downstream project repositories
+- pull requests and reviews
+- repository rulesets
+- GitHub Actions
+- secret scanning and push protection where available
 
 ## Hardware Requirements
 
@@ -65,7 +77,7 @@ RAM: 32 GB
 SSD: 1 TB NVMe
 ```
 
-## Appendix A – AI Vendor Independence Strategy
+## Appendix A - AI Vendor Independence Strategy
 
 ### Goal
 
@@ -74,21 +86,21 @@ Runebridge must remain operational even if:
 - Claude Code is unavailable
 - Codex is unavailable
 - Qwen Code is unavailable
-- Vendor pricing changes
-- A subscription expires
+- vendor pricing changes
+- a subscription expires
 
 Infrastructure remains permanent while AI workers are replaceable.
 
 ### AI Replacement Matrix
 
 | Role | Primary | Alternative |
-|--------|----------|----------|
+|---|---|---|
 | Planner | Claude Code | Qwen Code |
 | Builder | Codex | Qwen Code |
 | Reviewer | Claude Code | Qwen Code |
 | Final Approval | Human | Human |
 
-## Appendix B – Token Limit Strategy
+## Appendix B - Token Limit Strategy
 
 ### Problem
 
@@ -110,10 +122,10 @@ OPEN_TASKS.md
 
 When a new AI session starts:
 
-1. Read README.md
-2. Read PROJECT_CONTEXT.md
-3. Read OPEN_TASKS.md
-4. Read TASK.md
+1. Read `README.md`.
+2. Read `PROJECT_CONTEXT.md`.
+3. Read `OPEN_TASKS.md`.
+4. Read `TASK.md`.
 
 The project can continue without prior chat history.
 
@@ -121,5 +133,5 @@ The project can continue without prior chat history.
 
 Important engineering decisions must be written into repository documentation.
 
-Repository knowledge is permanent.
-Chat memory is temporary.
+Repository knowledge is permanent. Chat memory is temporary.
+
