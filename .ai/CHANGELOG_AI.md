@@ -215,3 +215,21 @@ test_result: pass; authenticated settings queries, Python compilation, and five 
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.5b-security-controls-and-ci
+summary: Enabled approved repository security controls and added minimal read-only baseline workflows for required-check bootstrap.
+files_changed:
+  - .github/workflows/test.yml
+  - .github/workflows/bridge-gates.yml
+  - .ai/TASKS.md
+  - .ai/SECURITY_RULES.md
+  - .ai/AGENT_HANDOFF.md
+  - docs/Environment-and-Security-Setup.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; actionlint, workflow YAML parsing, Python compilation, five smoke tests, and diff hygiene passed
+human_review_needed: true
+```
+
