@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are verified. Runebridge remains public. Secret scanning, push protection, and resolved-conversation enforcement are enabled with human approval. Minimal read-only `Test` and `Bridge Gates` workflows are added; their checks must run successfully before being required by `Protect main`.
+Phases 0.5A and 0.5B are complete on the draft branch. Runebridge remains public. Secret scanning, push protection, resolved-conversation enforcement, and three required CI checks are enabled with human approval. Draft PR #2 passes `Python baseline`, `Security baseline`, and `Pre-commit baseline` and awaits human review.
 
 ## Last Agent
 
@@ -25,6 +25,8 @@ Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are ve
 - Authenticated as `SurasakNie` and audited repository security settings read-only.
 - Enabled secret scanning, push protection, and resolved-conversation enforcement with human approval.
 - Added SHA-pinned, read-only Phase 0.5B baseline workflows.
+- Fixed the Gitleaks job by fetching full Git history; all three PR checks now pass.
+- Added the three verified GitHub Actions contexts to `Protect main` with no bypass actors.
 
 ## Files Modified
 
@@ -53,13 +55,12 @@ Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are ve
 - Conductor is not yet created.
 - CI workflows are not yet created.
 - JSON schemas are not yet created.
-- Required status checks are not yet enabled in the verified ruleset.
-- Actions permits all actions and does not enforce SHA pinning; restriction is deferred until Phase 2 dependencies are known.
-- GitHub App installation state remains unverified because the OAuth token cannot access installation inventory.
+- Actions allowlisting and repository SHA-pinning enforcement are deferred until Phase 2 dependencies are finalized; current workflows are SHA-pinned and read-only.
+- The conductor GitHub App must be installed and verified before automated PR operations; its minimum permission contract is defined.
 
 ## Next Recommended Step
 
-Publish the baseline workflows, run them successfully, then obtain human approval before adding their exact check names to `Protect main`.
+Perform human review of draft PR #2. Do not merge until the reviewer approves and every required check passes on the final head.
 
 ## Warnings
 
