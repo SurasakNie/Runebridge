@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are verified. Runebridge will remain public so the required ruleset capability is available. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, and requires pull requests with one approval. Required checks, conversation resolution, secret scanning, push protection, and GitHub App permissions remain pending. Schemas, pipeline gates, adapters, conductor, and CI workflows are not yet created.
+Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are verified. Runebridge will remain public, and active ruleset `Protect main` is verified. Least-privilege GitHub Actions and conductor App permission contracts are complete. Conversation resolution, authenticated secret-scanning and push-protection verification, and eventual App installation remain pending. Required CI checks are explicitly deferred until Phase 2 workflows exist and succeed.
 
 ## Last Agent
 
@@ -20,6 +20,8 @@ Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are ve
 - Added the Phase 0.5B smoke-test structure and five passing tests.
 - Installed and verified Bash, `jq`, `shellcheck`, and gitleaks.
 - Recorded the public-visibility decision and verified the active `main` ruleset read-only.
+- Defined least-privilege GitHub Actions and conductor App permission contracts.
+- Split the remaining Phase 0.5B work into approval and dependency-aware subtasks.
 
 ## Files Modified
 
@@ -53,7 +55,7 @@ Phase 0.5A is complete. The Phase 0.5B repository baseline and host tools are ve
 
 ## Next Recommended Step
 
-Define the required CI checks, then obtain human approval before adding them or changing conversation-resolution, secret-scanning, push-protection, or app-permission settings.
+Authenticate GitHub settings access to verify secret scanning and push protection. Obtain explicit human approval before enabling those controls or changing the `Protect main` conversation-resolution rule.
 
 ## Warnings
 
