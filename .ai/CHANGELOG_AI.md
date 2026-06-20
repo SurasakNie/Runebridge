@@ -408,3 +408,21 @@ test_result: pass; JSON parsing, Python compilation, fourteen tests, full isolat
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: phase-2-review-fixes
+summary: Enforced task/edit schemas, forbidden Qwen review artifacts in qwen-led mode, required reviewer identity, and normalized gate imports.
+files_changed:
+  - tools/bridge/gates/check_artifacts.py
+  - tools/bridge/gates/check_plan.py
+  - tools/bridge/gates/check_review.py
+  - tests/gates/test_pipeline_gates.py
+  - docs/Phase-2-Schemas-and-Gates-Plan.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; Python compilation, fifteen tests, full pre-commit suite, and environment diagnostic passed
+human_review_needed: true
+```
+

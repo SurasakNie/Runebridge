@@ -16,7 +16,7 @@ Define five draft-07 artifact schemas and seven deterministic Python gates. Phas
 
 | Gate | Responsibility |
 |---|---|
-| `check_artifacts.py` | Require mode-specific artifact sets |
+| `check_artifacts.py` | Require mode-specific artifact sets, reject forbidden artifacts, and validate task/edit front matter |
 | `check_plan.py` | Parse and schema-validate `PLAN.md` |
 | `check_rsk0.py` | Exit 2 for RSK-0 or human-approval plans |
 | `check_scope.py` | Reject changed paths outside `files_to_touch` |

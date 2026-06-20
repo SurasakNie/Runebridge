@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 1 are complete. Phase 2 implements five artifact schemas, seven deterministic gate CLIs, and focused pass/fail/RSK-0 tests on `codex/phase-2-schemas-gates`; fourteen local tests and the full pre-commit suite pass, with protected PR checks pending.
+Phases 0.5A through 1 are complete. Phase 2 implements five artifact schemas, seven deterministic gate CLIs, and focused pass/fail/RSK-0 tests on `codex/phase-2-schemas-gates`; fifteen local tests and the full pre-commit suite pass, with protected PR checks pending.
 
 ## Last Agent
 
@@ -48,7 +48,7 @@ Phases 0.5A through 1 are complete. Phase 2 implements five artifact schemas, se
 
 ## Tests Run
 
-`pytest -q tests/gates` passed all fourteen tests. Python compilation, JSON schema parsing, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
+`pytest -q tests/gates` passed all fifteen tests. Python compilation, JSON schema parsing, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
 
 Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, structured live calls and explicit failure exits. Qwen Code and Antigravity were inspected without consuming model tokens or exposing credentials.
 

@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 from common import GateError, fail, read_front_matter, validate
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("plan", type=str)
+    parser.add_argument("plan", type=Path)
     args = parser.parse_args()
     try:
-        validate(read_front_matter(__import__("pathlib").Path(args.plan)), "plan.schema.json")
+        validate(read_front_matter(args.plan), "plan.schema.json")
     except GateError as exc:
         return fail(exc)
     return 0

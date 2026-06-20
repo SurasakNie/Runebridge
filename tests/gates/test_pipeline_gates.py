@@ -34,6 +34,25 @@ def write_plan(path: Path, *, risk: str = "RSK-1", approval: bool = False) -> No
     )
 
 
+def write_task(path: Path) -> None:
+    path.write_text(
+        "---\n"
+        "task_id: T001\nrequester: human\ncreated_at: 2026-06-21\n"
+        "risk_level: RSK-1\nmode: qwen-led\nbranch: bridge/T001-test\n"
+        "---\n# Task\n",
+        encoding="utf-8",
+    )
+
+
+def write_edit(path: Path, tool: str) -> None:
+    path.write_text(
+        "---\n"
+        f"task_id: T001\ntool: {tool}\nfiles_changed: []\ntests: []\ndry_run: true\n"
+        "---\n# Edit\n",
+        encoding="utf-8",
+    )
+
+
 def valid_verify() -> dict[str, object]:
     return {
         "task_id": "T001",
@@ -101,19 +120,33 @@ def test_review_gate_rejects_blocker_and_rsk0(tmp_path: Path) -> None:
     assert run_gate("check_review.py", artifact, "--reviewer", "claude").returncode == 0
     value["blockers"] = ["unsafe"]
     artifact.write_text(json.dumps(value), encoding="utf-8")
-    assert run_gate("check_review.py", artifact).returncode == 1
+    assert run_gate("check_review.py", artifact, "--reviewer", "claude").returncode == 1
     value["blockers"] = []
     value["risk_assessment"] = "RSK-0"
     artifact.write_text(json.dumps(value), encoding="utf-8")
-    assert run_gate("check_review.py", artifact).returncode == 2
+    assert run_gate("check_review.py", artifact, "--reviewer", "claude").returncode == 2
 
 
 def test_artifact_gate_is_mode_aware(tmp_path: Path) -> None:
-    common = {"TASK.md", "PLAN.md", "CHANGES.diff", "VERIFY.json", "REVIEW_CLAUDE.json", "EDIT_QWEN.md"}
+    common = {"PLAN.md", "CHANGES.diff", "VERIFY.json", "REVIEW_CLAUDE.json"}
     for name in common:
         (tmp_path / name).touch()
+    write_task(tmp_path / "TASK.md")
+    write_edit(tmp_path / "EDIT_QWEN.md", "qwen")
     assert run_gate("check_artifacts.py", tmp_path, "--mode", "qwen-led").returncode == 0
     assert run_gate("check_artifacts.py", tmp_path, "--mode", "safe-default").returncode == 1
+    (tmp_path / "REVIEW_QWEN.json").touch()
+    assert run_gate("check_artifacts.py", tmp_path, "--mode", "qwen-led").returncode == 1
+
+
+def test_artifact_gate_validates_task_and_edit_shapes(tmp_path: Path) -> None:
+    for name in {"PLAN.md", "CHANGES.diff", "VERIFY.json", "REVIEW_CLAUDE.json"}:
+        (tmp_path / name).touch()
+    write_task(tmp_path / "TASK.md")
+    write_edit(tmp_path / "EDIT_QWEN.md", "qwen")
+    assert run_gate("check_artifacts.py", tmp_path, "--mode", "qwen-led").returncode == 0
+    (tmp_path / "EDIT_QWEN.md").write_text("invalid", encoding="utf-8")
+    assert run_gate("check_artifacts.py", tmp_path, "--mode", "qwen-led").returncode == 1
 
 
 def test_secret_gate_rejects_signature(tmp_path: Path) -> None:

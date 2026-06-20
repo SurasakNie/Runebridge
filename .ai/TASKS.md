@@ -19,7 +19,7 @@
 |---|---|---|---|
 | P2-001A | Define five draft-07 artifact schemas | Complete | JSON parse and schema tests passed |
 | P2-001B | Implement seven deterministic gate CLIs | Complete | Exit behavior tests passed |
-| P2-001C | Add pass/fail/RSK-0 gate tests | Complete | Fourteen total gate tests passed |
+| P2-001C | Add pass/fail/RSK-0 gate tests | Complete | Fifteen total gate tests passed |
 | P2-001D | Run local and protected CI verification | In progress | Local suite passed; PR checks pending |
 | P2-001E | Review repository Actions restrictions | Pending | Human approval required for settings changes |
 
