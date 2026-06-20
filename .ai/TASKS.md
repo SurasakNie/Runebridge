@@ -21,9 +21,9 @@
 | P05B-001B | Public visibility and active `main` ruleset | Complete | Human decision recorded |
 | P05B-001C | Least-privilege GitHub Actions permission contract | Complete | Reversible documentation |
 | P05B-001D | Minimum GitHub App permission contract | Complete | Reversible documentation |
-| P05B-001E | Verify secret scanning and push protection | Blocked | Authenticated GitHub settings access required |
-| P05B-001F | Require resolved review conversations | Pending | RSK-0 human approval before ruleset change |
-| P05B-001G | Define and require CI status checks | Deferred to Phase 2 | Named workflows and checks must exist first |
+| P05B-001E | Verify secret scanning and push protection | Audited; both disabled | RSK-0 human approval required before enabling |
+| P05B-001F | Require resolved review conversations | Audited; disabled | RSK-0 human approval required before ruleset change |
+| P05B-001G | Define required CI checks and Actions restrictions | Deferred to Phase 2 | Named workflows and action dependencies must exist first |
 | P05B-001H | Final Phase 0.5B audit | Pending | P05B-001C through P05B-001F complete; P05B-001G explicitly deferred |
 
 ## Backlog
