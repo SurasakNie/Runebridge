@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A and 0.5B are complete. Runebridge remains public. Secret scanning, push protection, resolved-conversation enforcement, and three required CI checks are enabled with human approval. PR #2 is ready for review and passes `Python baseline`, `Security baseline`, and `Pre-commit baseline`.
+Phases 0.5A and 0.5B are complete. Runebridge remains public. Secret scanning, push protection, resolved-conversation enforcement, and three required CI checks are enabled with human approval. The solo-project policy requires zero GitHub approvals while preserving manual owner merge control. PR #2 is mergeable and all checks pass.
 
 ## Last Agent
 
@@ -60,7 +60,7 @@ Phases 0.5A and 0.5B are complete. Runebridge remains public. Secret scanning, p
 
 ## Next Recommended Step
 
-Add an eligible independent reviewer for PR #2. Do not merge until that reviewer approves and every required check passes on the final head.
+The owner performs the final review of PR #2 and explicitly decides whether to squash-merge. Do not automate or bypass the merge action.
 
 ## Warnings
 
