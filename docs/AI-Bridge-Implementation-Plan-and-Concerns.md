@@ -8,7 +8,7 @@
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **PASS - Phases 0.5A and 0.5B were merged through PR #2; Phase 0.6 vendor CLI validation is in progress**
+**Audit result:** **PASS - Phases 0.5A, 0.5B, and 0.6 are complete; Phase 1 repository scaffold is next**
 
 ---
 
@@ -317,14 +317,15 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 | Phase 0.5B visibility and `main` protection | **COMPLETE** |
 | Phase 0.5B remaining GitHub controls | **COMPLETE; pre-automation controls explicitly deferred** |
 | Merge Phase 0.5 scaffold | **COMPLETE through PR #2** |
-| Schemas and gates | **GO after Phase 0.6 validation** |
+| Phase 0.6 vendor CLI validation | **COMPLETE; Qwen and Antigravity live paths explicitly deferred** |
+| Schemas and gates | **GO after Phase 1 scaffold** |
 | Adapter and conductor implementation | **HOLD** |
 | Full dry run | **NOT READY** |
 | Live vendor integration | **NOT READY** |
 
 ## Final Decision
 
-**Phases 0.5A and 0.5B are complete and merged. Phase 0.6 vendor CLI validation is active; future merges remain human-controlled.**
+**Phases 0.5A, 0.5B, and 0.6 are complete. Phase 1 repository scaffold is next; future merges remain human-controlled.**
 
-Resolve the remaining Qwen provider and Antigravity interface decisions before approving the Phase 0.6 matrix. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
+Use deterministic mock adapters for Qwen and Antigravity until their deferred live integration requirements are met. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
 

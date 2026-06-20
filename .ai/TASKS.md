@@ -4,13 +4,13 @@
 
 | Field | Value |
 |---|---|
-| Task ID | P06-001 |
-| Goal | Validate vendor CLI identity, installation, authentication, structured output, and exit behavior |
+| Task ID | P1-001 |
+| Goal | Implement the approved repository scaffold |
 | Owner | Human + Codex |
-| Status | In progress; Claude and Codex verified. Qwen/Antigravity decisions resolved: Qwen on Alibaba Cloud Coding Plan (auth/live pending), Antigravity deferred pending a headless interface |
-| Branch | codex/phase-0.6-vendor-cli |
-| Related files | `docs/Vendor-CLI-Validation.md`, `.ai/TASKS.md`, `.ai/AGENT_HANDOFF.md`, `.ai/CHANGELOG_AI.md` |
-| Risk level | RSK-1 for CLI installation and bounded live validation; RSK-0 for credential or permission changes |
+| Status | Ready; Phase 0.6 complete |
+| Branch | To be created from `main` |
+| Related files | Planned repository layout in `README.md` and the implementation plan |
+| Risk level | RSK-2 for reversible scaffold files |
 | Required mode | Manual repository maintenance |
 
 ## Phase 0.6 Work Items
@@ -19,9 +19,9 @@
 |---|---|---|---|
 | P06-001A | Validate Claude Code CLI | Complete | Authenticated first-party session |
 | P06-001B | Validate Codex CLI | Complete | Authenticated ChatGPT session |
-| P06-001C | Validate Qwen Code CLI | In progress | Provider chosen: Alibaba Cloud Coding Plan; subscribe and provision credentials via secret store |
+| P06-001C | Validate Qwen Code CLI | Deferred to Phase 6 | Mock adapter approved; live provider not selected |
 | P06-001D | Validate Antigravity automation interface | Deferred | IDE-only surface rejected; awaiting supported headless structured interface |
-| P06-001E | Approve sanitized Phase 0.6 matrix | Pending | P06-001C and P06-001D resolved |
+| P06-001E | Approve sanitized Phase 0.6 matrix | Complete | Owner approved both deferrals on 2026-06-20 |
 
 ## Phase 0.5B Work Items
 

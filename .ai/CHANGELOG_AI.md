@@ -317,3 +317,20 @@ test_result: pass; documentation consistency, Python compilation, smoke tests, a
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.6-complete
+summary: Closed Phase 0.6 after owner approval to use a mock-only Qwen path and defer Antigravity until a supported headless interface exists.
+files_changed:
+  - README.md
+  - docs/Vendor-CLI-Validation.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; stale-state scan, Python compilation, five smoke tests, full pre-commit suite, and environment diagnostic passed
+human_review_needed: true
+```
+
