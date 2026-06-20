@@ -13,7 +13,7 @@ def normalize(path: str) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("plan", type=Path)
-    parser.add_argument("changed", nargs="+")
+    parser.add_argument("changed", nargs="*")
     args = parser.parse_args()
     try:
         plan = read_front_matter(args.plan)
