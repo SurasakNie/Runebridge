@@ -101,7 +101,7 @@ These results describe the audit host only. The project still needs a reproducib
 | Pattern A conductor | 1 | 0 | Missing |
 | GitHub Actions workflows | 2 | 0 | Missing |
 
-The current branch is a documentation and environment scaffold, not an executable MVP. Phase 0.5B remains open until host tools and GitHub controls are verified.
+The current branch is a documentation and environment scaffold, not an executable MVP. Phase 0.5B remains open until the remaining GitHub controls are implemented and verified.
 
 ---
 
@@ -187,7 +187,7 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Resolution:** `AGENTS.md` now includes `.ai/MCP_POLICY.md` and `.ai/CHANGELOG_AI.md` in the universal read order. The verifier prompt now requires `AGENTS.md`, project, coding, security, MCP, and model-role context before task artifacts.
 
-### H4 - Repository visibility needs an explicit decision (Resolved 2026-06-19)
+### H4 - Repository visibility decision (Resolved 2026-06-19)
 
 **Status:** Resolved
 
