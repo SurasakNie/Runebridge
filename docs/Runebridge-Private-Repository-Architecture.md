@@ -28,7 +28,7 @@ Runebridge uses active branch ruleset `Protect main`, targeting the default bran
 - requires changes through a pull request
 - requires one approving review
 
-Required status checks, resolved-conversation enforcement, secret scanning, push protection, and GitHub App permissions remain separate Phase 0.5B controls.
+Required status checks, resolved-conversation enforcement, secret scanning, and push protection are enabled. Repository-level Actions restrictions and GitHub App installation remain separate pre-automation controls.
 
 ## Local Development Layout
 
