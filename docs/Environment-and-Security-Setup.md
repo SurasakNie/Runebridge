@@ -65,9 +65,9 @@ The following actions are not performed by repository files and require explicit
 - [x] keep Runebridge public so the required repository ruleset capability is available
 - [x] protect `main` through active ruleset `Protect main`; prohibit deletion and force pushes and require a pull request with one approval
 - [x] require resolved review conversations
-- [ ] run and require the Phase 0.5B baseline workflow checks
+- [x] run and require the Phase 0.5B baseline workflow checks
 - [x] enable secret scanning and push protection
-- [ ] install and permission the Runebridge GitHub App using the minimum contract in `.ai/SECURITY_RULES.md`
+- [ ] install and permission the Runebridge GitHub App before automated PR operations using the minimum contract in `.ai/SECURITY_RULES.md`
 - create repository secrets for approved live integrations
 
 Validation workflows use this default permission block:
@@ -90,13 +90,17 @@ They must remain read-only unless an additional permission is separately justifi
 - allowed Actions policy: all actions
 - repository SHA-pinning enforcement: disabled
 
-Baseline workflow checks to observe before adding ruleset requirements:
+Required baseline workflow checks:
 
 - `Test / Python baseline`
 - `Bridge Gates / Security baseline`
 - `Bridge Gates / Pre-commit baseline`
 
+All three checks passed on draft PR #2 and are required by `Protect main` through GitHub Actions app ID `15368`.
+
 Record evidence for each setting before Phase 0.5B is marked complete.
+
+GitHub App installation is deferred until immediately before automated PR operations. Repository-level Actions allowlisting and SHA-pinning enforcement are deferred until Phase 2 dependencies are finalized; all current workflows are already read-only and SHA-pinned.
 
 ## Phase 0.5B Exit Gate
 
@@ -106,6 +110,6 @@ Record evidence for each setting before Phase 0.5B is marked complete.
 - Python compilation and smoke tests pass
 - pre-commit passes, including shellcheck and secret scanning
 - repository visibility and protection decisions are recorded
-- required GitHub settings and permissions are verified
+- required GitHub settings and permission contracts are verified
 - no vendor credentials are required for dry-run validation
 
