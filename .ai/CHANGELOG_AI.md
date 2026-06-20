@@ -267,3 +267,19 @@ test_result: pass; full local audit and all three required GitHub checks passed 
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.5b-pr-review-gate
+summary: Marked PR #2 ready for review and recorded that an independent eligible reviewer is required.
+files_changed:
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - docs/Environment-and-Security-Setup.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; diff hygiene, Python compilation, and five smoke tests passed
+human_review_needed: true
+```
+
