@@ -9,9 +9,22 @@
 | Owner | Human + Codex |
 | Status | In progress; baseline and host tools verified, public visibility decided, active `main` ruleset verified; remaining GitHub controls pending |
 | Branch | claude/latest-drafts-ptdnpq |
-| Related files | `.env.example`, `tools/requirements.txt`, `.pre-commit-config.yaml`, `tests/gates/`, setup documentation |
+| Related files | `.env.example`, `tools/requirements.txt`, `.pre-commit-config.yaml`, `tests/gates/`, `.ai/SECURITY_RULES.md`, `.ai/MCP_POLICY.md`, setup documentation |
 | Risk level | RSK-1 for files; RSK-0 for visibility, protection, or permission changes |
 | Required mode | Manual repository maintenance |
+
+## Phase 0.5B Work Items
+
+| ID | Task | Status | Dependency / approval |
+|---|---|---|---|
+| P05B-001A | Repository baseline and host tools | Complete | None |
+| P05B-001B | Public visibility and active `main` ruleset | Complete | Human decision recorded |
+| P05B-001C | Least-privilege GitHub Actions permission contract | Complete | Reversible documentation |
+| P05B-001D | Minimum GitHub App permission contract | Complete | Reversible documentation |
+| P05B-001E | Verify secret scanning and push protection | Blocked | Authenticated GitHub settings access required |
+| P05B-001F | Require resolved review conversations | Pending | RSK-0 human approval before ruleset change |
+| P05B-001G | Define and require CI status checks | Deferred to Phase 2 | Named workflows and checks must exist first |
+| P05B-001H | Final Phase 0.5B audit | Pending | P05B-001C through P05B-001F complete; P05B-001G explicitly deferred |
 
 ## Backlog
 
