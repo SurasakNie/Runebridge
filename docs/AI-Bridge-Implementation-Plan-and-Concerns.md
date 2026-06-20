@@ -8,7 +8,7 @@
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **PASS - Phases 0.5A and 0.5B are complete on the draft branch; draft PR #2 is ready for human review**
+**Audit result:** **PASS - Phases 0.5A and 0.5B are complete; PR #2 is ready for an eligible human reviewer**
 
 ---
 
@@ -324,7 +324,7 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 ## Final Decision
 
-**Phases 0.5A and 0.5B are complete. Draft PR #2 may proceed to human review; merge remains human-controlled.**
+**Phases 0.5A and 0.5B are complete. PR #2 is ready for independent human review; merge remains human-controlled.**
 
-Review draft PR #2. After approval and final required checks pass, the human may merge the scaffold and begin the next approved phase. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
+Assign an eligible independent reviewer to PR #2. After approval and final required checks pass, the human may merge the scaffold and begin the next approved phase. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
 
