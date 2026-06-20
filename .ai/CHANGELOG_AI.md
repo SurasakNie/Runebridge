@@ -169,3 +169,17 @@ test_result: pass; environment, pre-commit, gitleaks, public visibility, and act
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.5b-related-markdown-sync
+summary: Synchronized every related Markdown document with the public-framework, private-downstream repository model and verified Phase 0.5B evidence.
+files_changed:
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - docs/Runebridge-Private-Repository-Architecture.md
+test_result: pass; tracked-Markdown consistency, diff hygiene, Python compilation, and five smoke tests passed
+human_review_needed: true
+```
+
