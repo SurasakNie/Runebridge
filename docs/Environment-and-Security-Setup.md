@@ -63,7 +63,7 @@ The environment check fails until all required commands and at least one support
 The following actions are not performed by repository files and require explicit human approval and verification:
 
 - [x] keep Runebridge public so the required repository ruleset capability is available
-- [x] protect `main` through active ruleset `Protect main`; prohibit deletion and force pushes and require a pull request with one approval
+- [x] protect `main` through active ruleset `Protect main`; prohibit deletion and force pushes and require a pull request with zero approvals under the solo-project policy
 - [x] require resolved review conversations
 - [x] run and require the Phase 0.5B baseline workflow checks
 - [x] enable secret scanning and push protection
