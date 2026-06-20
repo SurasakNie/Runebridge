@@ -9,9 +9,16 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def test_reserved_scaffold_paths_exist() -> None:
     for relative_path in (
-        "schemas/.gitkeep",
+        "schemas",
+        "tools/bridge/adapters",
+        "tools/bridge/gates",
+    ):
+        assert (ROOT / relative_path).is_dir(), relative_path
+
+    for relative_path in (
         "tools/bridge/adapters/.gitkeep",
-        "tools/bridge/gates/.gitkeep",
+        "schemas/plan.schema.json",
+        "tools/bridge/gates/check_plan.py",
         ".bridge/README.md",
         "docs/Repository-Directory-Ownership.md",
     ):

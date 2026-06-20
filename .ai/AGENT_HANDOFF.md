@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A, 0.5B, and 0.6 are complete. Phase 1 scaffold paths, runtime-artifact documentation, directory ownership, fail-closed conductor placeholder, and focused tests are implemented on `codex/phase-1-scaffold` pending verification and protected PR checks.
+Phases 0.5A through 1 are complete. Phase 2 implements five artifact schemas, seven deterministic gate CLIs, and focused pass/fail/RSK-0 tests on `codex/phase-2-schemas-gates`; fifteen local tests and the full pre-commit suite pass, with protected PR checks pending.
 
 ## Last Agent
 
@@ -10,8 +10,8 @@ Phases 0.5A, 0.5B, and 0.6 are complete. Phase 1 scaffold paths, runtime-artifac
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-20 |
-| Branch | codex/phase-1-scaffold |
-| Task | Implement Phase 1 repository scaffold |
+| Branch | codex/phase-2-schemas-gates |
+| Task | Implement Phase 2 schemas and deterministic gates |
 
 ## What Was Changed
 
@@ -48,23 +48,20 @@ Phases 0.5A, 0.5B, and 0.6 are complete. Phase 1 scaffold paths, runtime-artifac
 
 ## Tests Run
 
-`pytest -q tests/gates` passed all five tests. Python compilation, pre-commit YAML parsing, the complete pre-commit suite, and the manual environment hook passed. Gitleaks 8.30.1 scanned approximately 27.8 MB and found no leaks.
+`pytest -q tests/gates` passed all fifteen tests. Python compilation, JSON schema parsing, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
 
 Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, structured live calls and explicit failure exits. Qwen Code and Antigravity were inspected without consuming model tokens or exposing credentials.
 
 ## Known Issues
 
-- Pipeline gate scripts are not yet created; only the Phase 0.5B environment diagnostic exists.
 - Adapter shell scripts are not yet created.
 - Conductor is not yet created.
-- Phase 2 schema and gate CI expansion is not yet implemented; the three baseline workflows exist and pass.
-- JSON schemas are not yet created.
 - Actions allowlisting and repository SHA-pinning enforcement are deferred until Phase 2 dependencies are finalized; current workflows are SHA-pinned and read-only.
 - The conductor GitHub App must be installed and verified before automated PR operations; its minimum permission contract is defined.
 
 ## Next Recommended Step
 
-Complete Phase 1 verification and merge its protected pull request before starting Phase 2.
+Complete protected Phase 2 checks and decide whether to enable repository-level Actions allowlisting and SHA-pinning enforcement.
 
 ## Warnings
 
