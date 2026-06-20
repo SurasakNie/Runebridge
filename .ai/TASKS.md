@@ -7,7 +7,7 @@
 | Task ID | P05B-001 |
 | Goal | Establish environment, security, permissions, and tooling setup |
 | Owner | Human + Codex |
-| Status | Complete; draft PR #2 awaiting human review |
+| Status | Complete; PR #2 ready and awaiting an eligible human reviewer |
 | Branch | claude/latest-drafts-ptdnpq |
 | Related files | `.env.example`, `tools/requirements.txt`, `.pre-commit-config.yaml`, `tests/gates/`, `.ai/SECURITY_RULES.md`, `.ai/MCP_POLICY.md`, setup documentation |
 | Risk level | RSK-1 for files; RSK-0 for visibility, protection, or permission changes |
