@@ -58,6 +58,12 @@ permissions:
 
 Required status checks may be added to the `main` ruleset only after their workflow names and job names exist and have completed successfully on the repository.
 
+Phase 0.5B baseline workflow checks:
+
+- `Test / Python baseline`
+- `Bridge Gates / Security baseline`
+- `Bridge Gates / Pre-commit baseline`
+
 ## GitHub App minimum permission contract
 
 The planned conductor GitHub App uses a repository-scoped installation with only:
