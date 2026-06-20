@@ -4,14 +4,23 @@
 
 | Field | Value |
 |---|---|
-| Task ID | P2-001 |
-| Goal | Implement five artifact schemas and seven deterministic gates |
+| Task ID | P3-001 |
+| Goal | Implement deterministic dry-run role adapters |
 | Owner | Human + Codex |
 | Status | In progress; implementation and local verification complete, protected PR checks pending |
-| Branch | codex/phase-2-schemas-gates |
-| Related files | `schemas/`, `tools/bridge/gates/`, `tests/gates/`, `docs/Phase-2-Schemas-and-Gates-Plan.md` |
-| Risk level | RSK-1 for shared artifact and gate contracts |
+| Branch | codex/phase-3-adapter-plan |
+| Related files | `tools/bridge/adapters/`, `tests/adapters/`, `docs/Phase-3-Deterministic-Adapters-Plan.md` |
+| Risk level | RSK-1 for role artifact contracts |
 | Required mode | Manual repository maintenance |
+
+## Phase 3 Work Items
+
+| ID | Task | Status | Dependency / approval |
+|---|---|---|---|
+| P3-001A | Implement seven deterministic adapter stubs | Complete | Phase 2 schemas and gates |
+| P3-001B | Enforce dry-run-only fail-closed behavior | Complete | Live mode exits 2 before writing |
+| P3-001C | Add schema-valid and byte-stability tests | Complete | Twenty-seven total tests pass |
+| P3-001D | Run local and protected verification | In progress | Local suite passed; PR checks pending |
 
 ## Phase 2 Work Items
 
@@ -20,8 +29,8 @@
 | P2-001A | Define five draft-07 artifact schemas | Complete | JSON parse and schema tests passed |
 | P2-001B | Implement seven deterministic gate CLIs | Complete | Exit behavior tests passed |
 | P2-001C | Add pass/fail/RSK-0 gate tests | Complete | Fifteen total gate tests passed |
-| P2-001D | Run local and protected CI verification | In progress | Local suite passed; PR checks pending |
-| P2-001E | Review repository Actions restrictions | Pending | Human approval required for settings changes |
+| P2-001D | Run local and protected CI verification | Complete | PR #6 merged with protected checks passing |
+| P2-001E | Review repository Actions restrictions | Deferred | Explicit human approval required for settings changes |
 
 ## Phase 1 Work Items
 
@@ -33,7 +42,7 @@
 | P1-001D | Add fail-closed `tools/bridge/orchestrate.sh` placeholder | Complete | Exit 2, Bash syntax, and ShellCheck passed |
 | P1-001E | Document `.bridge/` runtime-artifact layout | Complete | Policy consistency passed |
 | P1-001F | Document directory ownership | Complete | Policy consistency passed |
-| P1-001G | Add scaffold verification and run protected checks | In progress | Seven local tests passed; protected checks pending |
+| P1-001G | Add scaffold verification and run protected checks | Complete | PR #5 merged with protected checks passing |
 
 ## Phase 0.6 Work Items
 
@@ -76,4 +85,5 @@
 | P05A-004 | Align documentation and pre-read chains | 2026-06-19 | README, project state, agent pre-read, verifier pre-read, and audit status aligned |
 | P05B-001 | Establish environment, security, permissions, and tooling setup | 2026-06-20 | Baseline, host tools, security controls, CI checks, and final audit complete |
 | P1-001 | Implement approved repository scaffold | 2026-06-20 | PR #5 merged with seven tests and protected checks passing |
+| P2-001 | Implement schemas and deterministic gates | 2026-06-21 | PR #6 merged with fifteen tests and protected checks passing |
 

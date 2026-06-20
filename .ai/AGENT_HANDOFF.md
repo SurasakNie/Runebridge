@@ -2,16 +2,16 @@
 
 ## Current State
 
-Phases 0.5A through 1 are complete. Phase 2 implements five artifact schemas, seven deterministic gate CLIs, and focused pass/fail/RSK-0 tests on `codex/phase-2-schemas-gates`; fifteen local tests and the full pre-commit suite pass, with protected PR checks pending.
+Phases 0.5A through 2 are complete. Phase 3 deterministic dry-run adapters and byte-stability/schema contract tests are implemented on `codex/phase-3-adapter-plan`; 27 local tests and the full pre-commit suite pass, with protected PR checks pending after review fixes.
 
 ## Last Agent
 
 | Field | Value |
 |---|---|
 | Tool | Codex |
-| Date | 2026-06-20 |
-| Branch | codex/phase-2-schemas-gates |
-| Task | Implement Phase 2 schemas and deterministic gates |
+| Date | 2026-06-21 |
+| Branch | codex/phase-3-adapter-plan |
+| Task | Implement Phase 3 deterministic dry-run adapters |
 
 ## What Was Changed
 
@@ -48,7 +48,7 @@ Phases 0.5A through 1 are complete. Phase 2 implements five artifact schemas, se
 
 ## Tests Run
 
-`pytest -q tests/gates` passed all fifteen tests. Python compilation, JSON schema parsing, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
+`pytest -q tests` passed all 27 tests. Python compilation, schema validation, ShellCheck, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
 
 Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, structured live calls and explicit failure exits. Qwen Code and Antigravity were inspected without consuming model tokens or exposing credentials.
 
@@ -61,7 +61,7 @@ Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, struc
 
 ## Next Recommended Step
 
-Complete protected Phase 2 checks and decide whether to enable repository-level Actions allowlisting and SHA-pinning enforcement.
+Complete Phase 3 verification and protected PR checks. The repository-level Actions restriction decision remains deferred pending explicit approval.
 
 ## Warnings
 

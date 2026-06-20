@@ -82,6 +82,15 @@ def valid_review() -> dict[str, object]:
     }
 
 
+def write_qwen_led_artifacts(path: Path) -> None:
+    write_task(path / "TASK.md")
+    write_plan(path / "PLAN.md")
+    write_edit(path / "EDIT_QWEN.md", "qwen")
+    (path / "CHANGES.diff").touch()
+    (path / "VERIFY.json").write_text(json.dumps(valid_verify()), encoding="utf-8")
+    (path / "REVIEW_CLAUDE.json").write_text(json.dumps(valid_review()), encoding="utf-8")
+
+
 def test_plan_gate_accepts_valid_and_rejects_malformed(tmp_path: Path) -> None:
     plan = tmp_path / "PLAN.md"
     write_plan(plan)
@@ -128,11 +137,7 @@ def test_review_gate_rejects_blocker_and_rsk0(tmp_path: Path) -> None:
 
 
 def test_artifact_gate_is_mode_aware(tmp_path: Path) -> None:
-    common = {"PLAN.md", "CHANGES.diff", "VERIFY.json", "REVIEW_CLAUDE.json"}
-    for name in common:
-        (tmp_path / name).touch()
-    write_task(tmp_path / "TASK.md")
-    write_edit(tmp_path / "EDIT_QWEN.md", "qwen")
+    write_qwen_led_artifacts(tmp_path)
     assert run_gate("check_artifacts.py", tmp_path, "--mode", "qwen-led").returncode == 0
     assert run_gate("check_artifacts.py", tmp_path, "--mode", "safe-default").returncode == 1
     (tmp_path / "REVIEW_QWEN.json").touch()
@@ -140,10 +145,7 @@ def test_artifact_gate_is_mode_aware(tmp_path: Path) -> None:
 
 
 def test_artifact_gate_validates_task_and_edit_shapes(tmp_path: Path) -> None:
-    for name in {"PLAN.md", "CHANGES.diff", "VERIFY.json", "REVIEW_CLAUDE.json"}:
-        (tmp_path / name).touch()
-    write_task(tmp_path / "TASK.md")
-    write_edit(tmp_path / "EDIT_QWEN.md", "qwen")
+    write_qwen_led_artifacts(tmp_path)
     assert run_gate("check_artifacts.py", tmp_path, "--mode", "qwen-led").returncode == 0
     (tmp_path / "EDIT_QWEN.md").write_text("invalid", encoding="utf-8")
     assert run_gate("check_artifacts.py", tmp_path, "--mode", "qwen-led").returncode == 1

@@ -426,3 +426,40 @@ test_result: pass; Python compilation, fifteen tests, full pre-commit suite, and
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: phase-3-deterministic-adapters
+summary: Added seven dry-run-only role adapters with schema-valid, byte-stable artifacts and fail-closed live behavior.
+files_changed:
+  - tools/bridge/adapters/
+  - tests/adapters/test_dry_run_adapters.py
+  - tests/gates/test_scaffold.py
+  - docs/Phase-3-Deterministic-Adapters-Plan.md
+  - docs/Repository-Directory-Ownership.md
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; Python compilation, 25 tests, ShellCheck, full pre-commit suite, and environment diagnostic passed
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: phase-3-review-fixes
+summary: Added dual-builder coverage and enforced cross-artifact task identity while confirming edit summaries are schema-validated.
+files_changed:
+  - tools/bridge/gates/check_artifacts.py
+  - tests/gates/test_pipeline_gates.py
+  - tests/adapters/test_dry_run_adapters.py
+  - docs/Phase-3-Deterministic-Adapters-Plan.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; Python compilation, 27 tests, full pre-commit suite, and environment diagnostic passed
+human_review_needed: true
+```
+
