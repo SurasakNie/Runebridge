@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A and 0.5B are complete on the draft branch. Runebridge remains public. Secret scanning, push protection, resolved-conversation enforcement, and three required CI checks are enabled with human approval. Draft PR #2 passes `Python baseline`, `Security baseline`, and `Pre-commit baseline` and awaits human review.
+Phases 0.5A and 0.5B are complete. Runebridge remains public. Secret scanning, push protection, resolved-conversation enforcement, and three required CI checks are enabled with human approval. PR #2 is ready for review and passes `Python baseline`, `Security baseline`, and `Pre-commit baseline`.
 
 ## Last Agent
 
@@ -60,7 +60,7 @@ Phases 0.5A and 0.5B are complete on the draft branch. Runebridge remains public
 
 ## Next Recommended Step
 
-Perform human review of draft PR #2. Do not merge until the reviewer approves and every required check passes on the final head.
+Add an eligible independent reviewer for PR #2. Do not merge until that reviewer approves and every required check passes on the final head.
 
 ## Warnings
 
