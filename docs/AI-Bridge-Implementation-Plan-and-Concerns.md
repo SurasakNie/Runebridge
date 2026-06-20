@@ -239,8 +239,11 @@ Create and verify:
 - [x] `tests/gates/` test structure
 - [x] public repository visibility decision recorded
 - [x] active default-branch ruleset verified
-- explicit least-privilege GitHub workflow permissions
-- documented verification of required checks, secret scanning, and push protection
+- [x] explicit least-privilege GitHub workflow permission contract
+- [x] minimum conductor GitHub App permission contract
+- [ ] authenticated verification of secret scanning and push protection
+- [ ] resolved-conversation enforcement in `Protect main`
+- [ ] required checks after Phase 2 workflows exist and succeed
 
 **Exit gate:** A clean environment can install dependencies, run pre-commit, and execute an empty or smoke-test gate suite without credentials.
 
@@ -321,5 +324,5 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 **Phase 0.5A, the Phase 0.5B repository baseline, host tools, visibility decision, and `main` protection are complete. HOLD the current scaffold from merge until remaining repository-control verification passes.**
 
-Complete Phase 0.5B by defining and verifying required checks, secret scanning, push protection, and least-privilege app permissions. Treat every settings change as a separate human-controlled action. After the Phase 0.5B exit gate passes, open the reviewed scaffold pull request, then continue to schemas and deterministic gates.
+Complete Phase 0.5B by verifying secret scanning and push protection through authenticated settings access, then obtain human approval before enabling missing controls or requiring resolved conversations. Required checks remain deferred until Phase 2 workflows exist and succeed. Treat every settings change as a separate human-controlled action.
 
