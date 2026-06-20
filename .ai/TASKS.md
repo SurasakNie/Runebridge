@@ -4,14 +4,24 @@
 
 | Field | Value |
 |---|---|
-| Task ID | P05B-001 |
-| Goal | Establish environment, security, permissions, and tooling setup |
+| Task ID | P06-001 |
+| Goal | Validate vendor CLI identity, installation, authentication, structured output, and exit behavior |
 | Owner | Human + Codex |
-| Status | Complete; PR #2 ready for owner review and manual merge decision |
-| Branch | claude/latest-drafts-ptdnpq |
-| Related files | `.env.example`, `tools/requirements.txt`, `.pre-commit-config.yaml`, `tests/gates/`, `.ai/SECURITY_RULES.md`, `.ai/MCP_POLICY.md`, setup documentation |
-| Risk level | RSK-1 for files; RSK-0 for visibility, protection, or permission changes |
+| Status | In progress; Claude and Codex verified. Qwen/Antigravity decisions resolved: Qwen on Alibaba Cloud Coding Plan (auth/live pending), Antigravity deferred pending a headless interface |
+| Branch | codex/phase-0.6-vendor-cli |
+| Related files | `docs/Vendor-CLI-Validation.md`, `.ai/TASKS.md`, `.ai/AGENT_HANDOFF.md`, `.ai/CHANGELOG_AI.md` |
+| Risk level | RSK-1 for CLI installation and bounded live validation; RSK-0 for credential or permission changes |
 | Required mode | Manual repository maintenance |
+
+## Phase 0.6 Work Items
+
+| ID | Task | Status | Dependency / approval |
+|---|---|---|---|
+| P06-001A | Validate Claude Code CLI | Complete | Authenticated first-party session |
+| P06-001B | Validate Codex CLI | Complete | Authenticated ChatGPT session |
+| P06-001C | Validate Qwen Code CLI | In progress | Provider chosen: Alibaba Cloud Coding Plan; subscribe and provision credentials via secret store |
+| P06-001D | Validate Antigravity automation interface | Deferred | IDE-only surface rejected; awaiting supported headless structured interface |
+| P06-001E | Approve sanitized Phase 0.6 matrix | Pending | P06-001C and P06-001D resolved |
 
 ## Phase 0.5B Work Items
 
