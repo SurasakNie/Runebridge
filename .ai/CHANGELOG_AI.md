@@ -183,3 +183,20 @@ test_result: pass; tracked-Markdown consistency, diff hygiene, Python compilatio
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-20
+agent: Codex
+task_id: phase-0.5b-permission-contracts
+summary: Started the remaining Phase 0.5B tasks by defining least-privilege Actions and GitHub App permission contracts and an approval-aware subtask ledger.
+files_changed:
+  - .ai/SECURITY_RULES.md
+  - .ai/MCP_POLICY.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - docs/Environment-and-Security-Setup.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; diff hygiene, full pre-commit suite, manual environment hook, Python compilation, and five smoke tests passed
+human_review_needed: true
+```
+
