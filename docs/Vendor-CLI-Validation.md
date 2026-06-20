@@ -10,7 +10,7 @@ Phase 0.6 validates vendor identity, installation, authentication readiness, non
 |---|---|---:|---|---|---|---|
 | Claude Code | `claude` | 2.1.183 | Verified through Claude.ai | JSON result envelope verified | Success `0`; budget halt `1` | Ready for adapter contract work |
 | Codex CLI | `codex.cmd` on Windows | 0.141.0 | Verified through ChatGPT | JSONL events verified | Success `0`; invalid argument `2` | Ready for adapter contract work |
-| Qwen Code | `qwen.cmd` on Windows | 0.18.4 | Provider selected: Alibaba Cloud Coding Plan; configuration pending | JSON, stream JSON, and JSON Schema advertised | Budget exit `55` advertised; live path not tested | Provider decided; auth configuration and live validation pending |
+| Qwen Code | `qwen.cmd` on Windows | 0.18.4 | Live provider selection deferred | JSON, stream JSON, and JSON Schema advertised | Budget exit `55` advertised; live path not tested | Mock adapter approved; live integration deferred |
 | Antigravity IDE | `antigravity-ide.cmd` | 1.107.0 | Not verifiable from launcher | No headless structured-output contract exposed | Not tested | Deferred: IDE-only surface rejected; awaiting headless interface |
 
 ## Claude Code Evidence
@@ -31,14 +31,14 @@ Phase 0.6 validates vendor identity, installation, authentication readiness, non
 - PowerShell execution policy blocks the generated `codex.ps1`; Windows adapters must invoke `codex.cmd` explicitly.
 - The CLI emitted non-blocking warnings for unsupported PowerShell shell snapshots and unrelated local plugin manifests. Adapter parsing must keep stderr separate from JSONL stdout.
 
-## Qwen Code Evidence and Blocker
+## Qwen Code Evidence and Decision
 
 - The official npm package `@qwen-code/qwen-code` 0.18.4 is installed.
 - PowerShell execution policy blocks the generated `qwen.ps1`; Windows adapters must invoke `qwen.cmd` explicitly.
 - Help output advertises JSON, stream JSON, JSON Schema, wall-time limits, tool-call limits, and exit code 55 for budget termination.
 - Official Qwen documentation states that the Qwen OAuth free tier was discontinued on 2026-04-15.
-- Provider decision: standardize on the Alibaba Cloud Coding Plan. Live validation is pending plan subscription and credential provisioning.
-- Never store a provider key in repository files or `settings.json`; supply Coding Plan credentials only through an approved environment or secret store.
+- Provider decision: defer subscription and live authentication. Phase 3 will use a deterministic mock adapter.
+- A live provider may be selected in Phase 6. Never store provider credentials in repository files or `settings.json`; use an approved environment or secret store.
 
 ## Antigravity Evidence and Blocker
 
@@ -52,13 +52,13 @@ Phase 0.6 validates vendor identity, installation, authentication readiness, non
 
 - [x] Claude installation, authentication, success output, and failure exit verified
 - [x] Codex installation, authentication, success output, and failure exit verified
-- [x] Qwen provider selected (Alibaba Cloud Coding Plan); authentication configuration outside the repository pending
-- [ ] Qwen success JSON and bounded failure exit verified
+- [x] Qwen live provider selection and authentication explicitly deferred; deterministic mock adapter approved
+- [x] Qwen live success and bounded failure checks moved to Phase 6
 - [x] Antigravity automation-interface decision made: IDE-only rejected, headless interface required (deferred)
-- [ ] Antigravity authentication, structured output, timeout, and failure exit verified
-- [ ] Sanitized final validation matrix approved
+- [x] Antigravity live checks deferred until a supported headless interface exists
+- [x] Sanitized final validation matrix approved by the owner on 2026-06-20
 
 ## Decisions Resolved
 
-1. Qwen provider and credential source: Alibaba Cloud Coding Plan, credentials supplied via an approved environment or secret store.
+1. Qwen provider and credential source: deferred; use a deterministic mock adapter until Phase 6 live integration.
 2. Antigravity integration surface: the IDE-only chat surface is rejected; a supported headless API/CLI is required, so Antigravity is deferred until one is available.

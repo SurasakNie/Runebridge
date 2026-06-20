@@ -8,7 +8,7 @@
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **PASS - Phases 0.5A and 0.5B were merged through PR #2; Phase 0.6 vendor CLI validation is in progress**
+**Audit result:** **PASS - Phases 0.5A, 0.5B, and 0.6 are complete; Phase 1 repository scaffold is next**
 
 ---
 
@@ -129,7 +129,7 @@ The previous report allowed scaffold implementation only after Phase 0.5. The br
 - The mode note says Qwen self-reviews at Stage 9, while Stage 9 is defined as Claude final review.
 - `QWEN.md` and `prompts/qwen-review.md` still describe Qwen self-review behavior.
 
-**Resolution:** Qwen plans through the planned `qwen_plan.sh` adapter and builds through `qwen_build.sh`. The Qwen first-review stage and its gate are both skipped, so `REVIEW_QWEN.json` is not produced or required. Antigravity verifies the build, Claude performs the independent final review, and the final review gate validates Claude only. `.ai/MODEL_ROLES.md`, `.ai/PROJECT_BRIEF.md`, `QWEN.md`, `CLAUDE.md`, and the affected prompts now state the same flow.
+**Resolution:** Qwen plans through the planned `qwen_plan.sh` adapter and builds through `qwen_build.sh`. The Qwen first-review stage and its gate are both skipped, so `REVIEW_QWEN.json` is not produced or required. A deterministic mock verifier verifies the build until live verifier integration is approved, Claude performs the independent final review, and the final review gate validates Claude only. `.ai/MODEL_ROLES.md`, `.ai/PROJECT_BRIEF.md`, `QWEN.md`, `CLAUDE.md`, and the affected prompts state the same flow.
 
 Implementation of the newly specified adapter and mode-aware gates remains scheduled for later phases; the Phase 0.5A contract contradiction itself is closed.
 
@@ -249,13 +249,11 @@ Create and verify:
 
 **Exit gate:** A clean environment can install dependencies, run pre-commit, and execute an empty or smoke-test gate suite without credentials.
 
-### Phase 1 - Complete the documentation scaffold
+### Phase 1 - Create the repository scaffold
 
-1. Apply the Phase 0.5A corrections.
-2. Update task and handoff state from verified repository inventory.
-3. Open a pull request for the scaffold; do not push the changes directly to `main`.
+Follow `docs/Phase-1-Repository-Scaffold-Plan.md`. Reserve the approved schema, gate, adapter, runtime-artifact, and conductor paths without implementing later-phase behavior. Add focused scaffold and fail-closed placeholder tests.
 
-**Exit gate:** The PR contains only approved documentation and setup files, and all available checks pass.
+**Exit gate:** The protected PR contains only approved scaffold, documentation, tests, and shared-state updates; all required checks pass.
 
 ### Phase 2 - Implement schemas and deterministic gates
 
@@ -317,14 +315,15 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 | Phase 0.5B visibility and `main` protection | **COMPLETE** |
 | Phase 0.5B remaining GitHub controls | **COMPLETE; pre-automation controls explicitly deferred** |
 | Merge Phase 0.5 scaffold | **COMPLETE through PR #2** |
-| Schemas and gates | **GO after Phase 0.6 validation** |
+| Phase 0.6 vendor CLI validation | **COMPLETE; Qwen and Antigravity live paths explicitly deferred** |
+| Schemas and gates | **GO after Phase 1 scaffold** |
 | Adapter and conductor implementation | **HOLD** |
 | Full dry run | **NOT READY** |
 | Live vendor integration | **NOT READY** |
 
 ## Final Decision
 
-**Phases 0.5A and 0.5B are complete and merged. Phase 0.6 vendor CLI validation is active; future merges remain human-controlled.**
+**Phases 0.5A, 0.5B, and 0.6 are complete. Phase 1 repository scaffold is next; future merges remain human-controlled.**
 
-Resolve the remaining Qwen provider and Antigravity interface decisions before approving the Phase 0.6 matrix. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
+Use deterministic mock adapters for Qwen and Antigravity until their deferred live integration requirements are met. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
 

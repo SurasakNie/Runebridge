@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A and 0.5B are merged into `main`. Phase 0.6 is active on `codex/phase-0.6-vendor-cli`. Claude Code and Codex CLI installation, authentication, structured success output, and failure exits are verified. Qwen is installed but blocked on provider selection; Antigravity is installed but lacks a verified headless interface.
+Phases 0.5A, 0.5B, and 0.6 are complete. Claude Code and Codex CLI live paths are verified. The owner approved deterministic mock-only Qwen work until Phase 6 and deferred Antigravity until a supported headless interface exists. Phase 1 repository scaffold is next.
 
 ## Last Agent
 
@@ -10,8 +10,8 @@ Phases 0.5A and 0.5B are merged into `main`. Phase 0.6 is active on `codex/phase
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-20 |
-| Branch | codex/phase-0.6-vendor-cli |
-| Task | Phase 0.6 vendor CLI validation |
+| Branch | codex/complete-phase-0.6 |
+| Task | Close Phase 0.6 decisions and validation matrix |
 
 ## What Was Changed
 
@@ -44,6 +44,7 @@ Phases 0.5A and 0.5B are merged into `main`. Phase 0.6 is active on `codex/phase
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
 - `docs/Vendor-CLI-Validation.md`
+- `docs/Phase-1-Repository-Scaffold-Plan.md`
 
 ## Tests Run
 
@@ -63,7 +64,7 @@ Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, struc
 
 ## Next Recommended Step
 
-Select a Qwen provider and decide whether Antigravity IDE automation is an acceptable integration surface.
+Execute `docs/Phase-1-Repository-Scaffold-Plan.md` from an updated `main` after the current documentation PR is merged.
 
 ## Warnings
 

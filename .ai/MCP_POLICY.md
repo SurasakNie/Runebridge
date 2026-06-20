@@ -10,7 +10,7 @@
 
 ## Add later (require approval)
 
-- Browser MCP (for Antigravity browser testing)
+- Browser MCP (future browser testing; not an Antigravity integration until its headless interface is approved)
 - Issue tracker MCP (for task sync)
 - Read-only database MCP (for schema inspection only)
 - Custom engineering MCP (project-specific)
