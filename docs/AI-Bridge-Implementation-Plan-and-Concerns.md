@@ -159,7 +159,7 @@ The EN/TH prompt rule also said to translate all pipeline artifacts. Without an 
 
 **Severity:** Blocking
 
-**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. The environment diagnostic, five smoke tests, complete pre-commit suite, and gitleaks scan pass. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, and requires pull requests with one approval. CI workflows, required status checks, conversation resolution, push protection, GitHub App permissions, and secrets remain unimplemented or unverified.
+**Evidence:** `.gitignore`, `.env.example`, requirements, local pre-commit hooks, environment diagnostics, smoke tests, and setup documentation now exist. The environment diagnostic, five smoke tests, complete pre-commit suite, and gitleaks scan pass. Active ruleset `Protect main` targets the default branch, blocks deletion and force pushes, and requires pull requests with one approval. Authenticated audit confirmed that secret scanning, push protection, and resolved-conversation enforcement are disabled; no repository secrets exist. CI workflows, required status checks, Actions restrictions, and GitHub App installation remain unimplemented or unverified.
 
 **Required correction:** Implement the Phase 0.5 repository controls and record GitHub-setting verification evidence before enabling any vendor credential or automated PR path.
 
@@ -241,8 +241,10 @@ Create and verify:
 - [x] active default-branch ruleset verified
 - [x] explicit least-privilege GitHub workflow permission contract
 - [x] minimum conductor GitHub App permission contract
-- [ ] authenticated verification of secret scanning and push protection
-- [ ] resolved-conversation enforcement in `Protect main`
+- [x] authenticated audit of secret scanning and push protection; both are disabled
+- [x] authenticated audit of resolved-conversation enforcement; disabled
+- [ ] enable secret scanning and push protection after human approval
+- [ ] enable resolved-conversation enforcement in `Protect main` after human approval
 - [ ] required checks after Phase 2 workflows exist and succeed
 
 **Exit gate:** A clean environment can install dependencies, run pre-commit, and execute an empty or smoke-test gate suite without credentials.
@@ -324,5 +326,5 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 **Phase 0.5A, the Phase 0.5B repository baseline, host tools, visibility decision, and `main` protection are complete. HOLD the current scaffold from merge until remaining repository-control verification passes.**
 
-Complete Phase 0.5B by verifying secret scanning and push protection through authenticated settings access, then obtain human approval before enabling missing controls or requiring resolved conversations. Required checks remain deferred until Phase 2 workflows exist and succeed. Treat every settings change as a separate human-controlled action.
+Complete Phase 0.5B by obtaining human approval before enabling secret scanning, push protection, or resolved-conversation enforcement. Required checks and repository-level Actions restrictions remain deferred until Phase 2 workflows exist and succeed. Treat every settings change as a separate human-controlled action.
 
