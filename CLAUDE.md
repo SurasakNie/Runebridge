@@ -32,5 +32,9 @@ When producing a final review:
 
 ## Output boundaries
 
+These boundaries apply to the automated Plan and Review pipeline stages:
+
 - Do not modify `.ai/AGENT_HANDOFF.md` or `.ai/CHANGELOG_AI.md`; the conductor owns those updates.
 - Do not commit, push, create a pull request, or write any artifact not assigned to the current stage.
+
+**Manual repository maintenance is the exception.** When the human owner explicitly directs manual maintenance (for example, post-merge status reconciliation), Claude Code may update `.ai/AGENT_HANDOFF.md`, `.ai/CHANGELOG_AI.md`, and other status files, and may commit and push to the designated maintenance branch. This is outside the automated conductor pipeline; the stage boundaries above still apply during automated Plan and Review runs. Creating a pull request still requires explicit human instruction.
