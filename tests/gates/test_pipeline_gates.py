@@ -169,12 +169,15 @@ def test_secret_gate_rejects_signature(tmp_path: Path) -> None:
     assert run_gate("check_no_secrets.py", clean).returncode == 0
     clean.write_text("password=supersecretvalue123", encoding="utf-8")
     assert run_gate("check_no_secrets.py", clean).returncode == 1
+    clean.write_text('{"password": "supersecretvalue123"}', encoding="utf-8")
+    assert run_gate("check_no_secrets.py", clean).returncode == 1
 
 
 @pytest.mark.parametrize(
     "gate",
     (
         "check_artifacts.py",
+        "check_live_metadata.py",
         "check_plan.py",
         "check_no_secrets.py",
         "check_review.py",

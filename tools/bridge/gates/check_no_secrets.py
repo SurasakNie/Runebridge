@@ -10,7 +10,7 @@ PATTERNS = (
     re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
     re.compile(r"\bgh[pousr]_[A-Za-z0-9]{20,}\b"),
     re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"),
-    re.compile(r"(?i)\b(?:api[_-]?key|access[_-]?token|password)\s*[:=]\s*['\"]?[A-Za-z0-9_./+=-]{12,}"),
+    re.compile(r"(?i)\b(?:api[_-]?key|access[_-]?token|password)['\"]?\s*[:=]\s*['\"]?[A-Za-z0-9_./+=-]{12,}"),
 )
 
 

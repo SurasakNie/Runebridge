@@ -580,3 +580,28 @@ test_result: pass; 67 tests, Phase 6 work-item consistency, diff hygiene, and fu
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: phase-6-isolated-runner
+summary: Reconciled the merged Phase 6 plan and added a refusal-by-default isolated runner with strict sanitized provenance and fake-CLI tests.
+files_changed:
+  - schemas/live-run-metadata.schema.json
+  - tools/bridge/live/run_isolated_validation.py
+  - tools/bridge/gates/check_live_metadata.py
+  - tools/bridge/gates/check_no_secrets.py
+  - tests/live/test_isolated_runner.py
+  - tests/gates/test_pipeline_gates.py
+  - tests/gates/test_scaffold.py
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - docs/Phase-6-Live-Vendor-Validation-Plan.md
+  - docs/Repository-Directory-Ownership.md
+test_result: pass; 35 focused tests, 84 complete tests, Python compilation, ShellCheck, secret scanning, and full pre-commit suite passed
+human_review_needed: true
+```
+
