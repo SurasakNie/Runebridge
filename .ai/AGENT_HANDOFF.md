@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 4 are complete. Phase 5 official guarded runs for all three modes exit 0, two-root rehearsals are byte-identical, per-run command logs are empty, and 67 local tests plus the full pre-commit suite pass. Protected PR checks are pending.
+Phases 0.5A through 4 are complete. Phase 5 official guarded runs for all three modes exit 0, two-root rehearsals are byte-identical, per-run command logs are empty, and 67 local tests plus all protected checks pass. PR #10 awaits manual merge.
 
 ## Last Agent
 
@@ -61,7 +61,7 @@ Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, struc
 
 ## Next Recommended Step
 
-Complete protected Phase 5 checks and manually merge its pull request. Do not enable live vendors or automated GitHub operations.
+Perform final human review and manually merge PR #10. Do not enable live vendors or automated GitHub operations.
 
 ## Warnings
 

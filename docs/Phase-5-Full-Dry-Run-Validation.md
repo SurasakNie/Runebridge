@@ -2,7 +2,7 @@
 
 ## Result
 
-**PASS locally; protected pull-request checks pending.**
+**PASS locally and in protected pull-request checks.**
 
 Three guarded official runs completed with exit code 0. Each was rehearsed in two fresh temporary roots with task ID and date held constant; every file was byte-identical between rehearsals.
 
@@ -99,4 +99,6 @@ The Qwen and dual runs substituted their corresponding task ID and mode.
 - Phase 5 end-to-end tests: 8 passed before official evidence generation.
 - Complete local suite: 67 passed.
 - Python compilation, pre-commit, ShellCheck, gitleaks, and environment diagnostic: passed.
-- Protected GitHub checks: pending.
+- [Security baseline](https://github.com/SurasakNie/Runebridge/actions/runs/27889074828/job/82529266304): passed.
+- [Python baseline](https://github.com/SurasakNie/Runebridge/actions/runs/27889074831/job/82529266251): passed with the complete 67-test suite.
+- [Pre-commit baseline](https://github.com/SurasakNie/Runebridge/actions/runs/27889074828/job/82529266269): passed.

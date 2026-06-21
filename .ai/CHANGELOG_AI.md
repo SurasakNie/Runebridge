@@ -543,7 +543,7 @@ files_changed:
   - .ai/TASKS.md
   - .ai/AGENT_HANDOFF.md
   - .ai/CHANGELOG_AI.md
-test_result: pass; 67 tests, compilation, pre-commit, ShellCheck, gitleaks, and environment diagnostic passed
+test_result: pass; 67 tests, compilation, pre-commit, ShellCheck, gitleaks, environment diagnostic, and all protected GitHub checks passed
 human_review_needed: true
 ```
 
