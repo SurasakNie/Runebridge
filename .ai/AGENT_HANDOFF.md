@@ -2,37 +2,26 @@
 
 ## Current State
 
-Phases 0.5A through 5 are complete, and the Phase 6 plan and isolated runner are merged. P6-001C now provides Claude planner/reviewer command construction, structured-envelope parsing, role-schema validation, measured budget enforcement, and fake-CLI tests. The public adapter registry remains empty, so no real vendor or live execution is enabled.
+Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, and Claude planner/reviewer adapter contracts are merged; PR #15 merged P6-001C into `main` at `16ae812`. The public adapter registry remains empty, so no real vendor or live execution is enabled. P6-001E Codex builder adapter implementation is next; P6-001D bounded Claude live validation remains gated on explicit per-run human approval.
 
 ## Last Agent
 
 | Field | Value |
 |---|---|
-| Tool | Codex |
+| Tool | Claude Code |
 | Date | 2026-06-21 |
-| Branch | codex/phase-6-claude-adapters |
-| Task | P6-001C Claude planner/reviewer adapter contracts |
+| Branch | claude/eloquent-darwin-pjpugh |
+| Task | Post-P6-001C merge reconciliation |
 
 ## What Was Changed
 
-- Added unregistered Claude planner/reviewer adapter contracts with tools disabled, no session persistence, strict JSON Schema output, and a numeric budget cap.
-- Added role artifact normalization to `PLAN.md` and `REVIEW_CLAUDE.json`, including authoritative schema-gate coverage.
-- Added fail-closed tests for malformed envelopes, schema errors, error results, missing cost, and budget overruns.
-- Added a strict `LIVE_RUN_METADATA.json` schema and deterministic provenance gate.
-- Added an isolated Python runner with an empty real-adapter registry, explicit live/approval inputs, allowlisted environment, command guards, timeout handling, no-write scope, privacy checks, two-pass secret scanning, and sanitized atomic evidence publication.
-- Strengthened the shared secret gate to detect quoted JSON credential fields.
-- Added fake-CLI success and negative coverage without making any vendor call.
-- Kept the Phase 4 conductor and deterministic adapters unchanged.
+- Confirmed PR #15 merged P6-001C into `main` at `16ae812`.
+- Reconciled project status, roadmap, active task, handoff, and historical audit summary after the Claude adapter merge.
+- Marked P6-001C complete, set P6-001E as the ready implementation step, and noted P6-001D remains gated on explicit per-run human approval.
+- Kept the public adapter registry empty and live execution disabled.
 
 ## Files Modified
 
-- `schemas/live-run-metadata.schema.json`
-- `tools/bridge/live/run_isolated_validation.py`
-- `tools/bridge/gates/check_live_metadata.py`
-- `tools/bridge/gates/check_no_secrets.py`
-- `tests/live/test_isolated_runner.py`
-- `tests/gates/test_pipeline_gates.py`
-- `tests/gates/test_scaffold.py`
 - `README.md`
 - `.ai/PROJECT_BRIEF.md`
 - `.ai/TASKS.md`
@@ -40,11 +29,10 @@ Phases 0.5A through 5 are complete, and the Phase 6 plan and isolated runner are
 - `.ai/CHANGELOG_AI.md`
 - `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
 - `docs/Phase-6-Live-Vendor-Validation-Plan.md`
-- `docs/Repository-Directory-Ownership.md`
 
 ## Tests Run
 
-The focused Claude/runner contract suite passed 28 tests. The complete suite passed all 96 tests, including unchanged Phase 5 end-to-end coverage. Python compilation, ShellCheck, secret scanning, and the full pre-commit suite passed.
+Documentation-only reconciliation; no source or test files changed. The last verified suite was 96 tests at PR #15 (`16ae812`), with Python compilation, ShellCheck, secret scanning, and the full pre-commit suite passing.
 
 ## Known Issues
 
@@ -56,9 +44,9 @@ The focused Claude/runner contract suite passed 28 tests. The complete suite pas
 
 ## Next Recommended Step
 
-Review and manually merge P6-001C. P6-001D remains blocked until merge and a separate explicit per-run approval authorizes bounded Claude execution.
+Implement the Codex builder live adapter and scope-sandbox tests under P6-001E using fake-CLI contract tests only; do not register adapters or execute live calls. P6-001D bounded Claude validation remains available only under explicit per-run human approval.
 
 ## Warnings
 
-Do not register a real adapter, execute a vendor, or enable automated GitHub operations in P6-001C. Keep future merges human-controlled.
+Do not register a real adapter, execute a vendor, or enable automated GitHub operations during P6-001E implementation. Keep future merges human-controlled.
 
