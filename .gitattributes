@@ -1,1 +1,4 @@
+# Normalize all text files to LF in the repository working tree and index.
+# Prevents mixed CRLF/LF diffs across Windows and Linux editors.
+* text=auto eol=lf
 *.sh text eol=lf
