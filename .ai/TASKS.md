@@ -20,7 +20,7 @@
 | P6-001A | Approve the Phase 6 live-vendor validation plan | Complete | PR #12 merged manually |
 | P6-001B | Implement isolated runner, provenance format, and negative tests | Complete | PR #13 merged at `124efe0`; no real adapters enabled; 88 tests pass |
 | P6-001C | Implement Claude live adapters behind refusal-by-default controls | Complete | PR #15 merged at `16ae812`; public registry remains empty; 96 tests pass |
-| P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; awaiting explicit per-run human approval |
+| P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; awaiting explicit per-run human approval and the P6-001D execution preflight in the Phase 6 plan |
 | P6-001E | Implement Codex live adapter and scope-sandbox tests | Ready | P6-001B merged; implementation and fake-CLI tests only |
 | P6-001F | Execute bounded Codex validation | Blocked | P6-001E merged; explicit per-run human approval |
 | P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |

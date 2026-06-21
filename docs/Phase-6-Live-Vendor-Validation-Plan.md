@@ -313,3 +313,15 @@ If Qwen remains deferred, `qwen-led`, `safe-default`, and `dual-builder` cannot 
 7. Decide whether conductor live integration is in Phase 6 after individual validation or deferred to a follow-on phase.
 
 No decision above is implied by merging this planning document.
+
+## P6-001D Execution Preflight (must pass before the first bounded Claude call)
+
+These criteria gate P6-001D. None can be satisfied in CI or the dry-run sandbox; each requires the real `claude` CLI and an approved interactive session, exercised manually under explicit per-run human approval:
+
+1. **CLI flag verification.** Confirm every flag the Claude adapter constructs (`--print`, `--output-format json`, `--json-schema`, `--tools ""`, `--no-session-persistence`, `--disable-slash-commands`, `--max-budget-usd`) exists and behaves as assumed against the installed CLI version. A renamed or unsupported flag fails the run; do not proceed on a structurally-tested-only assumption.
+2. **Recorded CLI version policy.** Pin and record the verified `cli_version`; reject versions outside the approved policy at preflight.
+3. **Approval-ledger binding.** Connect the `approval_id` to an external approval record (currently only pattern-checked and hashed). The run must refuse if the supplied identifier is not present in the approved ledger for that vendor, role, and date.
+4. **Numeric timeout and budget ceilings.** Confirm the concrete `--timeout-seconds` and `--budget-ceiling-usd` values approved for the run, and verify the budget-halt path fails closed without retry.
+5. **Tools-disabled confirmation.** Verify at runtime that no tool, network helper, or child process executed beyond the single vendor invocation.
+
+Satisfying these is a prerequisite of the P6-001D acceptance criteria; it does not by itself authorize the run.
