@@ -118,6 +118,7 @@ agent: Codex
 task_id: phase-0.5a-documentation-alignment
 summary: Completed Phase 0.5A by aligning project status, roadmap, task state, universal pre-reads, verifier pre-reads, and audit findings.
 files_changed:
+  - .gitattributes
   - README.md
   - AGENTS.md
   - .ai/PROJECT_BRIEF.md
@@ -504,6 +505,22 @@ files_changed:
   - .ai/AGENT_HANDOFF.md
   - .ai/CHANGELOG_AI.md
 test_result: pass; Python compilation, 59 tests, full pre-commit suite, and environment diagnostic passed
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: post-phase-4-reconciliation
+summary: Reconciled Phase 4 completion, marked Phase 5 next, clarified the historical audit, and retained deferred live/provider decisions.
+files_changed:
+  - README.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; workflow YAML, 59 tests, full pre-commit suite, ShellCheck, and environment diagnostic passed
 human_review_needed: true
 ```
 

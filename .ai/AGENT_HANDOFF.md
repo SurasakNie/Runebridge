@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 3 are complete. The Phase 4 dry-run-only Pattern A conductor and all-stage fault-injection tests are implemented on `codex/phase-4-conductor`; 59 local tests and the full pre-commit suite pass, with protected PR checks pending after review fixes.
+Phases 0.5A through 4 are complete. PR #8 merged the dry-run-only Pattern A conductor after 59 tests and protected checks passed. Phase 5 full dry-run validation is next. PR #9 reconciles CI duplication, marks the Antigravity prompt future-only, and updates post-merge status.
 
 ## Last Agent
 
@@ -10,8 +10,8 @@ Phases 0.5A through 3 are complete. The Phase 4 dry-run-only Pattern A conductor
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-21 |
-| Branch | codex/phase-4-conductor |
-| Task | Implement Phase 4 Pattern A conductor |
+| Branch | claude/peaceful-turing-oavcmh |
+| Task | Post-Phase 4 reconciliation and CI cleanup |
 
 ## What Was Changed
 
@@ -61,7 +61,7 @@ Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, struc
 
 ## Next Recommended Step
 
-Complete Phase 4 verification and protected PR checks. The repository-level Actions restriction decision remains deferred pending explicit approval.
+Merge PR #9 after the full current test suite and protected checks pass, then start Phase 5 validation from updated `main`.
 
 ## Warnings
 

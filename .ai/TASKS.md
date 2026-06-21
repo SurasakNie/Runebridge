@@ -4,14 +4,24 @@
 
 | Field | Value |
 |---|---|
-| Task ID | P4-001 |
-| Goal | Implement the dry-run-only Pattern A conductor |
+| Task ID | P5-001 |
+| Goal | Validate the complete dry-run pipeline in all approved modes |
 | Owner | Human + Codex |
-| Status | In progress; implementation and local verification complete, protected PR checks pending |
-| Branch | codex/phase-4-conductor |
-| Related files | `tools/bridge/orchestrate.sh`, `tests/conductor/`, `docs/Phase-4-Pattern-A-Conductor-Plan.md` |
-| Risk level | RSK-1 for cross-stage orchestration behavior |
+| Status | Ready; Phase 4 merged through PR #8 |
+| Branch | To be created from `main` |
+| Related files | `tools/bridge/orchestrate.sh`, `.bridge/`, `tests/`, Phase 5 validation report |
+| Risk level | RSK-1 for end-to-end dry-run validation |
 | Required mode | Manual repository maintenance |
+
+## Phase 5 Work Items
+
+| ID | Task | Status | Dependency / approval |
+|---|---|---|---|
+| P5-001A | Run `safe-default` full dry run | Planned | Phase 4 merged |
+| P5-001B | Run `qwen-led` full dry run | Planned | Phase 4 merged |
+| P5-001C | Run `dual-builder` full dry run | Planned | Phase 4 merged |
+| P5-001D | Verify artifacts, halt behavior, and no external calls | Planned | P5-001A through P5-001C |
+| P5-001E | Publish sanitized Phase 5 evidence | Planned | P5-001D |
 
 ## Phase 4 Work Items
 
@@ -21,7 +31,7 @@
 | P4-001B | Implement halt, report, and bounded retry behavior | Complete | P4-001A |
 | P4-001C | Preserve RSK-0 and dry-run-only controls | Complete | Exit 2 tests pass |
 | P4-001D | Add all-stage fault-injection tests | Complete | 24 conductor tests pass |
-| P4-001E | Run local and protected verification | In progress | 59 local tests pass; PR checks pending |
+| P4-001E | Run local and protected verification | Complete | PR #8 merged with protected checks passing |
 
 ## Phase 3 Work Items
 
@@ -97,4 +107,5 @@
 | P1-001 | Implement approved repository scaffold | 2026-06-20 | PR #5 merged with seven tests and protected checks passing |
 | P2-001 | Implement schemas and deterministic gates | 2026-06-21 | PR #6 merged with fifteen tests and protected checks passing |
 | P3-001 | Implement deterministic dry-run adapters | 2026-06-21 | PR #7 merged with 27 tests and protected checks passing |
+| P4-001 | Implement Pattern A conductor | 2026-06-21 | PR #8 merged with 59 tests and protected checks passing |
 
