@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 3 are complete. The Phase 4 dry-run-only Pattern A conductor and all-stage fault-injection tests are implemented on `codex/phase-4-conductor`; 51 local tests and the full pre-commit suite pass, with protected PR checks pending.
+Phases 0.5A through 3 are complete. The Phase 4 dry-run-only Pattern A conductor and all-stage fault-injection tests are implemented on `codex/phase-4-conductor`; 59 local tests and the full pre-commit suite pass, with protected PR checks pending after review fixes.
 
 ## Last Agent
 
@@ -48,7 +48,7 @@ Phases 0.5A through 3 are complete. The Phase 4 dry-run-only Pattern A conductor
 
 ## Tests Run
 
-`pytest -q tests` passed all 51 tests. Python compilation, schema validation, ShellCheck, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
+`pytest -q tests` passed all 59 tests. Python compilation, schema validation, ShellCheck, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
 
 Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, structured live calls and explicit failure exits. Qwen Code and Antigravity were inspected without consuming model tokens or exposing credentials.
 

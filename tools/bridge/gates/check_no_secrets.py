@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import argparse
 import re
 from pathlib import Path
 
-from common import GateError, fail
+from common import GateArgumentParser, GateError, fail
 
 
 PATTERNS = (
@@ -16,7 +15,7 @@ PATTERNS = (
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
+    parser = GateArgumentParser()
     parser.add_argument("paths", nargs="+", type=Path)
     args = parser.parse_args()
     findings: list[str] = []

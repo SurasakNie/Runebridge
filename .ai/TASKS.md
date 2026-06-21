@@ -21,7 +21,7 @@
 | P4-001B | Implement halt, report, and bounded retry behavior | Complete | P4-001A |
 | P4-001C | Preserve RSK-0 and dry-run-only controls | Complete | Exit 2 tests pass |
 | P4-001D | Add all-stage fault-injection tests | Complete | 24 conductor tests pass |
-| P4-001E | Run local and protected verification | In progress | 51 local tests pass; PR checks pending |
+| P4-001E | Run local and protected verification | In progress | 59 local tests pass; PR checks pending |
 
 ## Phase 3 Work Items
 

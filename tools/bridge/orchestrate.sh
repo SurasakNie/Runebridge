@@ -145,7 +145,7 @@ elif [[ "$MODE" == "dual-builder" ]]; then
 else
   stage build_codex "$ADAPTERS/codex_build.sh" "$TASK_DIR"
 fi
-stage scope_gate "$PYTHON" "$GATES/check_scope.py" "$TASK_DIR/PLAN.md"
+stage scope_gate "$PYTHON" "$GATES/check_scope.py" "$TASK_DIR/PLAN.md" --diff "$TASK_DIR/CHANGES.diff"
 
 if [[ "$MODE" != "qwen-led" ]]; then
   stage qwen_review "$ADAPTERS/qwen_review.sh" "$TASK_DIR"

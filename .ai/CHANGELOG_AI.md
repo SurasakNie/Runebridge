@@ -483,3 +483,27 @@ test_result: pass; Bash syntax, ShellCheck, Python compilation, 51 tests, full p
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: phase-4-review-fixes
+summary: Enforced scope from CHANGES.diff and reserved exit 2 exclusively for explicit RSK-0 gate outcomes.
+files_changed:
+  - tools/bridge/orchestrate.sh
+  - tools/bridge/gates/common.py
+  - tools/bridge/gates/check_artifacts.py
+  - tools/bridge/gates/check_plan.py
+  - tools/bridge/gates/check_no_secrets.py
+  - tools/bridge/gates/check_review.py
+  - tools/bridge/gates/check_rsk0.py
+  - tools/bridge/gates/check_scope.py
+  - tools/bridge/gates/check_verify.py
+  - tests/gates/test_pipeline_gates.py
+  - docs/Phase-4-Pattern-A-Conductor-Plan.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; Python compilation, 59 tests, full pre-commit suite, and environment diagnostic passed
+human_review_needed: true
+```
+

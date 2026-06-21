@@ -8,6 +8,7 @@ Implement a deterministic, dry-run-only conductor that sequences Phase 3 adapter
 
 - Live mode exits `2` before creating a task directory.
 - RSK-0 gate exit `2` is never retried and is propagated unchanged.
+- Gate usage and validation errors exit `1`; exit `2` is reserved for explicit RSK-0 escalation.
 - Ordinary stage failures may retry from zero to three times through `RUNEBRIDGE_MAX_RETRIES`.
 - Every failed stage halts the pipeline before any later stage.
 - Task identifiers are single-use; an existing task directory is rejected without modification.
@@ -21,6 +22,7 @@ Implement a deterministic, dry-run-only conductor that sequences Phase 3 adapter
 - `dual-builder`: Claude plan, Codex and Qwen builds, Qwen review, mock verify, Claude final review.
 
 Every adapter transition is followed by the relevant deterministic gate. The final secret and mode-aware artifact gates run before a passing report.
+The scope gate parses `CHANGES.diff` and rejects paths outside the plan's `files_to_touch` list; an empty dry-run diff is valid.
 
 ## Exit Gate
 

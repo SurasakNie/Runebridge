@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from datetime import date
@@ -15,6 +16,12 @@ ROOT = Path(__file__).resolve().parents[3]
 
 class GateError(ValueError):
     pass
+
+
+class GateArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        self.print_usage(sys.stderr)
+        self.exit(1, f"{self.prog}: error: {message}\n")
 
 
 def normalize_yaml(value: Any) -> Any:
