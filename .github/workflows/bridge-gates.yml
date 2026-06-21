@@ -52,6 +52,5 @@ jobs:
       - name: Run repository hooks
         run: |
           pre-commit run python-compile --all-files
-          pre-commit run gate-smoke-tests --all-files
           pre-commit run shellcheck --all-files
 

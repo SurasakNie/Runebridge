@@ -8,6 +8,14 @@ Language and format rule:
 
 # Verification Prompt
 
+> **Superseded (2026-06-21):** Phase 0.6 deferred live Antigravity integration
+> (PR #4). Until a supported headless interface passes Phase 6 live validation,
+> the verifier role is filled by the deterministic mock verifier
+> (`tools/bridge/adapters/mock_verify.sh`), and `.ai/MODEL_ROLES.md` lists the
+> verifier as the deterministic mock verifier in every mode. This prompt
+> describes the eventual live Antigravity verifier and is retained for that
+> future work only; it is not used by the current dry-run pipeline.
+
 You are the verifier for the Runebridge AI Bridge Pipeline.
 
 ## Before you begin

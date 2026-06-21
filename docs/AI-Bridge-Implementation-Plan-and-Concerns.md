@@ -1,5 +1,7 @@
 # AI Bridge Initial Setup Audit and Revised Implementation Plan
 
+> **Historical audit notice (updated 2026-06-21):** Sections 1-6 preserve the evidence and findings from the 2026-06-19 initial-setup audit. The current implementation state is tracked in `README.md`, `.ai/TASKS.md`, and `.ai/AGENT_HANDOFF.md`. Phases 0.5A through 4 are complete; Phase 5 full dry-run validation is next. Live Antigravity, live Qwen, automated GitHub operations, and repository-level Actions restrictions remain deferred.
+
 - **Repository:** `SurasakNie/Runebridge`
 - **Default branch:** `main`
 - **Audited branch:** `claude/latest-drafts-ptdnpq`
@@ -8,7 +10,7 @@
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **PASS - Phases 0.5A, 0.5B, and 0.6 are complete; Phase 1 repository scaffold is next**
+**Audit result:** **PASS - Initial setup findings resolved; Phases 0.5A through 4 are complete and Phase 5 is next**
 
 ---
 
@@ -316,14 +318,15 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 | Phase 0.5B remaining GitHub controls | **COMPLETE; pre-automation controls explicitly deferred** |
 | Merge Phase 0.5 scaffold | **COMPLETE through PR #2** |
 | Phase 0.6 vendor CLI validation | **COMPLETE; Qwen and Antigravity live paths explicitly deferred** |
-| Schemas and gates | **GO after Phase 1 scaffold** |
-| Adapter and conductor implementation | **HOLD** |
-| Full dry run | **NOT READY** |
+| Schemas and gates | **COMPLETE through PR #6** |
+| Deterministic dry-run adapters | **COMPLETE through PR #7** |
+| Pattern A conductor | **COMPLETE through PR #8; dry-run-only, no GitHub mutations** |
+| Full dry run | **READY for Phase 5 validation** |
 | Live vendor integration | **NOT READY** |
 
 ## Final Decision
 
-**Phases 0.5A, 0.5B, and 0.6 are complete. Phase 1 repository scaffold is next; future merges remain human-controlled.**
+**Phases 0.5A through 4 are complete. Phase 5 full dry-run validation is next; future merges remain human-controlled.**
 
-Use deterministic mock adapters for Qwen and Antigravity until their deferred live integration requirements are met. Install the conductor GitHub App before automated PR operations, and finalize repository-level Actions restrictions when Phase 2 dependencies are known.
+Use deterministic mock adapters for Qwen and Antigravity until their deferred live integration requirements are met. Install and verify the conductor GitHub App before any automated PR operation. Repository-level Actions restrictions remain deferred pending explicit owner approval.
 
