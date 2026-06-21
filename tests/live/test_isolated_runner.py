@@ -215,8 +215,12 @@ def test_metadata_gate_rejects_fixture_claiming_credentials(tmp_path: Path) -> N
     (
         {"session_id": "abc123"},
         {"detail": "C:\\Users\\Example\\workspace"},
+        {"detail": "see C:\\Users\\Example\\workspace"},
         {"detail": "/home/example/workspace"},
+        {"detail": "see /home/example/workspace"},
+        {"detail": "see \\Users\\Example\\workspace"},
         {"detail": "person@example.com"},
+        {"person@example.com": "value"},
         {"transcript": "raw output"},
     ),
 )

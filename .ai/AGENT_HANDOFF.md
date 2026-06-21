@@ -42,7 +42,7 @@ Phases 0.5A through 5 are complete, and the Phase 6 plan merged through PR #12. 
 
 ## Tests Run
 
-Focused runner, gate, and scaffold tests passed 35 tests. The complete suite passed all 84 tests, including unchanged Phase 5 end-to-end coverage. Python compilation, ShellCheck, secret scanning, and the full pre-commit suite passed.
+Initial focused runner, gate, and scaffold tests passed 35 tests; the review privacy pass covered 20 tests. The complete suite passed all 88 tests, including unchanged Phase 5 end-to-end coverage. Python compilation, ShellCheck, secret scanning, and the full pre-commit suite passed.
 
 ## Known Issues
 

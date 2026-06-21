@@ -18,7 +18,7 @@
 | ID | Task | Status | Dependency / approval |
 |---|---|---|---|
 | P6-001A | Approve the Phase 6 live-vendor validation plan | Complete | PR #12 merged manually |
-| P6-001B | Implement isolated runner, provenance format, and negative tests | Complete pending merge | No real adapters enabled; 84 tests pass |
+| P6-001B | Implement isolated runner, provenance format, and negative tests | Complete pending merge | No real adapters enabled; 88 tests pass |
 | P6-001C | Implement Claude live adapters behind refusal-by-default controls | Blocked | P6-001B merged |
 | P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; explicit per-run human approval |
 | P6-001E | Implement Codex live adapter and scope-sandbox tests | Blocked | P6-001B merged |

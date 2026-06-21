@@ -22,7 +22,7 @@ METADATA_GATE = ROOT / "tools/bridge/gates/check_live_metadata.py"
 SECRET_GATE = ROOT / "tools/bridge/gates/check_no_secrets.py"
 TASK_ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
 APPROVAL_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{2,63}$")
-WINDOWS_ABSOLUTE_PATH_PATTERN = re.compile(r"^[A-Za-z]:[\\/]")
+ABSOLUTE_PATH_PATTERN = re.compile(r"(?:^|[\s\"'(])(?:[A-Za-z]:[\\/]|\\{1,2}|/)")
 EMAIL_PATTERN = re.compile(r"\b[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
 VENDORS = ("claude", "codex", "qwen", "antigravity")
 ROLES = ("planner", "builder", "reviewer", "verifier")
@@ -236,6 +236,7 @@ def invoke(
         **process_options,
     )
     try:
+        # Raw stderr is intentionally discarded; vendor diagnostics are never durable evidence.
         stdout, _stderr = process.communicate(timeout=timeout_seconds)
     except subprocess.TimeoutExpired as exc:
         terminate_process_tree(process)
@@ -260,12 +261,14 @@ def validate_normalized_result(value: object) -> None:
             normalized_key = key.lower().replace("-", "_")
             if normalized_key in FORBIDDEN_RESULT_KEYS:
                 raise ValidationError("normalized result contains a forbidden sensitive field")
+            if ABSOLUTE_PATH_PATTERN.search(key) or EMAIL_PATTERN.search(key):
+                raise ValidationError("normalized result contains sensitive content in a field name")
             validate_normalized_result(item)
     elif isinstance(value, list):
         for item in value:
             validate_normalized_result(item)
     elif isinstance(value, str):
-        if WINDOWS_ABSOLUTE_PATH_PATTERN.match(value) or value.startswith(("/", "\\\\")):
+        if ABSOLUTE_PATH_PATTERN.search(value):
             raise ValidationError("normalized result contains an absolute path")
         if EMAIL_PATTERN.search(value):
             raise ValidationError("normalized result contains an email address")
@@ -356,12 +359,15 @@ def run_isolated_validation(
         normalized = parse_result(stdout)
         normalized_bytes = write_json(candidate / "NORMALIZED_RESULT.json", normalized)
         shutil.copyfile(log_path, candidate / "BLOCKED_COMMANDS.log")
+        # P6-001B measures generic JSON/privacy parsing and a no-write workspace.
+        # Role-specific adapters must measure their artifact schema before registration.
         metadata = {
             "approval_id_sha256": hashlib.sha256(config.approval_id.encode("utf-8")).hexdigest(),
             "attempt_count": 1,
             "authentication_class": spec.authentication_class,
             "blocked_command_count": 0,
             "budget_ceiling_usd": config.budget_ceiling_usd,
+            # Fixtures record the approved ceiling only; vendor adapters must enforce it.
             "budget_result": "not_reported",
             "cli_name": spec.cli_name,
             "cli_version": spec.cli_version,
