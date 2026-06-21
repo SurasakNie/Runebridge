@@ -5,6 +5,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[2]
 GATES = ROOT / "tools/bridge/gates"
@@ -112,6 +114,16 @@ def test_scope_gate_rejects_drift(tmp_path: Path) -> None:
     assert run_gate("check_scope.py", plan, "src/other.py").returncode == 1
 
 
+def test_scope_gate_parses_changed_paths_from_diff(tmp_path: Path) -> None:
+    plan = tmp_path / "PLAN.md"
+    diff = tmp_path / "CHANGES.diff"
+    write_plan(plan)
+    diff.write_text("--- a/src/app.py\n+++ b/src/app.py\n", encoding="utf-8")
+    assert run_gate("check_scope.py", plan, "--diff", diff).returncode == 0
+    diff.write_text("--- a/src/other.py\n+++ b/src/other.py\n", encoding="utf-8")
+    assert run_gate("check_scope.py", plan, "--diff", diff).returncode == 1
+
+
 def test_verify_gate_rejects_failed_check(tmp_path: Path) -> None:
     artifact = tmp_path / "VERIFY.json"
     value = valid_verify()
@@ -157,3 +169,19 @@ def test_secret_gate_rejects_signature(tmp_path: Path) -> None:
     assert run_gate("check_no_secrets.py", clean).returncode == 0
     clean.write_text("password=supersecretvalue123", encoding="utf-8")
     assert run_gate("check_no_secrets.py", clean).returncode == 1
+
+
+@pytest.mark.parametrize(
+    "gate",
+    (
+        "check_artifacts.py",
+        "check_plan.py",
+        "check_no_secrets.py",
+        "check_review.py",
+        "check_rsk0.py",
+        "check_scope.py",
+        "check_verify.py",
+    ),
+)
+def test_gate_usage_errors_are_not_rsk0(gate: str) -> None:
+    assert run_gate(gate).returncode == 1

@@ -9,7 +9,7 @@ This document assigns responsibility for reserved pipeline paths. It does not au
 | `schemas/` | Schema and gate implementation | Phase 2 | Empty placeholder |
 | `tools/bridge/gates/` | Deterministic gate implementation | Phase 2 | Empty placeholder |
 | `tools/bridge/adapters/` | Vendor adapter implementation | Phase 3 | Deterministic dry-run stubs |
-| `tools/bridge/orchestrate.sh` | Pattern A conductor | Phase 4 | Fail-closed placeholder |
+| `tools/bridge/orchestrate.sh` | Pattern A conductor | Phase 4 | Dry-run-only implementation |
 | `.bridge/<task-id>/` | Stage owners through conductor-controlled writes | Phases 3-4 | Layout documented only |
 | `tests/gates/` | Gate and scaffold verification | Phases 1-2 | Environment and scaffold tests |
 

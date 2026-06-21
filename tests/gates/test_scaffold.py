@@ -25,7 +25,7 @@ def test_reserved_scaffold_paths_exist() -> None:
         assert (ROOT / relative_path).is_file(), relative_path
 
 
-def test_conductor_placeholder_fails_closed() -> None:
+def test_conductor_requires_explicit_arguments() -> None:
     script = ROOT / "tools/bridge/orchestrate.sh"
 
     result = subprocess.run(
@@ -36,6 +36,6 @@ def test_conductor_placeholder_fails_closed() -> None:
         text=True,
     )
 
-    assert result.returncode == 2
+    assert result.returncode == 1
     assert result.stdout == ""
-    assert "not implemented" in result.stderr
+    assert "Usage:" in result.stderr

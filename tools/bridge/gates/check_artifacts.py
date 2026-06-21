@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
-from common import GateError, fail, read_front_matter, read_json, validate
+from common import GateArgumentParser, GateError, fail, read_front_matter, read_json, validate
 
 
 BASE = {"TASK.md", "PLAN.md", "CHANGES.diff", "VERIFY.json", "REVIEW_CLAUDE.json"}
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
+    parser = GateArgumentParser()
     parser.add_argument("task_dir", type=Path)
     parser.add_argument("--mode", required=True, choices=("safe-default", "qwen-led", "dual-builder"))
     args = parser.parse_args()

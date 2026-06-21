@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-import argparse
 import sys
 from pathlib import Path
 
-from common import GateError, fail, read_json, validate
+from common import GateArgumentParser, GateError, fail, read_json, validate
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
+    parser = GateArgumentParser()
     parser.add_argument("artifact", type=Path)
     parser.add_argument("--reviewer", required=True, choices=("qwen", "claude"))
     args = parser.parse_args()
