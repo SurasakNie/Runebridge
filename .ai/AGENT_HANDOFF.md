@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 5 are complete, and the Phase 6 plan merged through PR #12. P6-001B now provides a refusal-by-default isolated runner, strict live provenance, command/environment guards, privacy and secret gates, and fake-CLI tests. Its public adapter registry is empty, so no real vendor or live execution is enabled.
+Phases 0.5A through 5 are complete, the Phase 6 plan merged through PR #12, and P6-001B merged through PR #13 at `124efe0`. The refusal-by-default isolated runner provides strict live provenance, command/environment guards, privacy and secret gates, and fake-CLI tests. Its public adapter registry remains empty, so no real vendor or live execution is enabled. P6-001C Claude adapter implementation is next.
 
 ## Last Agent
 
@@ -10,12 +10,12 @@ Phases 0.5A through 5 are complete, and the Phase 6 plan merged through PR #12. 
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-21 |
-| Branch | codex/phase-6-isolated-runner |
-| Task | P6-001B isolated runner and provenance implementation |
+| Branch | codex/post-phase-6-runner-reconciliation |
+| Task | Post-P6-001B merge reconciliation |
 
 ## What Was Changed
 
-- Reconciled the merged Phase 6 plan and completed P6-001B pending review.
+- Reconciled P6-001B after PR #13 merged into `main` at `124efe0`.
 - Added a strict `LIVE_RUN_METADATA.json` schema and deterministic provenance gate.
 - Added an isolated Python runner with an empty real-adapter registry, explicit live/approval inputs, allowlisted environment, command guards, timeout handling, no-write scope, privacy checks, two-pass secret scanning, and sanitized atomic evidence publication.
 - Strengthened the shared secret gate to detect quoted JSON credential fields.
@@ -54,9 +54,9 @@ Initial focused runner, gate, and scaffold tests passed 35 tests; the review pri
 
 ## Next Recommended Step
 
-Review and manually merge P6-001B, then implement Claude planner/reviewer adapters under P6-001C without executing live calls.
+Implement Claude planner/reviewer adapters under P6-001C using fake-CLI contract tests only; do not register them or execute live calls.
 
 ## Warnings
 
-Do not register a real adapter, execute a vendor, or enable automated GitHub operations in P6-001B. Keep future merges human-controlled.
+Do not register a real adapter, execute a vendor, or enable automated GitHub operations in P6-001C. Keep future merges human-controlled.
 
