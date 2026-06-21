@@ -17,7 +17,7 @@
 
 | ID | Task | Status | Dependency / approval |
 |---|---|---|---|
-| P6-001A | Approve the Phase 6 live-vendor validation plan | Complete pending merge | Human review and manual merge |
+| P6-001A | Approve the Phase 6 live-vendor validation plan | Pending review and merge | Human review and manual merge |
 | P6-001B | Implement isolated runner, provenance format, and negative tests | Blocked | P6-001A merged; implementation PR contains no live calls |
 | P6-001C | Implement Claude live adapters behind refusal-by-default controls | Blocked | P6-001B merged |
 | P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; explicit per-run human approval |
