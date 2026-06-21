@@ -622,3 +622,23 @@ test_result: pass; 88 tests, stale-status scan, diff hygiene, and full pre-commi
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: phase-6-claude-adapters
+summary: Added unregistered Claude planner/reviewer contracts with bounded commands, role artifact validation, measured budget enforcement, and fake-CLI tests.
+files_changed:
+  - tools/bridge/live/run_isolated_validation.py
+  - tools/bridge/live/claude_adapters.py
+  - tests/live/test_claude_adapters.py
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - docs/Phase-6-Live-Vendor-Validation-Plan.md
+test_result: pass; 28 focused tests, 96 complete tests, diff hygiene, and full pre-commit suite passed
+human_review_needed: true
+```
+
