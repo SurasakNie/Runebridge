@@ -14,7 +14,7 @@ import tempfile
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Callable, Mapping, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -60,6 +60,17 @@ class LiveRefusal(ValidationError):
 
 
 @dataclass(frozen=True)
+class ParsedArtifact:
+    name: str
+    content: bytes
+    normalized: dict[str, object]
+    budget_result: str = "not_reported"
+
+
+ResultParser = Callable[[str, "ValidationConfig"], ParsedArtifact]
+
+
+@dataclass(frozen=True)
 class AdapterSpec:
     command: tuple[str, ...]
     cli_name: str
@@ -68,6 +79,7 @@ class AdapterSpec:
     credentials_available: bool
     model_identifier: str | None = None
     environment_keys: tuple[str, ...] = ()
+    result_parser: ResultParser | None = None
 
 
 @dataclass(frozen=True)
@@ -255,6 +267,12 @@ def parse_result(stdout: str) -> dict[str, object]:
     return value
 
 
+def parse_generic_artifact(stdout: str, _config: ValidationConfig) -> ParsedArtifact:
+    normalized = parse_result(stdout)
+    content = (json.dumps(normalized, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    return ParsedArtifact("NORMALIZED_RESULT.json", content, normalized)
+
+
 def validate_normalized_result(value: object) -> None:
     if isinstance(value, dict):
         for key, item in value.items():
@@ -356,8 +374,12 @@ def run_isolated_validation(
             raise ValidationError("blocked command invocation detected")
         if workspace_files(workspace):
             raise ValidationError("vendor command wrote outside the approved no-write scope")
-        normalized = parse_result(stdout)
-        normalized_bytes = write_json(candidate / "NORMALIZED_RESULT.json", normalized)
+        parsed = (spec.result_parser or parse_generic_artifact)(stdout, config)
+        validate_normalized_result(parsed.normalized)
+        if Path(parsed.name).name != parsed.name or not parsed.name:
+            raise ValidationError("adapter returned an invalid artifact name")
+        artifact_path = candidate / parsed.name
+        artifact_path.write_bytes(parsed.content)
         shutil.copyfile(log_path, candidate / "BLOCKED_COMMANDS.log")
         # P6-001B measures generic JSON/privacy parsing and a no-write workspace.
         # Role-specific adapters must measure their artifact schema before registration.
@@ -368,14 +390,14 @@ def run_isolated_validation(
             "blocked_command_count": 0,
             "budget_ceiling_usd": config.budget_ceiling_usd,
             # Fixtures record the approved ceiling only; vendor adapters must enforce it.
-            "budget_result": "not_reported",
+            "budget_result": parsed.budget_result,
             "cli_name": spec.cli_name,
             "cli_version": spec.cli_version,
             "credentials_available": spec.credentials_available,
             "execution": "live",
             "exit_code": 0,
             "model_identifier": spec.model_identifier,
-            "result_sha256": hashlib.sha256(normalized_bytes).hexdigest(),
+            "result_sha256": hashlib.sha256(parsed.content).hexdigest(),
             "role": config.role,
             "run_date": config.run_date,
             "schema_valid": True,

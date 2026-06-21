@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 5 are complete, the Phase 6 plan merged through PR #12, and P6-001B merged through PR #13 at `124efe0`. The refusal-by-default isolated runner provides strict live provenance, command/environment guards, privacy and secret gates, and fake-CLI tests. Its public adapter registry remains empty, so no real vendor or live execution is enabled. P6-001C Claude adapter implementation is next.
+Phases 0.5A through 5 are complete, and the Phase 6 plan and isolated runner are merged. P6-001C now provides Claude planner/reviewer command construction, structured-envelope parsing, role-schema validation, measured budget enforcement, and fake-CLI tests. The public adapter registry remains empty, so no real vendor or live execution is enabled.
 
 ## Last Agent
 
@@ -10,12 +10,14 @@ Phases 0.5A through 5 are complete, the Phase 6 plan merged through PR #12, and 
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-21 |
-| Branch | codex/post-phase-6-runner-reconciliation |
-| Task | Post-P6-001B merge reconciliation |
+| Branch | codex/phase-6-claude-adapters |
+| Task | P6-001C Claude planner/reviewer adapter contracts |
 
 ## What Was Changed
 
-- Reconciled P6-001B after PR #13 merged into `main` at `124efe0`.
+- Added unregistered Claude planner/reviewer adapter contracts with tools disabled, no session persistence, strict JSON Schema output, and a numeric budget cap.
+- Added role artifact normalization to `PLAN.md` and `REVIEW_CLAUDE.json`, including authoritative schema-gate coverage.
+- Added fail-closed tests for malformed envelopes, schema errors, error results, missing cost, and budget overruns.
 - Added a strict `LIVE_RUN_METADATA.json` schema and deterministic provenance gate.
 - Added an isolated Python runner with an empty real-adapter registry, explicit live/approval inputs, allowlisted environment, command guards, timeout handling, no-write scope, privacy checks, two-pass secret scanning, and sanitized atomic evidence publication.
 - Strengthened the shared secret gate to detect quoted JSON credential fields.
@@ -42,7 +44,7 @@ Phases 0.5A through 5 are complete, the Phase 6 plan merged through PR #12, and 
 
 ## Tests Run
 
-Initial focused runner, gate, and scaffold tests passed 35 tests; the review privacy pass covered 20 tests. The complete suite passed all 88 tests, including unchanged Phase 5 end-to-end coverage. Python compilation, ShellCheck, secret scanning, and the full pre-commit suite passed.
+The focused Claude/runner contract suite passed 28 tests. The complete suite passed all 96 tests, including unchanged Phase 5 end-to-end coverage. Python compilation, ShellCheck, secret scanning, and the full pre-commit suite passed.
 
 ## Known Issues
 
@@ -54,7 +56,7 @@ Initial focused runner, gate, and scaffold tests passed 35 tests; the review pri
 
 ## Next Recommended Step
 
-Implement Claude planner/reviewer adapters under P6-001C using fake-CLI contract tests only; do not register them or execute live calls.
+Review and manually merge P6-001C. P6-001D remains blocked until merge and a separate explicit per-run approval authorizes bounded Claude execution.
 
 ## Warnings
 

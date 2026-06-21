@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B merged through PR #13 with no enabled real vendor adapters; P6-001C Claude adapter implementation is next.
+Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B merged through PR #13; P6-001C Claude adapter contracts are complete pending review with no enabled real vendor adapters.
 
 ## Objective
 
