@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B implements the isolated runner with no enabled real vendor adapters and is complete pending review.
+Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B merged through PR #13 with no enabled real vendor adapters; P6-001C Claude adapter implementation is next.
 
 ## Objective
 
