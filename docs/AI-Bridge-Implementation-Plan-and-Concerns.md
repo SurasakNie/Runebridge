@@ -1,6 +1,6 @@
 # AI Bridge Initial Setup Audit and Revised Implementation Plan
 
-> **Historical audit notice (updated 2026-06-21):** Sections 1-6 preserve the evidence and findings from the 2026-06-19 initial-setup audit. The current implementation state is tracked in `README.md`, `.ai/TASKS.md`, and `.ai/AGENT_HANDOFF.md`. Phases 0.5A through 4 are complete; Phase 5 full dry-run validation is next. Live Antigravity, live Qwen, automated GitHub operations, and repository-level Actions restrictions remain deferred.
+> **Historical audit notice (updated 2026-06-21):** Sections 1-6 preserve the evidence and findings from the 2026-06-19 initial-setup audit. The current implementation state is tracked in `README.md`, `.ai/TASKS.md`, and `.ai/AGENT_HANDOFF.md`. Phases 0.5A through 5 are complete; Phase 6 live-vendor validation planning is next. Live Antigravity, live Qwen, automated GitHub operations, and repository-level Actions restrictions remain deferred.
 
 - **Repository:** `SurasakNie/Runebridge`
 - **Default branch:** `main`
@@ -10,7 +10,7 @@
 - **Audit date:** 2026-06-19
 - **Phase 0.5A status:** Complete on `claude/latest-drafts-ptdnpq` as of 2026-06-19
 
-**Audit result:** **PASS - Initial setup findings resolved; Phases 0.5A through 4 are complete and Phase 5 is next**
+**Audit result:** **PASS - Initial setup findings resolved; Phases 0.5A through 5 are complete and Phase 6 planning is next**
 
 ---
 
@@ -326,7 +326,7 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 ## Final Decision
 
-**Phases 0.5A through 4 are complete. Phase 5 full dry-run validation is next; future merges remain human-controlled.**
+**Phases 0.5A through 5 are complete. Phase 6 live-vendor validation planning is next; future merges remain human-controlled.**
 
 Use deterministic mock adapters for Qwen and Antigravity until their deferred live integration requirements are met. Install and verify the conductor GitHub App before any automated PR operation. Repository-level Actions restrictions remain deferred pending explicit owner approval.
 

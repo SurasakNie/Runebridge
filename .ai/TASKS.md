@@ -4,13 +4,13 @@
 
 | Field | Value |
 |---|---|
-| Task ID | P5-001 |
-| Goal | Validate the complete dry-run pipeline in all approved modes |
+| Task ID | P6-001 |
+| Goal | Plan staged Phase 6 live-vendor validation |
 | Owner | Human + Codex |
-| Status | Complete pending manual merge of PR #10 |
-| Branch | codex/phase-5-full-dry-run |
-| Related files | `tools/bridge/orchestrate.sh`, `.bridge/`, `tests/`, Phase 5 validation report |
-| Risk level | RSK-1 for end-to-end dry-run validation |
+| Status | Ready for planning; Phase 5 merged through PR #10 |
+| Branch | To be created from `main` |
+| Related files | `docs/Vendor-CLI-Validation.md`, `tools/bridge/adapters/`, Phase 6 plan |
+| Risk level | RSK-2 for planning; live validation risk to be classified before execution |
 | Required mode | Manual repository maintenance |
 
 ## Phase 5 Work Items
@@ -40,7 +40,7 @@
 | P3-001A | Implement seven deterministic adapter stubs | Complete | Phase 2 schemas and gates |
 | P3-001B | Enforce dry-run-only fail-closed behavior | Complete | Live mode exits 2 before writing |
 | P3-001C | Add schema-valid and byte-stability tests | Complete | Twenty-seven total tests pass |
-| P3-001D | Run local and protected verification | In progress | Local suite passed; PR checks pending |
+| P3-001D | Run local and protected verification | Complete | PR #7 merged with protected checks passing |
 
 ## Phase 2 Work Items
 
@@ -108,4 +108,5 @@
 | P2-001 | Implement schemas and deterministic gates | 2026-06-21 | PR #6 merged with fifteen tests and protected checks passing |
 | P3-001 | Implement deterministic dry-run adapters | 2026-06-21 | PR #7 merged with 27 tests and protected checks passing |
 | P4-001 | Implement Pattern A conductor | 2026-06-21 | PR #8 merged with 59 tests and protected checks passing |
+| P5-001 | Validate the full dry-run pipeline | 2026-06-21 | PR #10 merged with 67 tests, guarded evidence, and protected checks passing |
 

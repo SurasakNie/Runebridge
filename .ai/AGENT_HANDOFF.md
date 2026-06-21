@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 4 are complete. Phase 5 official guarded runs for all three modes exit 0, two-root rehearsals are byte-identical, per-run command logs are empty, and 67 local tests plus all protected checks pass. PR #10 awaits manual merge.
+Phases 0.5A through 5 are complete. PR #10 merged the guarded Phase 5 validation into `main` at `24cb2dca2b51b6ed907f8873f39678da72ba2fd5`. All three modes exit 0, two-root rehearsals are byte-identical on the same host, command logs are empty, and 67 tests plus all protected checks pass. Phase 6 live-vendor validation planning is next.
 
 ## Last Agent
 
@@ -10,60 +10,42 @@ Phases 0.5A through 4 are complete. Phase 5 official guarded runs for all three 
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-21 |
-| Branch | codex/phase-5-full-dry-run |
-| Task | Phase 5 full dry-run validation |
+| Branch | codex/post-phase-5-reconciliation |
+| Task | Post-Phase 5 reconciliation |
 
 ## What Was Changed
 
-- Added a secret-free `.env.example` and documented credential handling.
-- Added Python dependency setup, pre-commit hooks, and an environment diagnostic.
-- Added the Phase 0.5B smoke-test structure and five passing tests.
-- Installed and verified Bash, `jq`, `shellcheck`, and gitleaks.
-- Recorded the public-visibility decision and verified the active `main` ruleset read-only.
-- Defined least-privilege GitHub Actions and conductor App permission contracts.
-- Split the remaining Phase 0.5B work into approval and dependency-aware subtasks.
-- Authenticated as `SurasakNie` and audited repository security settings read-only.
-- Enabled secret scanning, push protection, and resolved-conversation enforcement with human approval.
-- Added SHA-pinned, read-only Phase 0.5B baseline workflows.
-- Fixed the Gitleaks job by fetching full Git history; all three PR checks now pass.
-- Added the three verified GitHub Actions contexts to `Protect main` with no bypass actors.
+- Confirmed PR #10 was squash-merged into `main`.
+- Reconciled project status, roadmap, active task, handoff, and historical audit summary after Phase 5 completion.
+- Preserved the Phase 5 evidence: three guarded successful modes, same-host byte identity, empty external-command logs, and sanitized runtime metadata.
+- Marked Phase 6 live-vendor validation planning as next without enabling live vendors or automated GitHub operations.
+- Corrected the stale Phase 3 verification ledger row to match merged PR #7.
 
 ## Files Modified
 
-- `.env.example`
-- `.pre-commit-config.yaml`
-- `tools/requirements.txt`
-- `tools/check_environment.py`
-- `tests/gates/test_environment.py`
-- `docs/Environment-and-Security-Setup.md`
-- `docs/Runebridge-Private-Repository-Architecture.md`
 - `README.md`
 - `.ai/PROJECT_BRIEF.md`
 - `.ai/TASKS.md`
-- `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
-- `docs/Vendor-CLI-Validation.md`
-- `docs/Phase-1-Repository-Scaffold-Plan.md`
+- `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
 
 ## Tests Run
 
-`pytest -q tests` passed all 59 tests. Python compilation, schema validation, ShellCheck, the complete pre-commit suite, and the manual environment hook passed. Gitleaks found no leaks.
-
-Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, structured live calls and explicit failure exits. Qwen Code and Antigravity were inspected without consuming model tokens or exposing credentials.
+`pytest -q tests -p no:cacheprovider` passed all 67 tests. The tracked-Markdown stale-status scan, diff hygiene check, and full pre-commit suite passed.
 
 ## Known Issues
 
-- Adapter shell scripts are not yet created.
-- Conductor is not yet created.
-- Actions allowlisting and repository SHA-pinning enforcement are deferred until Phase 2 dependencies are finalized; current workflows are SHA-pinned and read-only.
+- `CHANGES.diff` is empty in every Phase 5 dry run, so real end-to-end scope-drift enforcement remains deferred.
+- Injected failures validate conductor control flow rather than genuine adapter-generated failures.
+- Live Qwen remains deferred until a provider is selected; Antigravity remains deferred until a supported headless interface exists.
 - The conductor GitHub App must be installed and verified before automated PR operations; its minimum permission contract is defined.
 
 ## Next Recommended Step
 
-Perform final human review and manually merge PR #10. Do not enable live vendors or automated GitHub operations.
+Create and approve a bounded Phase 6 plan before any live-vendor validation.
 
 ## Warnings
 
-Do not run the conductor until all gates and adapters are in place.
+Do not enable live vendors or automated GitHub operations during planning. Keep future merges human-controlled.
 
