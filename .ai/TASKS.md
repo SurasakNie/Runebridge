@@ -4,14 +4,24 @@
 
 | Field | Value |
 |---|---|
-| Task ID | P3-001 |
-| Goal | Implement deterministic dry-run role adapters |
+| Task ID | P4-001 |
+| Goal | Implement the dry-run-only Pattern A conductor |
 | Owner | Human + Codex |
 | Status | In progress; implementation and local verification complete, protected PR checks pending |
-| Branch | codex/phase-3-adapter-plan |
-| Related files | `tools/bridge/adapters/`, `tests/adapters/`, `docs/Phase-3-Deterministic-Adapters-Plan.md` |
-| Risk level | RSK-1 for role artifact contracts |
+| Branch | codex/phase-4-conductor |
+| Related files | `tools/bridge/orchestrate.sh`, `tests/conductor/`, `docs/Phase-4-Pattern-A-Conductor-Plan.md` |
+| Risk level | RSK-1 for cross-stage orchestration behavior |
 | Required mode | Manual repository maintenance |
+
+## Phase 4 Work Items
+
+| ID | Task | Status | Dependency / approval |
+|---|---|---|---|
+| P4-001A | Implement explicit stage maps for three modes | Complete | Phase 2 gates and Phase 3 adapters |
+| P4-001B | Implement halt, report, and bounded retry behavior | Complete | P4-001A |
+| P4-001C | Preserve RSK-0 and dry-run-only controls | Complete | Exit 2 tests pass |
+| P4-001D | Add all-stage fault-injection tests | Complete | 24 conductor tests pass |
+| P4-001E | Run local and protected verification | In progress | 59 local tests pass; PR checks pending |
 
 ## Phase 3 Work Items
 
@@ -86,4 +96,5 @@
 | P05B-001 | Establish environment, security, permissions, and tooling setup | 2026-06-20 | Baseline, host tools, security controls, CI checks, and final audit complete |
 | P1-001 | Implement approved repository scaffold | 2026-06-20 | PR #5 merged with seven tests and protected checks passing |
 | P2-001 | Implement schemas and deterministic gates | 2026-06-21 | PR #6 merged with fifteen tests and protected checks passing |
+| P3-001 | Implement deterministic dry-run adapters | 2026-06-21 | PR #7 merged with 27 tests and protected checks passing |
 

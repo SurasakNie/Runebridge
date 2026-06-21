@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
-from common import GateError, fail, read_front_matter, validate
+from common import GateArgumentParser, GateError, fail, read_front_matter, validate
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
+    parser = GateArgumentParser()
     parser.add_argument("plan", type=Path)
     args = parser.parse_args()
     try:
