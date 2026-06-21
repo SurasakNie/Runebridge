@@ -112,7 +112,7 @@ def write_evidence(task_dir: Path, log_source: Path, args: argparse.Namespace, e
         "conductor_exit_code": exit_code,
         "credentials_available": False,
         "mode": args.mode,
-        "python_executable": str(Path(sys.executable).resolve()),
+        "python_executable_name": Path(sys.executable).name,
         "python_version": ".".join(str(part) for part in sys.version_info[:3]),
         "run_date": args.date,
         "task_id": args.task,

@@ -77,7 +77,7 @@ def test_guarded_modes_are_valid_and_reproducible(
     assert not (forbidden & names)
     assert (first_task / "EXTERNAL_COMMANDS.log").read_bytes() == b""
     metadata = json.loads((first_task / "RUN_METADATA.json").read_text(encoding="utf-8"))
-    assert metadata["python_executable"] == str(Path(sys.executable).resolve())
+    assert metadata["python_executable_name"] == Path(sys.executable).name
     assert metadata["python_version"] == ".".join(str(part) for part in sys.version_info[:3])
     assert hashes(first_task) == hashes(second_task)
     gate = subprocess.run(
