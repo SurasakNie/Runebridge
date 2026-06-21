@@ -13,6 +13,6 @@
 - `REVIEW_CLAUDE.json`
 - `FINAL_REPORT.md`
 
-The `qwen-led` mode intentionally omits `REVIEW_QWEN.json`. Schemas and artifact-generation behavior are deferred to later phases.
+The `qwen-led` mode intentionally omits `REVIEW_QWEN.json`. Phase 5 guarded evidence may also include `EXTERNAL_COMMANDS.log` and `RUN_METADATA.json`.
 
 Do not store credentials, raw authentication output, local tool configuration, temporary logs, or unrelated generated files here.

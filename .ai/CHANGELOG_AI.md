@@ -524,3 +524,26 @@ test_result: pass; workflow YAML, 59 tests, full pre-commit suite, ShellCheck, a
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: phase-5-full-dry-run
+summary: Added a guarded dry-run harness, validated all three modes, and committed sanitized same-host reproducibility evidence.
+files_changed:
+  - tools/bridge/run_guarded_dry_run.py
+  - tests/e2e/test_full_dry_run.py
+  - .bridge/P5-SAFE-001/
+  - .bridge/P5-QWEN-001/
+  - .bridge/P5-DUAL-001/
+  - docs/Phase-5-Full-Dry-Run-Plan.md
+  - docs/Phase-5-Full-Dry-Run-Validation.md
+  - .gitignore
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; 67 tests, compilation, pre-commit, ShellCheck, gitleaks, environment diagnostic, and all protected GitHub checks passed
+human_review_needed: true
+```
+

@@ -1,0 +1,1 @@
+{"task_id":"P5-DUAL-001","verifier":"mock","result":"pass","checks":[{"name":"dry-run","status":"pass","detail":"deterministic mock verification"}],"failing_tests":[],"artifacts":[],"dry_run":true}

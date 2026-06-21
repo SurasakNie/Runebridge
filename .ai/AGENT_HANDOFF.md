@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 4 are complete. PR #8 merged the dry-run-only Pattern A conductor after 59 tests and protected checks passed. Phase 5 full dry-run validation is next. PR #9 reconciles CI duplication, marks the Antigravity prompt future-only, and updates post-merge status.
+Phases 0.5A through 4 are complete. Phase 5 official guarded runs for all three modes exit 0, two-root rehearsals are byte-identical, per-run command logs are empty, and 67 local tests plus all protected checks pass. PR #10 awaits manual merge.
 
 ## Last Agent
 
@@ -10,8 +10,8 @@ Phases 0.5A through 4 are complete. PR #8 merged the dry-run-only Pattern A cond
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-21 |
-| Branch | claude/peaceful-turing-oavcmh |
-| Task | Post-Phase 4 reconciliation and CI cleanup |
+| Branch | codex/phase-5-full-dry-run |
+| Task | Phase 5 full dry-run validation |
 
 ## What Was Changed
 
@@ -61,7 +61,7 @@ Phase 0.6 verified Claude Code and Codex CLI with bounded, noninteractive, struc
 
 ## Next Recommended Step
 
-Merge PR #9 after the full current test suite and protected checks pass, then start Phase 5 validation from updated `main`.
+Perform final human review and manually merge PR #10. Do not enable live vendors or automated GitHub operations.
 
 ## Warnings
 
