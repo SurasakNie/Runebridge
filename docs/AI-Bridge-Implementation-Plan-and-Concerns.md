@@ -293,7 +293,7 @@ DRY_RUN_MODE=true bash tools/bridge/orchestrate.sh --task T001 --mode safe-defau
 
 Repeat for each approved mode only after its contract is complete.
 
-**Exit gate:** The pipeline creates all required artifacts, passes gates and CI, opens a test PR through the approved authentication path, and performs no live vendor call.
+**Exit gate:** The guarded pipeline creates all required artifacts for every approved mode, passes gates and CI, records no blocked external command or credential use, and performs no live vendor call. The protected Phase 5 PR is opened manually; automated PR creation remains deferred.
 
 ### Phase 6 - Validate live vendors
 

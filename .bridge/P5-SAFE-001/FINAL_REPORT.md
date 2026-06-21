@@ -1,0 +1,21 @@
+# Final Report
+
+- task_id: P5-SAFE-001
+- mode: safe-default
+- status: pass
+- failed_stage: none
+- completed_stages:
+  - task
+  - plan
+  - plan_gate
+  - rsk0_gate
+  - build_codex
+  - scope_gate
+  - qwen_review
+  - qwen_review_gate
+  - verify
+  - verify_gate
+  - claude_review
+  - claude_review_gate
+  - secret_gate
+  - artifact_gate

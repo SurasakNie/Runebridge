@@ -38,6 +38,7 @@ coverage/
 
 # Logs and temp
 *.log
+!.bridge/*/EXTERNAL_COMMANDS.log
 *.tmp
 
 # NOTE: .bridge/*/ is intentionally NOT listed here.

@@ -7,8 +7,8 @@
 | Task ID | P5-001 |
 | Goal | Validate the complete dry-run pipeline in all approved modes |
 | Owner | Human + Codex |
-| Status | Ready; Phase 4 merged through PR #8 |
-| Branch | To be created from `main` |
+| Status | In progress; official evidence and local verification complete, protected PR checks pending |
+| Branch | codex/phase-5-full-dry-run |
 | Related files | `tools/bridge/orchestrate.sh`, `.bridge/`, `tests/`, Phase 5 validation report |
 | Risk level | RSK-1 for end-to-end dry-run validation |
 | Required mode | Manual repository maintenance |
@@ -17,11 +17,11 @@
 
 | ID | Task | Status | Dependency / approval |
 |---|---|---|---|
-| P5-001A | Run `safe-default` full dry run | Planned | Phase 4 merged |
-| P5-001B | Run `qwen-led` full dry run | Planned | Phase 4 merged |
-| P5-001C | Run `dual-builder` full dry run | Planned | Phase 4 merged |
-| P5-001D | Verify artifacts, halt behavior, and no external calls | Planned | P5-001A through P5-001C |
-| P5-001E | Publish sanitized Phase 5 evidence | Planned | P5-001D |
+| P5-001A | Run `safe-default` full dry run | Complete | Guarded run exited 0 |
+| P5-001B | Run `qwen-led` full dry run | Complete | Guarded run exited 0 |
+| P5-001C | Run `dual-builder` full dry run | Complete | Guarded run exited 0 |
+| P5-001D | Verify artifacts, halt behavior, and no external calls | Complete locally | 67 tests and empty per-run logs |
+| P5-001E | Publish sanitized Phase 5 evidence | In progress | Report complete; protected checks pending |
 
 ## Phase 4 Work Items
 

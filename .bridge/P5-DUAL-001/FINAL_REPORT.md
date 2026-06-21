@@ -1,0 +1,22 @@
+# Final Report
+
+- task_id: P5-DUAL-001
+- mode: dual-builder
+- status: pass
+- failed_stage: none
+- completed_stages:
+  - task
+  - plan
+  - plan_gate
+  - rsk0_gate
+  - build_codex
+  - build_qwen
+  - scope_gate
+  - qwen_review
+  - qwen_review_gate
+  - verify
+  - verify_gate
+  - claude_review
+  - claude_review_gate
+  - secret_gate
+  - artifact_gate
