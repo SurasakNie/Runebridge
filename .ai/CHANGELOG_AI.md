@@ -563,3 +563,20 @@ test_result: pass; 67 tests, tracked-Markdown status scan, diff hygiene, and ful
 human_review_needed: true
 ```
 
+```yaml
+date: 2026-06-21
+agent: Codex
+task_id: phase-6-live-vendor-plan
+summary: Drafted the gated Phase 6 live-vendor validation plan without enabling live calls or automation.
+files_changed:
+  - docs/Phase-6-Live-Vendor-Validation-Plan.md
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+test_result: pass; 67 tests, Phase 6 work-item consistency, diff hygiene, and full pre-commit suite passed
+human_review_needed: true
+```
+

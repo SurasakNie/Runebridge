@@ -7,11 +7,27 @@
 | Task ID | P6-001 |
 | Goal | Plan staged Phase 6 live-vendor validation |
 | Owner | Human + Codex |
-| Status | Ready for planning; Phase 5 merged through PR #10 |
-| Branch | To be created from `main` |
-| Related files | `docs/Vendor-CLI-Validation.md`, `tools/bridge/adapters/`, Phase 6 plan |
+| Status | Plan drafted; pending human review and manual merge |
+| Branch | codex/phase-6-live-vendor-plan |
+| Related files | `docs/Phase-6-Live-Vendor-Validation-Plan.md`, `docs/Vendor-CLI-Validation.md`, `tools/bridge/adapters/` |
 | Risk level | RSK-2 for planning; live validation risk to be classified before execution |
 | Required mode | Manual repository maintenance |
+
+## Phase 6 Work Items
+
+| ID | Task | Status | Dependency / approval |
+|---|---|---|---|
+| P6-001A | Approve the Phase 6 live-vendor validation plan | Pending review and merge | Human review and manual merge |
+| P6-001B | Implement isolated runner, provenance format, and negative tests | Blocked | P6-001A merged; implementation PR contains no live calls |
+| P6-001C | Implement Claude live adapters behind refusal-by-default controls | Blocked | P6-001B merged |
+| P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; explicit per-run human approval |
+| P6-001E | Implement Codex live adapter and scope-sandbox tests | Blocked | P6-001B merged |
+| P6-001F | Execute bounded Codex validation | Blocked | P6-001E merged; explicit per-run human approval |
+| P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |
+| P6-001H | Decide Qwen provider and authentication path | Blocked | Explicit RSK-0 human decision; no provider calls before approval |
+| P6-001I | Reassess Antigravity headless interface | Deferred | Supported headless contract required |
+| P6-001J | Integrate approved live roles into the conductor | Blocked | Individual and hybrid evidence approved |
+| P6-001K | Publish Phase 6 validation report and reconcile status | Blocked | Prior Phase 6 gates complete or formally deferred |
 
 ## Phase 5 Work Items
 
