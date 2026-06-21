@@ -2,7 +2,7 @@
 
 ## Status
 
-Planning artifact only. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment.
+Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B implements the isolated runner with no enabled real vendor adapters and is complete pending review.
 
 ## Objective
 

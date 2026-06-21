@@ -12,13 +12,16 @@ def test_reserved_scaffold_paths_exist() -> None:
         "schemas",
         "tools/bridge/adapters",
         "tools/bridge/gates",
+        "tools/bridge/live",
     ):
         assert (ROOT / relative_path).is_dir(), relative_path
 
     for relative_path in (
         "tools/bridge/adapters/claude_plan.sh",
         "schemas/plan.schema.json",
+        "schemas/live-run-metadata.schema.json",
         "tools/bridge/gates/check_plan.py",
+        "tools/bridge/live/run_isolated_validation.py",
         ".bridge/README.md",
         "docs/Repository-Directory-Ownership.md",
     ):
