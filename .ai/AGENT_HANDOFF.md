@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 5 are complete, and the Phase 6 plan and isolated runner are merged. P6-001C now provides Claude planner/reviewer command construction, structured-envelope parsing, role-schema validation, measured budget enforcement, and fake-CLI tests. The public adapter registry remains empty, so no real vendor or live execution is enabled.
+Phases 0.5A through 5 are complete, and P6-001C merged through PR #15 at `16ae812`. Claude planner/reviewer command construction, structured-envelope parsing, role-schema validation, measured budget enforcement, and fake-CLI tests are available. The public adapter registry remains empty, so no real vendor or live execution is enabled. P6-001D awaits explicit per-run approval.
 
 ## Last Agent
 
@@ -10,8 +10,8 @@ Phases 0.5A through 5 are complete, and the Phase 6 plan and isolated runner are
 |---|---|
 | Tool | Codex |
 | Date | 2026-06-21 |
-| Branch | codex/phase-6-claude-adapters |
-| Task | P6-001C Claude planner/reviewer adapter contracts |
+| Branch | codex/post-phase-6-claude-reconciliation |
+| Task | Post-P6-001C merge reconciliation |
 
 ## What Was Changed
 
@@ -56,9 +56,9 @@ The focused Claude/runner contract suite passed 28 tests. The complete suite pas
 
 ## Next Recommended Step
 
-Review and manually merge P6-001C. P6-001D remains blocked until merge and a separate explicit per-run approval authorizes bounded Claude execution.
+Obtain explicit P6-001D inputs and one approval identifier per Claude run. Before invoking Claude, verify the installed CLI flags and authentication mechanism without recording account or session details.
 
 ## Warnings
 
-Do not register a real adapter, execute a vendor, or enable automated GitHub operations in P6-001C. Keep future merges human-controlled.
+Do not register a real adapter or execute Claude until P6-001D inputs and per-run approval are recorded. Keep future merges human-controlled.
 

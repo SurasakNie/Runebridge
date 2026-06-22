@@ -1,6 +1,6 @@
 # AI Bridge Initial Setup Audit and Revised Implementation Plan
 
-> **Historical audit notice (updated 2026-06-21):** Sections 1-6 preserve the evidence and findings from the 2026-06-19 initial-setup audit. The current implementation state is tracked in `README.md`, `.ai/TASKS.md`, and `.ai/AGENT_HANDOFF.md`. Phases 0.5A through 5 are complete; P6-001C Claude adapter contracts are complete pending review with live execution disabled. Live Antigravity, live Qwen, automated GitHub operations, and repository-level Actions restrictions remain deferred.
+> **Historical audit notice (updated 2026-06-21):** Sections 1-6 preserve the evidence and findings from the 2026-06-19 initial-setup audit. The current implementation state is tracked in `README.md`, `.ai/TASKS.md`, and `.ai/AGENT_HANDOFF.md`. Phases 0.5A through 5 are complete; P6-001C Claude adapter contracts merged through PR #15 and P6-001D awaits explicit per-run approval. Live Antigravity, live Qwen, automated GitHub operations, and repository-level Actions restrictions remain deferred.
 
 - **Repository:** `SurasakNie/Runebridge`
 - **Default branch:** `main`
@@ -326,7 +326,7 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 ## Final Decision
 
-**Phases 0.5A through 5 are complete. P6-001C Claude adapter contracts are complete pending review with live execution disabled; future merges remain human-controlled.**
+**Phases 0.5A through 5 are complete. P6-001C Claude adapter contracts merged through PR #15; P6-001D awaits explicit per-run approval, and future merges remain human-controlled.**
 
 Use deterministic mock adapters for Qwen and Antigravity until their deferred live integration requirements are met. Install and verify the conductor GitHub App before any automated PR operation. Repository-level Actions restrictions remain deferred pending explicit owner approval.
 
