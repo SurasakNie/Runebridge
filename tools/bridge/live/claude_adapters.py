@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import math
 from pathlib import Path
-from typing import Any
 
 import yaml
 from jsonschema import Draft7Validator
@@ -13,19 +12,12 @@ from tools.bridge.live.run_isolated_validation import (
     ParsedArtifact,
     ValidationConfig,
     ValidationError,
+    read_schema,
 )
 
 
-ROOT = Path(__file__).resolve().parents[3]
 ROLE_ARTIFACTS = {"planner": "PLAN.md", "reviewer": "REVIEW_CLAUDE.json"}
 ROLE_SCHEMAS = {"planner": "plan.schema.json", "reviewer": "review.schema.json"}
-
-
-def read_schema(name: str) -> dict[str, Any]:
-    value = json.loads((ROOT / "schemas" / name).read_text(encoding="utf-8"))
-    if not isinstance(value, dict):
-        raise ValidationError("role schema must contain a JSON object")
-    return value
 
 
 def validate_role_payload(role: str, payload: dict[str, object], task_id: str) -> None:

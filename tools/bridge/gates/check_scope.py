@@ -17,7 +17,7 @@ def changed_paths_from_diff(path: Path) -> set[str]:
     changed: set[str] = set()
     for line in lines:
         if line.startswith("--- a/") or line.startswith("+++ b/"):
-            changed.add(normalize(line[6:]))
+            changed.add(normalize(line[6:].split("\t", 1)[0].split(" ", 1)[0]))
     return changed
 
 

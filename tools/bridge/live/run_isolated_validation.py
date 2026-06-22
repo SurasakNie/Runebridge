@@ -51,6 +51,13 @@ FORBIDDEN_RESULT_KEYS = {
 }
 
 
+def read_schema(name: str) -> dict[str, object]:
+    value = json.loads((ROOT / "schemas" / name).read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValidationError("schema must contain a JSON object")
+    return value
+
+
 class ValidationError(RuntimeError):
     pass
 
@@ -65,6 +72,7 @@ class ParsedArtifact:
     content: bytes
     normalized: dict[str, object]
     budget_result: str = "not_reported"
+    extra_artifacts: tuple[tuple[str, bytes], ...] = ()
 
 
 ResultParser = Callable[[str, "ValidationConfig"], ParsedArtifact]
@@ -80,6 +88,7 @@ class AdapterSpec:
     model_identifier: str | None = None
     environment_keys: tuple[str, ...] = ()
     result_parser: ResultParser | None = None
+    allowed_workspace_files: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -296,6 +305,28 @@ def workspace_files(workspace: Path) -> list[str]:
     return [path.relative_to(workspace).as_posix() for path in sorted(workspace.rglob("*")) if path.is_file()]
 
 
+def validate_workspace_scope(workspace: Path, allowed_files: Sequence[str]) -> None:
+    actual = set(workspace_files(workspace))
+    allowed = set(allowed_files)
+    if not allowed:
+        if actual:
+            raise ValidationError("vendor command wrote outside the approved no-write scope")
+        return
+    invalid_allowed = [
+        path
+        for path in allowed
+        if Path(path).is_absolute() or ".." in Path(path).parts or Path(path).as_posix() != path
+    ]
+    if invalid_allowed:
+        raise ValidationError("adapter declared an invalid workspace scope")
+    drift = sorted(actual - allowed)
+    missing = sorted(allowed - actual)
+    if drift:
+        raise ValidationError("vendor command wrote outside the approved workspace scope")
+    if missing:
+        raise ValidationError("vendor command did not produce the approved workspace file")
+
+
 def write_json(path: Path, value: object) -> bytes:
     content = (json.dumps(value, indent=2, sort_keys=True) + "\n").encode("utf-8")
     path.write_bytes(content)
@@ -372,19 +403,28 @@ def run_isolated_validation(
         blocked_commands = [line for line in log_path.read_text(encoding="utf-8").splitlines() if line]
         if blocked_commands:
             raise ValidationError("blocked command invocation detected")
-        if workspace_files(workspace):
-            raise ValidationError("vendor command wrote outside the approved no-write scope")
+        validate_workspace_scope(workspace, spec.allowed_workspace_files)
         parsed = (spec.result_parser or parse_generic_artifact)(stdout, config)
         validate_normalized_result(parsed.normalized)
-        if Path(parsed.name).name != parsed.name or not parsed.name:
-            raise ValidationError("adapter returned an invalid artifact name")
-        artifact_path = candidate / parsed.name
-        artifact_path.write_bytes(parsed.content)
+        artifacts = ((parsed.name, parsed.content), *parsed.extra_artifacts)
+        artifact_names: set[str] = set()
+        artifact_sha256s: dict[str, str] = {}
+        for name, content in artifacts:
+            if Path(name).name != name or not name:
+                raise ValidationError("adapter returned an invalid artifact name")
+            if not isinstance(content, bytes):
+                raise ValidationError("adapter returned non-byte artifact content")
+            if name in artifact_names:
+                raise ValidationError("adapter returned a duplicate artifact name")
+            artifact_names.add(name)
+            artifact_sha256s[name] = hashlib.sha256(content).hexdigest()
+            (candidate / name).write_bytes(content)
         shutil.copyfile(log_path, candidate / "BLOCKED_COMMANDS.log")
         # P6-001B measures generic JSON/privacy parsing and a no-write workspace.
         # Role-specific adapters must measure their artifact schema before registration.
         metadata = {
             "approval_id_sha256": hashlib.sha256(config.approval_id.encode("utf-8")).hexdigest(),
+            "artifact_sha256s": artifact_sha256s,
             "attempt_count": 1,
             "authentication_class": spec.authentication_class,
             "blocked_command_count": 0,

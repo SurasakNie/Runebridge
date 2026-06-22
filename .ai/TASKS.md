@@ -7,8 +7,8 @@
 | Task ID | P6-001 |
 | Goal | Implement the Codex builder live adapter and scope-sandbox tests without executing live calls |
 | Owner | Human + Codex |
-| Status | Ready for implementation |
-| Branch | Not started |
+| Status | Complete pending human review and manual merge |
+| Branch | codex/phase-6-codex-builder-adapter |
 | Related files | `tools/bridge/live/`, `tools/bridge/gates/`, `schemas/`, `tests/live/`, Phase 6 plan |
 | Risk level | RSK-1 implementation; adapter registration and live calls prohibited |
 | Required mode | Manual repository maintenance |
@@ -21,7 +21,7 @@
 | P6-001B | Implement isolated runner, provenance format, and negative tests | Complete | PR #13 merged at `124efe0`; no real adapters enabled; 88 tests pass |
 | P6-001C | Implement Claude live adapters behind refusal-by-default controls | Complete | PR #15 merged at `16ae812`; public registry remains empty; 96 tests pass |
 | P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; awaiting explicit per-run human approval and the P6-001D execution preflight in the Phase 6 plan |
-| P6-001E | Implement Codex live adapter and scope-sandbox tests | Ready | P6-001B merged; implementation and fake-CLI tests only |
+| P6-001E | Implement Codex live adapter and scope-sandbox tests | Complete pending merge | Fake-CLI contracts pass; public registry remains empty |
 | P6-001F | Execute bounded Codex validation | Blocked | P6-001E merged; explicit per-run human approval |
 | P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |
 | P6-001H | Decide Qwen provider and authentication path | Blocked | Explicit RSK-0 human decision; no provider calls before approval |
@@ -125,4 +125,3 @@
 | P3-001 | Implement deterministic dry-run adapters | 2026-06-21 | PR #7 merged with 27 tests and protected checks passing |
 | P4-001 | Implement Pattern A conductor | 2026-06-21 | PR #8 merged with 59 tests and protected checks passing |
 | P5-001 | Validate the full dry-run pipeline | 2026-06-21 | PR #10 merged with 67 tests, guarded evidence, and protected checks passing |
-

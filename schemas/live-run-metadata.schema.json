@@ -13,6 +13,7 @@
     "authentication_class",
     "credentials_available",
     "approval_id_sha256",
+    "artifact_sha256s",
     "exit_code",
     "attempt_count",
     "timeout_seconds",
@@ -59,6 +60,17 @@
     "approval_id_sha256": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
+    },
+    "artifact_sha256s": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      },
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9._-]+$"
+      }
     },
     "exit_code": {
       "const": 0
