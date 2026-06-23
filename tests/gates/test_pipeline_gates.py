@@ -120,6 +120,12 @@ def test_scope_gate_parses_changed_paths_from_diff(tmp_path: Path) -> None:
     write_plan(plan)
     diff.write_text("--- a/src/app.py\n+++ b/src/app.py\n", encoding="utf-8")
     assert run_gate("check_scope.py", plan, "--diff", diff).returncode == 0
+    diff.write_text(
+        "--- a/src/app.py\t2026-06-22 00:00:00 +0000\n"
+        "+++ b/src/app.py\t2026-06-22 00:00:01 +0000\n",
+        encoding="utf-8",
+    )
+    assert run_gate("check_scope.py", plan, "--diff", diff).returncode == 0
     diff.write_text("--- a/src/other.py\n+++ b/src/other.py\n", encoding="utf-8")
     assert run_gate("check_scope.py", plan, "--diff", diff).returncode == 1
 

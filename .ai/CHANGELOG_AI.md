@@ -658,3 +658,26 @@ files_changed:
 test_result: documentation-only reconciliation; no source change; last verified suite was 96 tests at PR #15
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-22
+agent: Codex
+task_id: phase-6-codex-builder-adapter
+summary: Added an unregistered Codex builder contract with synthetic workspace scope validation, multi-artifact publication, budget enforcement, and fake-CLI tests.
+files_changed:
+  - schemas/live-run-metadata.schema.json
+  - tools/bridge/gates/check_scope.py
+  - tools/bridge/live/run_isolated_validation.py
+  - tools/bridge/live/codex_adapters.py
+  - tests/live/test_codex_adapters.py
+  - tests/gates/test_pipeline_gates.py
+  - README.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+  - docs/Phase-6-Live-Vendor-Validation-Plan.md
+test_result: partial-pass; 56 focused live/gate regression tests, status consistency, Python compilation, 109 full tests, diff hygiene, and stale-status scan passed; full pre-commit stalled during local hook environment setup
+human_review_needed: true
+```
