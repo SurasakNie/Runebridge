@@ -4,13 +4,13 @@
 
 | Field | Value |
 |---|---|
-| Task ID | P6-001 |
-| Goal | Implement the Codex builder live adapter and scope-sandbox tests without executing live calls |
+| Task ID | P6-001F |
+| Goal | Execute bounded Codex builder validation only after explicit per-run approval |
 | Owner | Human + Codex |
-| Status | Complete pending human review and manual merge |
-| Branch | codex/phase-6-codex-builder-adapter |
+| Status | Blocked pending explicit human inputs and per-run approval |
+| Branch | Not started |
 | Related files | `tools/bridge/live/`, `tools/bridge/gates/`, `schemas/`, `tests/live/`, Phase 6 plan |
-| Risk level | RSK-1 implementation; adapter registration and live calls prohibited |
+| Risk level | RSK-1 paid live execution; each run requires explicit approval |
 | Required mode | Manual repository maintenance |
 
 ## Phase 6 Work Items
@@ -21,8 +21,8 @@
 | P6-001B | Implement isolated runner, provenance format, and negative tests | Complete | PR #13 merged at `124efe0`; no real adapters enabled; 88 tests pass |
 | P6-001C | Implement Claude live adapters behind refusal-by-default controls | Complete | PR #15 merged at `16ae812`; public registry remains empty; 96 tests pass |
 | P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; awaiting explicit per-run human approval and the P6-001D execution preflight in the Phase 6 plan |
-| P6-001E | Implement Codex live adapter and scope-sandbox tests | Complete pending merge | Fake-CLI contracts pass; public registry remains empty |
-| P6-001F | Execute bounded Codex validation | Blocked | P6-001E merged; explicit per-run human approval |
+| P6-001E | Implement Codex live adapter and scope-sandbox tests | Complete | PR #18 merged at `c724769`; fake-CLI contracts pass; public registry remains empty |
+| P6-001F | Execute bounded Codex validation | Blocked | Confirm Codex CLI flags, authentication mechanism, fixture, model, timeout, budget, and approval ID per run |
 | P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |
 | P6-001H | Decide Qwen provider and authentication path | Blocked | Explicit RSK-0 human decision; no provider calls before approval |
 | P6-001I | Reassess Antigravity headless interface | Deferred | Supported headless contract required |

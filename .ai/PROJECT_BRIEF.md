@@ -3,7 +3,7 @@
 **Project:** Runebridge
 **Purpose:** Vendor-neutral AI development pipeline coordinating Claude Code, OpenAI Codex CLI, Qwen Code, and Google Antigravity through Git branches, explicit artifacts, deterministic safety gates, independent reviews, and human-approved pull requests.
 **Stack:** Bash, Python 3.11+, GitHub Actions
-**Status:** Phases 0.5A through 5 complete; P6-001E Codex builder adapter contract is complete pending review, with the public adapter registry empty and live execution disabled
+**Status:** Phases 0.5A through 5 complete; P6-001E Codex builder adapter contract merged through PR #18, with the public adapter registry empty and P6-001F live execution blocked pending explicit approval
 
 ## Constraints
 
