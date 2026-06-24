@@ -8,7 +8,7 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 
 | Field | Value |
 |---|---|
-| Tool | Codex |
+| Tool | Manual repository maintenance |
 | Date | 2026-06-23 |
 | Branch | codex/post-phase-6-codex-reconciliation |
 | Task | Post-P6-001E merge reconciliation |
@@ -30,9 +30,18 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 - `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
 - `docs/Phase-6-Live-Vendor-Validation-Plan.md`
 
+P6-001E implementation surface from PR #18:
+
+- `tools/bridge/live/run_isolated_validation.py`
+- `tools/bridge/live/codex_adapters.py`
+- `tools/bridge/gates/check_scope.py`
+- `schemas/live-run-metadata.schema.json`
+- `tests/live/test_codex_adapters.py`
+- `tests/gates/test_pipeline_gates.py`
+
 ## Tests Run
 
-Documentation-only reconciliation; no source or test files changed. The last verified GitHub checks on PR #18 were Python baseline, Pre-commit baseline, and Security baseline passing before merge.
+Documentation-only reconciliation; no source or test files changed. Status consistency passed locally. The last verified GitHub checks on PR #18 were Python baseline, Pre-commit baseline, and Security baseline passing before merge. The prior local full pre-commit stall remains unresolved and must be rechecked before any P6-001F execution work.
 
 ## Known Issues
 
@@ -48,4 +57,4 @@ Obtain explicit P6-001F inputs and one approval identifier per Codex run. Before
 
 ## Warnings
 
-Do not register a real adapter or execute Codex until P6-001F inputs and per-run approval are recorded. Keep future merges human-controlled.
+Do not register a real adapter, execute Claude for P6-001D, execute Codex for P6-001F, or enable automated GitHub operations until the applicable explicit per-run approval and preflight inputs are recorded. Keep future merges human-controlled.
