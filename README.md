@@ -3,7 +3,7 @@ Vendor-neutral AI development pipeline coordinating Claude Code, Codex, Qwen Cod
 
 AI Bridge is a planned, vendor-neutral workflow for coordinating multiple AI coding tools through a Git repository. It uses explicit files and Git branches as the shared context between Claude Code, OpenAI Codex CLI, Qwen Code, Google Antigravity, and a human reviewer.
 
-> **Project status:** Phases 0.5A through 5 are complete; the Phase 6 plan, isolated runner, Claude planner/reviewer adapter contracts, and Codex builder adapter contract are merged through P6-001E. The public adapter registry remains empty and live execution is still disabled; P6-001F Codex validation remains blocked on explicit per-run approval. Public visibility is intentional; `main` requires a pull request, resolved conversations, and three passing baseline checks. The solo-project policy requires no GitHub approval, but merge remains a manual owner action. Secret scanning and push protection are enabled.
+> **Project status:** Phases 0.5A through 5 are complete; the Phase 6 plan, isolated runner, Claude planner/reviewer adapter contracts, and Codex builder adapter contract are merged through P6-001E. The public adapter registry remains empty and live execution is still disabled in the shared remote environment; P6-001F Codex validation remains blocked on explicit per-run approval. Qwen provider/auth decisions are now recorded, the shared remote environment remains blocked by egress-policy `403 Forbidden` responses to approved provider hosts, and the approved operating model is `PC-first, VM-later` for live Qwen execution. Public visibility is intentional; `main` requires a pull request, resolved conversations, and three passing baseline checks. The solo-project policy requires no GitHub approval, but merge remains a manual owner action. Secret scanning and push protection are enabled.
 
 ## Goal
 
@@ -97,14 +97,23 @@ When enabled:
 - Phase 0: Planning approval
 - Phase 0.5A: Contract and documentation alignment - merged into `main`
 - Phase 0.5B: Environment, security, permissions, and tooling setup - merged into `main`
-- Phase 0.6: Vendor identity and CLI validation - complete; Qwen and Antigravity live paths deferred
+- Phase 0.6: Vendor identity and CLI validation - complete; Antigravity remains deferred, and Qwen live execution is approved only on an environment with allowed provider egress
 - Phase 1: Repository scaffold - complete
 - Phase 2: Schemas and deterministic gates - complete
 - Phase 3: Adapter stubs and deterministic dry-run outputs - complete
 - Phase 4: Pattern A conductor - complete
 - Phase 5: Full dry-run pipeline validation - complete
-- Phase 6: Live vendor integration - Codex builder contract merged; bounded live validation awaits explicit approval
+- Phase 6: Live vendor integration - Codex builder contract merged; bounded live validation awaits explicit approval; live Qwen uses a PC-first external runner model
 - Phase 7: Mode benchmarking and deferred dashboard evaluation
+
+## Live Qwen Operating Model
+
+- The `Runebridge` repository remains the single source of truth.
+- Live Qwen does not require a second repository.
+- The shared remote environment cannot reach approved Qwen provider hosts and returns `403 Forbidden` at the egress proxy.
+- Live Qwen therefore runs only from an approved external environment with working provider egress, starting with the owner's PC.
+- When the PC runner is unavailable, `Runebridge` still operates with mock or deferred Qwen behavior; no run may claim live Qwen unless that external runner actually executed the Qwen role.
+- A VM or server may later replace the PC runner, but that is an infrastructure option rather than a repository split.
 
 ## Current Documentation
 

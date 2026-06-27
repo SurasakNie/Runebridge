@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B merged through PR #13; P6-001C Claude adapter contracts merged through PR #15; P6-001E Codex builder adapter contract merged through PR #18 with no enabled real vendor adapters. P6-001F awaits explicit per-run approval.
+Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B merged through PR #13; P6-001C Claude adapter contracts merged through PR #15; P6-001E Codex builder adapter contract merged through PR #18 with no enabled real vendor adapters. P6-001F awaits explicit per-run approval. Qwen provider/auth decisions are recorded, but the shared remote environment currently receives egress-policy `403 Forbidden` responses from approved provider hosts, so live Qwen follows the approved `PC-first, VM-later` external-runner model.
 
 ## Objective
 
@@ -19,7 +19,9 @@ Phase 6 must distinguish these claims:
 - Phase 5 validated `safe-default`, `qwen-led`, and `dual-builder` in deterministic dry-run mode.
 - The Phase 4 conductor rejects non-dry-run execution with exit code 2.
 - Claude Code and Codex CLI previously passed bounded, noninteractive, structured-output checks using existing first-party authenticated sessions.
-- Qwen Code is installed, but its live provider and credential source are not selected.
+- Qwen Code is installed, and provider/auth decisions are recorded outside committed repository state.
+- The shared remote environment currently cannot reach approved Qwen provider hosts and returns egress-policy `403 Forbidden`.
+- The approved PC runner can reach the provider and has produced a schema-valid synthetic Qwen reviewer artifact.
 - Antigravity exposes only an IDE launcher; no supported headless structured-output contract is approved.
 - Automated Git and GitHub operations remain disabled until the scoped conductor GitHub App is separately approved, installed, and verified.
 
@@ -30,6 +32,7 @@ Tool versions and authentication state are execution-time facts. Every implement
 - Do not enable live calls in this planning PR.
 - Do not modify the Phase 4 conductor or existing deterministic adapters in this planning PR.
 - Do not install a Qwen provider, start a subscription, or create provider credentials without explicit human approval.
+- Do not treat the shared remote environment as live-Qwen-capable while approved provider hosts return egress-policy `403 Forbidden`.
 - Do not automate Antigravity through its GUI or IDE launcher.
 - Do not install or modify a GitHub App, repository ruleset, Actions permissions, secrets, or environments.
 - Do not run live vendors on customer code, private downstream repositories, or sensitive prompts.
@@ -47,6 +50,7 @@ Tool versions and authentication state are execution-time facts. Every implement
 8. **No hidden fallback.** A failed live adapter must not fall back to a mock adapter inside the same task.
 9. **No implicit retry.** Only explicitly classified transient failures may retry once.
 10. **Human-controlled Git.** Phase 6 validation does not commit, push, open, approve, or merge pull requests automatically.
+11. **Environment capability is explicit.** A run may claim live Qwen only when it was executed from an approved external environment with working provider egress.
 
 ## Risk and Approval Gates
 
@@ -58,6 +62,7 @@ Tool versions and authentication state are execution-time facts. Every implement
 | Run one bounded Claude or Codex synthetic live call | RSK-1 | Human approval recorded before the run |
 | Enable a live role in an isolated hybrid pipeline run | RSK-1 | Prior adapter evidence plus human approval |
 | Select or purchase a Qwen provider; create or rotate credentials | RSK-0 | Stop and obtain explicit human decision |
+| Approve a new external environment as a live Qwen runner | RSK-1 | Record the environment, egress result, and credential-handling method before execution |
 | Install or change the conductor GitHub App or repository permissions | RSK-0 | Stop and obtain explicit human decision |
 | Automate an unsupported Antigravity interface | Prohibited | No approval path in Phase 6 |
 | Merge any Phase 6 PR | RSK-0 | Explicit manual merge approval |
@@ -143,6 +148,12 @@ The runner must record only `credentials_available: true|false`, the authenticat
 - Codex builder validation runs in a disposable synthetic workspace with the narrowest supported write sandbox and no Git repository.
 - Any attempted blocked command, unexpected child process, or network helper fails the run even if the vendor returns success.
 
+### Qwen environment note
+
+- The shared remote environment is currently not an approved Qwen live runner because approved provider hosts return egress-policy `403 Forbidden`.
+- The first approved live Qwen runner is the owner's PC using a local clone of the same `Runebridge` repository.
+- A later VM or server may replace that PC runner if it satisfies the same synthetic-fixture, secret-handling, and evidence rules.
+
 ## Vendor Sequence
 
 | Order | Vendor / role | Entry condition | Live validation | Exit condition |
@@ -151,8 +162,8 @@ The runner must record only `credentials_available: true|false`, the authenticat
 | 2 | Claude reviewer | Claude planner contract passes | Review fixed synthetic artifacts without source writes | Schema-valid `REVIEW_CLAUDE.json`; no scope or secret violation |
 | 3 | Codex builder | Disposable workspace and scope checks pass | Apply one trivial synthetic edit under write sandbox | Valid `EDIT_CODEX.md` and non-empty `CHANGES.diff`; writes match plan scope |
 | 4 | Claude + Codex hybrid | Individual contracts pass | Planner and reviewer live, builder live, unvalidated roles explicitly mocked or omitted | Full provenance; all deterministic gates pass; no all-live claim |
-| 5 | Qwen decision gate | Human selects provider, credential source, model, and budget | No call until RSK-0 decision is recorded | Approved contract or formal continued deferral |
-| 6 | Qwen roles | Decision gate passes | Planner, builder, then reviewer validated separately | Same contract quality as Claude/Codex; no self-review in `qwen-led` |
+| 5 | Qwen decision gate | Human selects provider, credential source, model, budget, and approved runner | No call until RSK-0 decision is recorded | Approved contract or formal continued deferral |
+| 6 | Qwen roles | Decision gate passes and approved runner has working provider egress | Planner, builder, then reviewer validated separately on the approved external runner | Same contract quality as Claude/Codex; no self-review in `qwen-led` |
 | 7 | Antigravity interface review | Supported headless interface is documented by vendor | Contract inspection before any inference | Structured output, bounded execution, auth status, and exit-code contract, or continued deferral |
 | 8 | Mode integration | Every required role for a mode has passed | Validate one mode at a time | Mode-specific live/hybrid claim accurately recorded |
 
@@ -169,7 +180,7 @@ Claude and Codex order may be swapped only if the implementation PR documents wh
 | P6-001E | Implement Codex builder live adapter and scope sandbox tests | None | Unit and contract tests pass with fake CLI fixtures |
 | P6-001F | Execute bounded Codex validation | Approved Codex calls only | Sanitized evidence reviewed and merged |
 | P6-001G | Validate one explicitly hybrid Claude/Codex pipeline | Approved Claude/Codex calls only | Provenance and all deterministic gates pass |
-| P6-001H | Decide Qwen provider and authentication path | None until human decision | Approved selection or explicit continued deferral |
+| P6-001H | Decide Qwen provider, authentication path, and approved runner | None until human decision | Approved selection plus an approved live-capable environment, or explicit continued deferral |
 | P6-001I | Reassess Antigravity headless interface | Help/docs inspection only | Approved contract or explicit continued deferral |
 | P6-001J | Integrate approved live roles into conductor | None during implementation PR | Default dry-run preserved; protected checks pass |
 | P6-001K | Publish Phase 6 validation report and reconcile status | No new calls | Evidence, limitations, and claims reviewed |
@@ -300,7 +311,7 @@ Phase 6 may be marked complete only when:
 - a sanitized validation report states exactly which vendors, roles, and modes were validated;
 - all protected checks pass and the owner manually approves the final merge.
 
-If Qwen remains deferred, `qwen-led`, `safe-default`, and `dual-builder` cannot receive an all-live claim because each requires a Qwen role. If Antigravity remains deferred, the deterministic mock verifier remains the only approved verifier.
+If Qwen remains unavailable in the current environment, `qwen-led`, `safe-default`, and `dual-builder` cannot receive an all-live claim there because each requires a Qwen role. If an approved external runner executes Qwen successfully, only runs using that runner may claim live Qwen. If Antigravity remains deferred, the deterministic mock verifier remains the only approved verifier.
 
 ## Decisions Required Before Execution
 
@@ -308,7 +319,7 @@ If Qwen remains deferred, `qwen-led`, `safe-default`, and `dual-builder` cannot 
 2. Approve numeric timeout and budget ceilings for Claude and Codex fixtures.
 3. Approve the exact synthetic fixture content and permitted workspace paths.
 4. Decide whether existing interactive Claude/Codex sessions are acceptable for official evidence or whether a separate credential mechanism is required.
-5. Select or continue to defer the Qwen provider and credential source.
+5. Select or continue to defer the Qwen provider, credential source, and approved live-capable runner.
 6. Confirm Antigravity remains deferred unless a supported headless contract appears.
 7. Decide whether conductor live integration is in Phase 6 after individual validation or deferred to a follow-on phase.
 

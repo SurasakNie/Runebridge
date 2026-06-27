@@ -3,7 +3,7 @@
 **Project:** Runebridge
 **Purpose:** Vendor-neutral AI development pipeline coordinating Claude Code, OpenAI Codex CLI, Qwen Code, and Google Antigravity through Git branches, explicit artifacts, deterministic safety gates, independent reviews, and human-approved pull requests.
 **Stack:** Bash, Python 3.11+, GitHub Actions
-**Status:** Phases 0.5A through 5 complete; P6-001E Codex builder adapter contract merged through PR #18, with the public adapter registry empty and P6-001F live execution blocked pending explicit approval
+**Status:** Phases 0.5A through 5 complete; P6-001E Codex builder adapter contract merged through PR #18, with the public adapter registry empty and P6-001F live execution blocked pending explicit approval. Qwen provider/auth decisions are recorded, the shared remote environment remains blocked by egress-policy `403 Forbidden`, and live Qwen follows the approved `PC-first, VM-later` external-runner model
 
 ## Constraints
 
@@ -13,6 +13,9 @@
 - All pipeline artifacts are committed to the feature branch for audit trail.
 - Role adapters write only their designated artifacts; the conductor owns shared `.ai/` state and Git/PR operations.
 - Narrative text may be English or Thai, but machine-readable keys, enums, identifiers, paths, commands, code, and artifact names remain canonical.
+- Live Qwen credentials remain outside the repository and outside committed artifacts.
+- The shared remote environment is not an approved live Qwen runner while provider hosts return egress-policy `403 Forbidden`.
+- The approved fallback is to run live Qwen from an external environment, starting with the owner's PC, while the repository and artifact contracts remain unchanged.
 
 ## Canonical repository layout
 
