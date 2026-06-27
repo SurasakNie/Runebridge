@@ -2,37 +2,30 @@
 
 ## Current State
 
-Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude planner/reviewer adapter contracts, and Codex builder adapter contract are merged; PR #18 merged P6-001E into `main` at `c724769`. The public adapter registry remains empty, so no real vendor or live execution is enabled in the shared remote environment. Qwen provider/auth decisions are now recorded, the shared remote environment remains blocked by egress-policy `403 Forbidden`, and the approved operating model is `PC-first, VM-later` for Qwen live execution. P6-001D and P6-001F remain gated on explicit per-run human approval.
+Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude planner/reviewer adapter contracts, and Codex builder adapter contract are merged; PR #18 merged P6-001E into `main` at `c724769`. PR #21 merged the PC-first Qwen runner documentation and synthetic reviewer evidence into `main` at `579afe0`, and PR #22 added `docs/Branch-Cleanup-Log.md` recording post-PR #21 branch decisions. The public adapter registry remains empty, so no real vendor or live execution is enabled in the shared remote environment. Qwen provider/auth decisions are recorded, the shared remote environment remains blocked by egress-policy `403 Forbidden`, and the approved operating model is `PC-first, VM-later` for Qwen live execution. P6-001D and P6-001F remain gated on explicit per-run human approval.
 
 ## Last Agent
 
 | Field | Value |
 |---|---|
-| Tool | Codex |
+| Tool | Claude Code |
 | Date | 2026-06-27 |
-| Branch | codex/qwen-pc-runner-evidence |
-| Task | Document and stage PC-first live Qwen reviewer evidence |
+| Branch | claude/branch-cleanup-log (manual maintenance) |
+| Task | Post-PR #21 merge reconciliation and branch cleanup |
 
 ## What Was Changed
 
-- Recorded that approved Qwen provider hosts return egress-policy `403 Forbidden` from the shared remote environment.
-- Documented the approved `PC-first, VM-later` external-runner model for live Qwen while keeping `Runebridge` as the single source-of-truth repository.
-- Staged `P6-QWEN-REVIEW-001` evidence showing the approved PC runner can produce a schema-valid Qwen reviewer artifact for a synthetic fixture.
+- Reviewed and merged PR #21 (PC-first Qwen runner documentation and synthetic reviewer evidence) into `main` at `579afe0` after the P6-001H status wording was softened to match the provisional evidence framing.
+- Added `docs/Branch-Cleanup-Log.md` via PR #22 recording which feature branches were deleted (merged or stale) and which one is retained (`claude/tender-archimedes-3o31n8`, for its unratified P6-001F parameters).
+- Updated the `README.md` documentation index and reconciled this handoff and the changelog.
 - Kept the public adapter registry empty and shared-environment live execution disabled.
 
 ## Files Modified
 
 - `README.md`
-- `.bridge/P6-QWEN-REVIEW-001/TASK.md`
-- `.bridge/P6-QWEN-REVIEW-001/REVIEW_QWEN.json`
-- `.bridge/P6-QWEN-REVIEW-001/FINAL_REPORT.md`
-- `.ai/PROJECT_BRIEF.md`
-- `.ai/TASKS.md`
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
-- `docs/AI-Bridge-Implementation-Plan-and-Concerns.md`
-- `docs/Phase-6-Live-Vendor-Validation-Plan.md`
-- `docs/Vendor-CLI-Validation.md`
+- `docs/Branch-Cleanup-Log.md`
 
 P6-001E implementation surface from PR #18:
 
@@ -45,7 +38,7 @@ P6-001E implementation surface from PR #18:
 
 ## Tests Run
 
-Qwen reviewer artifact validation passed locally with `tools/bridge/gates/check_review.py --reviewer qwen`. JSON parsing also passed with `python -m json.tool`. Python dependencies were installed into the clone-local `.venv` before validation.
+Documentation-only reconciliation; no source or test files changed. The status-consistency test (`tests/docs/test_status_consistency.py`) passed locally (2 passed), and the PR #21 verification was reproduced before merge (`check_review.py --reviewer qwen` exit 0, `python -m json.tool` valid). The three protected baseline checks (Python, Pre-commit, Security) passed on PR #21 and PR #22.
 
 ## Known Issues
 
@@ -59,7 +52,7 @@ Qwen reviewer artifact validation passed locally with `tools/bridge/gates/check_
 
 ## Next Recommended Step
 
-Review and merge the Qwen runner documentation/evidence branch. Before promoting this to official Phase 6 live evidence, capture approval-bound live metadata and approval-ledger binding for the Qwen run.
+PR #21 is merged. Before promoting the staged Qwen evidence to official Phase 6 live evidence, capture approval-bound live metadata (`RUN_METADATA.json`) and approval-ledger binding for the Qwen run. Separately, decide whether the proposed P6-001F parameters retained on `claude/tender-archimedes-3o31n8` (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`) are the intended configuration; if so, lift them into `.ai/TASKS.md` and the Phase 6 plan via a clean change, then delete that branch. Delete the remaining merged/stale branches listed in `docs/Branch-Cleanup-Log.md`.
 
 ## Warnings
 

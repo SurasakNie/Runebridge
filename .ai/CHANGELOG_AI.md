@@ -719,3 +719,17 @@ files_changed:
 test_result: pass; Qwen reviewer artifact passed JSON parsing and tools/bridge/gates/check_review.py --reviewer qwen
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-27
+agent: Claude Code
+task_id: post-pr21-reconciliation-and-branch-cleanup
+summary: Reviewed and merged PR #21 (PC-first Qwen runner evidence) at 579afe0 after softening the P6-001H wording, added docs/Branch-Cleanup-Log.md via PR #22, and reconciled the documentation index and handoff.
+files_changed:
+  - README.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/Branch-Cleanup-Log.md
+test_result: pass; status-consistency test passed (2 passed) and the three protected baseline checks passed on PR #21 and PR #22
+human_review_needed: true
+```
