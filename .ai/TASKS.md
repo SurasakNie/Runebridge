@@ -24,7 +24,7 @@
 | P6-001E | Implement Codex live adapter and scope-sandbox tests | Complete | PR #18 merged at `c724769`; fake-CLI contracts pass; public registry remains empty |
 | P6-001F | Execute bounded Codex validation | Blocked | Confirm Codex CLI flags, authentication mechanism, fixture, model, timeout, budget, and approval ID per run |
 | P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |
-| P6-001H | Decide Qwen provider and authentication path | Blocked | Explicit RSK-0 human decision; no provider calls before approval |
+| P6-001H | Decide Qwen provider and authentication path | Complete; PC runner produced a schema-valid synthetic reviewer artifact; formal live evidence pending | Provider/auth path recorded; shared remote environment returns egress-policy `403 Forbidden` to approved Qwen provider hosts, so live Qwen uses the approved `PC-first, VM-later` runner model |
 | P6-001I | Reassess Antigravity headless interface | Deferred | Supported headless contract required |
 | P6-001J | Integrate approved live roles into the conductor | Blocked | Individual and hybrid evidence approved |
 | P6-001K | Publish Phase 6 validation report and reconcile status | Blocked | Prior Phase 6 gates complete or formally deferred |

@@ -698,3 +698,24 @@ files_changed:
 test_result: partial-pass; status consistency test passed and manual stale-status/diff hygiene checks passed; prior local full pre-commit stall remains unresolved
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-27
+agent: Codex
+task_id: phase-6-qwen-pc-runner-evidence
+summary: Recorded the approved PC-first live Qwen runner model and staged schema-valid synthetic Qwen reviewer evidence.
+files_changed:
+  - README.md
+  - .bridge/P6-QWEN-REVIEW-001/TASK.md
+  - .bridge/P6-QWEN-REVIEW-001/REVIEW_QWEN.json
+  - .bridge/P6-QWEN-REVIEW-001/FINAL_REPORT.md
+  - .ai/PROJECT_BRIEF.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/Vendor-CLI-Validation.md
+  - docs/Phase-6-Live-Vendor-Validation-Plan.md
+  - docs/AI-Bridge-Implementation-Plan-and-Concerns.md
+test_result: pass; Qwen reviewer artifact passed JSON parsing and tools/bridge/gates/check_review.py --reviewer qwen
+human_review_needed: true
+```
