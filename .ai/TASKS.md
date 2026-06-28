@@ -42,6 +42,7 @@ Phase 6 plan.
 | P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |
 | P6-001H | Decide Qwen provider and authentication path | Complete; PC runner produced a schema-valid synthetic reviewer artifact; formal live evidence pending | Provider/auth path recorded; shared remote environment returns egress-policy `403 Forbidden` to approved Qwen provider hosts, so live Qwen uses the approved `PC-first, VM-later` runner model |
 | P6-001H-EVID | Capture approval-bound Qwen live evidence (promote staged synthetic reviewer artifact) | Planned | Architect plan in `docs/Phase-6-Qwen-Live-Evidence-Plan.md`; needs builder approval-ledger + Qwen reviewer adapter (separate reviewed PRs) and a bounded live run on the approved PC runner |
+| P6-LEDGER-001 | Implement the approval-ledger mechanism (schema, fail-closed ledger, runner binding, fake-CLI tests) | Planned; awaiting builder | Plan-stage artifact `.bridge/P6-LEDGER-001/PLAN.md` (planner: claude) passes `check_plan.py`; build via the pipeline (Codex/Qwen), then Claude review. No live call; no adapter registration |
 | P6-001I | Reassess Antigravity headless interface | Deferred | Supported headless contract required |
 | P6-001J | Integrate approved live roles into the conductor | Blocked | Individual and hybrid evidence approved |
 | P6-001K | Publish Phase 6 validation report and reconcile status | Blocked | Prior Phase 6 gates complete or formally deferred |

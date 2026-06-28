@@ -125,6 +125,15 @@ per-run approval.
 6. Commit only the sanitized evidence (new task directory) to a review branch;
    the owner reviews and merges manually.
 
+## Pipeline Routing
+
+The approval-ledger portion (G2) is routed through the pipeline as task
+`P6-LEDGER-001`. Its Plan-stage artifact `.bridge/P6-LEDGER-001/PLAN.md`
+(planner: claude) is written and passes `check_plan.py`; a builder (Codex/Qwen)
+implements it from that plan, and Claude reviews. It makes no live call and
+registers no adapter, so it can be built off the PC runner. The Qwen reviewer
+adapter (G1) and the live run (G3/G4) remain separate, PC-gated steps.
+
 ## Files To Touch (builder PR, separate from this plan)
 
 - `schemas/approval-ledger.schema.json` (new)

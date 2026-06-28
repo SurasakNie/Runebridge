@@ -764,3 +764,19 @@ files_changed:
 test_result: pass; status-consistency test passed (2 passed)
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-28
+agent: Claude Code
+task_id: P6-LEDGER-001-plan
+summary: Routed the approval-ledger build through the pipeline by seeding the task and writing the Plan-stage artifact (planner claude) for the approval-ledger schema, fail-closed ledger, runner binding, and fake-CLI tests; no live call and no adapter registration.
+files_changed:
+  - .bridge/P6-LEDGER-001/TASK.md
+  - .bridge/P6-LEDGER-001/PLAN.md
+  - docs/Phase-6-Qwen-Live-Evidence-Plan.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; check_plan.py exit 0 on PLAN.md, TASK.md valid against task.schema.json, status-consistency test 2 passed
+human_review_needed: true
+```
