@@ -53,18 +53,24 @@ ratified those parameters, and they were lifted into `.ai/TASKS.md` and
 `docs/Phase-6-Live-Vendor-Validation-Plan.md` via a clean change, so the loss of
 the branch carries no remaining cost. No action remains for this branch.
 
-### Branches marked "deleted" on 2026-06-27 that still exist on `origin`
+### Branches marked "deleted" on 2026-06-27 that still existed on `origin` — now deleted
 
-These four were documented as deleted but remain present. They are squash-merged
-or intentionally superseded (their content is in `main` under new SHAs, or was
-deliberately not carried into the sanitized `main`), so the 2026-06-27 decision to
-drop them stands. They are pending the owner's manual deletion from the GitHub
-Branches page; agent sessions in the managed remote environment do not delete
-remote refs.
+These four were documented as deleted on 2026-06-27 but remained present. They were
+squash-merged or intentionally superseded (their content is in `main` under new
+SHAs, or was deliberately not carried into the sanitized `main`), so the
+2026-06-27 decision to drop them stood. An attempt to delete them with
+`git push origin --delete` from the managed remote environment returned
+`403 Forbidden` (the environment blocks destructive remote-ref deletion, and the
+GitHub MCP server exposes no delete-branch tool), so the owner deleted them
+manually from the GitHub Branches page on 2026-06-28. A `git fetch --prune`
+confirmed `origin` then held only `main` and the active maintenance branch.
 
 | Branch | Original rationale |
 |---|---|
-| `claude/remaining-tasks-tl4pt5` | Stale; superseded by PR #21. Unique operational specifics were intentionally not carried into sanitized `main`. |
+| `claude/remaining-tasks-tl4pt5` | Stale; superseded by PR #21. Unique content was DashScope/RAM/`qwen-turbo` operational specifics deliberately not carried into sanitized `main`; the ratified P6-001F parameters are now in `main`, so nothing of value was lost. |
 | `codex/phase-0.6-vendor-cli` | Merged via PR #3. |
 | `codex/phase-5-full-dry-run` | Merged via PR #10. |
 | `codex/phase-6-live-vendor-plan` | Merged via PR #12. |
+
+After this cleanup, `origin` holds only `main` and the active maintenance branch.
+No retained-for-later feature branches remain.

@@ -53,7 +53,7 @@ Documentation-only reconciliation; no source or test files changed. The status-c
 
 ## Next Recommended Step
 
-The P6-001F parameters are ratified and lifted into `.ai/TASKS.md` and the Phase 6 plan; P6-001F stays `Blocked` pending per-run approval and its execution preflight. The owner still needs to manually delete the four stale branches listed in the 2026-06-28 reconciliation entry of `docs/Branch-Cleanup-Log.md` from the GitHub Branches page. Before promoting the staged Qwen evidence to official Phase 6 live evidence, capture approval-bound live metadata (`RUN_METADATA.json`) and approval-ledger binding for the Qwen run.
+The P6-001F parameters are ratified and lifted into `.ai/TASKS.md` and the Phase 6 plan; P6-001F stays `Blocked` pending per-run approval and its execution preflight. Branch cleanup is complete: the owner manually deleted the four stale branches on 2026-06-28, so `origin` now holds only `main` and the active maintenance branch. Before promoting the staged Qwen evidence to official Phase 6 live evidence, capture approval-bound live metadata (`RUN_METADATA.json`) and approval-ledger binding for the Qwen run.
 
 ## Warnings
 
