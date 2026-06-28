@@ -11,7 +11,7 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 | Tool | Claude Code |
 | Date | 2026-06-28 |
 | Branch | claude/next-tasks-mgse3i (manual maintenance) |
-| Task | Ratify P6-001F parameters and reconcile branch-cleanup log |
+| Task | Ratify P6-001F parameters, reconcile branch cleanup, and author the Qwen live-evidence capture plan |
 
 ## What Was Changed
 
@@ -53,7 +53,7 @@ Documentation-only reconciliation; no source or test files changed. The status-c
 
 ## Next Recommended Step
 
-The P6-001F parameters are ratified and lifted into `.ai/TASKS.md` and the Phase 6 plan; P6-001F stays `Blocked` pending per-run approval and its execution preflight. Branch cleanup is complete: the owner manually deleted the four stale branches on 2026-06-28, so `origin` now holds only `main` and the active maintenance branch. Before promoting the staged Qwen evidence to official Phase 6 live evidence, capture approval-bound live metadata (`RUN_METADATA.json`) and approval-ledger binding for the Qwen run.
+The P6-001F parameters are ratified and lifted into `.ai/TASKS.md` and the Phase 6 plan; P6-001F stays `Blocked` pending per-run approval and its execution preflight. Branch cleanup is complete: the owner manually deleted the four stale branches on 2026-06-28, so `origin` now holds only `main` and the active maintenance branch. The architect plan for promoting the staged Qwen evidence to official Phase 6 live evidence is now `docs/Phase-6-Qwen-Live-Evidence-Plan.md` (tracked as `P6-001H-EVID`). It identifies the two builder prerequisites — an approval-ledger mechanism and a registered Qwen reviewer adapter (separate reviewed PRs, never in the shared remote environment) — and the bounded live run that must execute on the approved PC runner to emit a runner-generated `LIVE_RUN_METADATA.json`. No official metadata may be hand-authored.
 
 ## Warnings
 

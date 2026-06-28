@@ -153,6 +153,7 @@ The runner must record only `credentials_available: true|false`, the authenticat
 - The shared remote environment is currently not an approved Qwen live runner because approved provider hosts return egress-policy `403 Forbidden`.
 - The first approved live Qwen runner is the owner's PC using a local clone of the same `Runebridge` repository.
 - A later VM or server may replace that PC runner if it satisfies the same synthetic-fixture, secret-handling, and evidence rules.
+- `docs/Phase-6-Qwen-Live-Evidence-Plan.md` plans how to promote the staged synthetic Qwen reviewer evidence to official live evidence (approval-ledger binding and runner-emitted `LIVE_RUN_METADATA.json`).
 
 ## Vendor Sequence
 

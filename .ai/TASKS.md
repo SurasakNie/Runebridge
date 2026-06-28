@@ -41,6 +41,7 @@ Phase 6 plan.
 | P6-001F | Execute bounded Codex validation | Blocked | Parameters ratified 2026-06-28 (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`, direct runner, local-only); still requires verified Codex CLI flags, authentication mechanism, fixture, and per-run approval |
 | P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |
 | P6-001H | Decide Qwen provider and authentication path | Complete; PC runner produced a schema-valid synthetic reviewer artifact; formal live evidence pending | Provider/auth path recorded; shared remote environment returns egress-policy `403 Forbidden` to approved Qwen provider hosts, so live Qwen uses the approved `PC-first, VM-later` runner model |
+| P6-001H-EVID | Capture approval-bound Qwen live evidence (promote staged synthetic reviewer artifact) | Planned | Architect plan in `docs/Phase-6-Qwen-Live-Evidence-Plan.md`; needs builder approval-ledger + Qwen reviewer adapter (separate reviewed PRs) and a bounded live run on the approved PC runner |
 | P6-001I | Reassess Antigravity headless interface | Deferred | Supported headless contract required |
 | P6-001J | Integrate approved live roles into the conductor | Blocked | Individual and hybrid evidence approved |
 | P6-001K | Publish Phase 6 validation report and reconcile status | Blocked | Prior Phase 6 gates complete or formally deferred |
