@@ -9,22 +9,23 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 | Field | Value |
 |---|---|
 | Tool | Claude Code |
-| Date | 2026-06-27 |
-| Branch | claude/branch-cleanup-log (manual maintenance) |
-| Task | Post-PR #21 merge reconciliation and branch cleanup |
+| Date | 2026-06-28 |
+| Branch | claude/next-tasks-mgse3i (manual maintenance) |
+| Task | Ratify P6-001F parameters and reconcile branch-cleanup log |
 
 ## What Was Changed
 
-- Reviewed and merged PR #21 (PC-first Qwen runner documentation and synthetic reviewer evidence) into `main` at `579afe0` after the P6-001H status wording was softened to match the provisional evidence framing.
-- Added `docs/Branch-Cleanup-Log.md` via PR #22 recording which feature branches were deleted (merged or stale) and which one is retained (`claude/tender-archimedes-3o31n8`, for its unratified P6-001F parameters).
-- Updated the `README.md` documentation index and reconciled this handoff and the changelog.
+- Ratified the P6-001F execution parameters per explicit owner confirmation (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`, direct runner, local-only) and lifted them into `.ai/TASKS.md` and the Phase 6 plan via a clean change. P6-001F remains `Blocked` pending per-run approval and its execution preflight.
+- Added a "P6-001F Ratified Parameters and Execution Preflight" section to `docs/Phase-6-Live-Vendor-Validation-Plan.md`, mirroring the P6-001D preflight.
+- Reconciled `docs/Branch-Cleanup-Log.md` with the actual remote: the retained branch `claude/tender-archimedes-3o31n8` is gone (its parameters were preserved as text and are now ratified), and four branches marked deleted on 2026-06-27 still exist on `origin` pending the owner's manual deletion.
 - Kept the public adapter registry empty and shared-environment live execution disabled.
 
 ## Files Modified
 
-- `README.md`
+- `.ai/TASKS.md`
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
+- `docs/Phase-6-Live-Vendor-Validation-Plan.md`
 - `docs/Branch-Cleanup-Log.md`
 
 P6-001E implementation surface from PR #18:
@@ -52,7 +53,7 @@ Documentation-only reconciliation; no source or test files changed. The status-c
 
 ## Next Recommended Step
 
-PR #21 is merged. Before promoting the staged Qwen evidence to official Phase 6 live evidence, capture approval-bound live metadata (`RUN_METADATA.json`) and approval-ledger binding for the Qwen run. Separately, decide whether the proposed P6-001F parameters retained on `claude/tender-archimedes-3o31n8` (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`) are the intended configuration; if so, lift them into `.ai/TASKS.md` and the Phase 6 plan via a clean change, then delete that branch. Delete the remaining merged/stale branches listed in `docs/Branch-Cleanup-Log.md`.
+The P6-001F parameters are ratified and lifted into `.ai/TASKS.md` and the Phase 6 plan; P6-001F stays `Blocked` pending per-run approval and its execution preflight. The owner still needs to manually delete the four stale branches listed in the 2026-06-28 reconciliation entry of `docs/Branch-Cleanup-Log.md` from the GitHub Branches page. Before promoting the staged Qwen evidence to official Phase 6 live evidence, capture approval-bound live metadata (`RUN_METADATA.json`) and approval-ledger binding for the Qwen run.
 
 ## Warnings
 
