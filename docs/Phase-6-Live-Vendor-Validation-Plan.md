@@ -2,7 +2,7 @@
 
 ## Status
 
-Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B merged through PR #13; P6-001C Claude adapter contracts merged through PR #15; P6-001E Codex builder adapter contract merged through PR #18 with no enabled real vendor adapters. P6-001F awaits explicit per-run approval. Qwen provider/auth decisions are recorded, but the shared remote environment currently receives egress-policy `403 Forbidden` responses from approved provider hosts, so live Qwen follows the approved `PC-first, VM-later` external-runner model.
+Approved through PR #12 as the Phase 6 execution gate. This document does not authorize live inference, credential changes, provider subscriptions, GitHub automation, repository-setting changes, or deployment. P6-001B merged through PR #13; P6-001C Claude adapter contracts merged through PR #15; P6-001E Codex builder adapter contract merged through PR #18 with no enabled real vendor adapters. P6-001F parameters were ratified on 2026-06-28 (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`, direct runner, local-only) and it still awaits explicit per-run approval. Qwen provider/auth decisions are recorded, but the shared remote environment currently receives egress-policy `403 Forbidden` responses from approved provider hosts, so live Qwen follows the approved `PC-first, VM-later` external-runner model.
 
 ## Objective
 
@@ -153,6 +153,7 @@ The runner must record only `credentials_available: true|false`, the authenticat
 - The shared remote environment is currently not an approved Qwen live runner because approved provider hosts return egress-policy `403 Forbidden`.
 - The first approved live Qwen runner is the owner's PC using a local clone of the same `Runebridge` repository.
 - A later VM or server may replace that PC runner if it satisfies the same synthetic-fixture, secret-handling, and evidence rules.
+- `docs/Phase-6-Qwen-Live-Evidence-Plan.md` plans how to promote the staged synthetic Qwen reviewer evidence to official live evidence (approval-ledger binding and runner-emitted `LIVE_RUN_METADATA.json`).
 
 ## Vendor Sequence
 
@@ -336,3 +337,26 @@ These criteria gate P6-001D. None can be satisfied in CI or the dry-run sandbox;
 5. **Tools-disabled confirmation.** Verify at runtime that no tool, network helper, or child process executed beyond the single vendor invocation.
 
 Satisfying these is a prerequisite of the P6-001D acceptance criteria; it does not by itself authorize the run.
+
+## P6-001F Ratified Parameters and Execution Preflight (must pass before the first bounded Codex call)
+
+The owner ratified the following P6-001F parameters on 2026-06-28. Ratification records the intended configuration; it does **not** authorize a run.
+
+| Parameter | Value |
+|---|---|
+| Approval ID | `P6-001F-RUN-001` |
+| Model | `codex-mini-latest` |
+| Timeout | `30 s` |
+| Budget ceiling | `$0.06` |
+| Approach | Direct runner (`build_codex_adapter` + `run_isolated_validation`); not via the conductor |
+| Environment | Local-only execution on an approved runner |
+
+These criteria gate P6-001F. None can be satisfied in CI or the dry-run sandbox; each requires the real `codex` CLI and an approved session, exercised manually under explicit per-run human approval:
+
+1. **CLI flag verification.** Confirm every flag the Codex builder adapter constructs exists and behaves as assumed against the installed CLI version. Codex CLI flags are contract assumptions only — `codex --help` was previously blocked — so a renamed or unsupported flag fails the run; do not proceed on a structurally-tested-only assumption.
+2. **Recorded CLI version policy.** Pin and record the verified `cli_version`; reject versions outside the approved policy at preflight.
+3. **Approval-ledger binding.** Connect `approval_id` `P6-001F-RUN-001` to an external approval record. The run must refuse if the identifier is not present in the approved ledger for that vendor, role, and date.
+4. **Confirmed timeout and budget ceilings.** Apply the ratified `30 s` timeout and `$0.06` budget ceiling, and verify the budget-halt path fails closed without retry.
+5. **Write-sandbox confirmation.** Verify the disposable synthetic workspace uses the narrowest supported write sandbox with no Git repository, and that no tool, network helper, or child process executed beyond the single vendor invocation.
+
+Satisfying these is a prerequisite of the P6-001F acceptance criteria; it does not by itself authorize the run.

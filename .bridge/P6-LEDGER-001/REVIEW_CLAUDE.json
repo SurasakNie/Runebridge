@@ -1,0 +1,20 @@
+{
+  "task_id": "P6-LEDGER-001",
+  "reviewer": "claude",
+  "verdict": "approve",
+  "blockers": [],
+  "scope_drift": false,
+  "risk_assessment": "RSK-1",
+  "human_review_required": true,
+  "notes": [
+    "All 128 tests pass (+19 new ledger tests). check_plan.py, check_no_secrets.py, and the full suite pass.",
+    "All four acceptance criteria files are in scope: schemas/approval-ledger.schema.json, tools/bridge/live/approval-ledger.json, tools/bridge/live/run_isolated_validation.py, tests/live/test_approval_ledger.py. No files outside files_to_touch were modified.",
+    "Schema is valid draft-07 with additionalProperties: false at both levels; vendor/role enums and approval_id pattern match the runner constants exactly. The committed ledger is the correct fail-closed empty default.",
+    "Ledger check in run_isolated_validation is placed after validate_adapter but before any environment build or vendor invocation. The plan specified before validate_adapter; the actual placement is after it. validate_adapter makes no vendor call, so the security property — no invocation before approval — is preserved. This is a minor deviation, not a blocker.",
+    "load_approval_ledger uses manual field validation rather than the jsonschema library (which the plan suggested reusing). The manual checks are explicit, correct, and complete; removing a jsonschema runtime dependency on a security-critical code path is defensible. Both the empty committed ledger and schema correctness are covered by test_committed_ledger_validates_against_schema using Draft7Validator.",
+    "assert_approved matches on approval_id, vendor, role, and run_date — exactly the four fields specified by the plan. approved_by and rsk_level are metadata-only and correctly excluded from matching.",
+    "approval_id is stored only as SHA256 in LIVE_RUN_METADATA.json (approval_id_sha256), never in plaintext. The ledger file carries no secrets and passes check_no_secrets.py.",
+    "test_fixture adapters correctly bypass the ledger check; tests confirm this with the default committed (empty) ledger, so no fixture test requires a ledger entry to exist.",
+    "Independence caveat: this review was produced by the same model that built the code. The findings are consistent with a clean implementation, but a second reviewer (Qwen on the PC runner or a human) should confirm the ledger-check ordering and validate_adapter deviation before treating this review as fully independent."
+  ]
+}

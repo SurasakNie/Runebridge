@@ -9,50 +9,46 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 | Field | Value |
 |---|---|
 | Tool | Claude Code |
-| Date | 2026-06-27 |
-| Branch | claude/branch-cleanup-log (manual maintenance) |
-| Task | Post-PR #21 merge reconciliation and branch cleanup |
+| Date | 2026-06-29 |
+| Branch | claude/resume-tasks-lvxf5c (manual maintenance) |
+| Task | Review P6-LEDGER-001 implementation and produce REVIEW_CLAUDE.json |
 
 ## What Was Changed
 
-- Reviewed and merged PR #21 (PC-first Qwen runner documentation and synthetic reviewer evidence) into `main` at `579afe0` after the P6-001H status wording was softened to match the provisional evidence framing.
-- Added `docs/Branch-Cleanup-Log.md` via PR #22 recording which feature branches were deleted (merged or stale) and which one is retained (`claude/tender-archimedes-3o31n8`, for its unratified P6-001F parameters).
-- Updated the `README.md` documentation index and reconciled this handoff and the changelog.
-- Kept the public adapter registry empty and shared-environment live execution disabled.
+- Merged `claude/next-tasks-mgse3i` (5 commits: P6-001F ratification, branch cleanup reconciliation, Qwen live-evidence plan, P6-LEDGER-001 plan + implementation) into the working branch.
+- Ran the full test suite (128 passed), check_plan.py (exit 0), and check_no_secrets.py over the ledger file (exit 0).
+- Produced `.bridge/P6-LEDGER-001/REVIEW_CLAUDE.json` (verdict: approve, RSK-1, human_review_required: true) as the Claude final-review stage artifact. Key findings: all acceptance criteria met, scope matches files_to_touch exactly, ledger check is placed after validate_adapter rather than before it per the plan (validate_adapter makes no vendor call, so the "before any vendor invocation" property is preserved), manual field validation is used in load_approval_ledger instead of jsonschema (explicit, correct, and removes a runtime dependency), approval_id stored as SHA256 only in metadata.
 
 ## Files Modified
 
-- `README.md`
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
-- `docs/Branch-Cleanup-Log.md`
+- `.bridge/P6-LEDGER-001/REVIEW_CLAUDE.json` (new)
 
-P6-001E implementation surface from PR #18:
+P6-LEDGER-001 implementation surface (from merged branch, now on this branch):
 
+- `schemas/approval-ledger.schema.json`
+- `tools/bridge/live/approval-ledger.json`
 - `tools/bridge/live/run_isolated_validation.py`
-- `tools/bridge/live/codex_adapters.py`
-- `tools/bridge/gates/check_scope.py`
-- `schemas/live-run-metadata.schema.json`
-- `tests/live/test_codex_adapters.py`
-- `tests/gates/test_pipeline_gates.py`
+- `tests/live/test_approval_ledger.py`
 
 ## Tests Run
 
-Documentation-only reconciliation; no source or test files changed. The status-consistency test (`tests/docs/test_status_consistency.py`) passed locally (2 passed), and the PR #21 verification was reproduced before merge (`check_review.py --reviewer qwen` exit 0, `python -m json.tool` valid). The three protected baseline checks (Python, Pre-commit, Security) passed on PR #21 and PR #22.
+128 passed (19 new ledger tests). check_plan.py exit 0. check_no_secrets.py over approval-ledger.json exit 0. REVIEW_CLAUDE.json validates as JSON.
 
 ## Known Issues
 
 - No real vendor adapter is registered; the public runner refuses live dispatch with exit code 2.
-- Codex CLI flags are contract assumptions only; local `codex --help` was blocked by Windows access permissions and must be verified before P6-001F.
-- No official full live-run metadata exists yet, and approval identifiers are not yet connected to an external approval ledger.
-- The shared remote environment returns egress-policy `403 Forbidden` to approved Qwen provider hosts, so it is not an approved live Qwen runner.
-- Live Qwen currently depends on an external approved environment, starting with the owner's PC; if that runner is offline, other environments must use mock or deferred Qwen behavior.
+- Codex CLI flags are contract assumptions only; `codex --help` must be verified before P6-001F.
+- No official full live-run metadata exists yet.
+- The shared remote environment returns egress-policy `403 Forbidden` to approved Qwen provider hosts.
+- Live Qwen depends on the owner's approved PC runner.
 - Antigravity remains deferred until a supported headless interface exists.
-- The conductor GitHub App must be installed and verified before automated PR operations; its minimum permission contract is defined.
+- The conductor GitHub App must be installed and verified before automated PR operations.
 
 ## Next Recommended Step
 
-PR #21 is merged. Before promoting the staged Qwen evidence to official Phase 6 live evidence, capture approval-bound live metadata (`RUN_METADATA.json`) and approval-ledger binding for the Qwen run. Separately, decide whether the proposed P6-001F parameters retained on `claude/tender-archimedes-3o31n8` (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`) are the intended configuration; if so, lift them into `.ai/TASKS.md` and the Phase 6 plan via a clean change, then delete that branch. Delete the remaining merged/stale branches listed in `docs/Branch-Cleanup-Log.md`.
+`P6-LEDGER-001` review is complete (verdict: approve; human_review_required: true). This branch (`claude/resume-tasks-lvxf5c`) holds all work from `claude/next-tasks-mgse3i` plus the new review artifact and is ready for a PR into `main`. After the owner merges, update `.ai/TASKS.md` to mark `P6-LEDGER-001` as Complete. The next unblocked item is registering the Qwen reviewer adapter (PC only, never in the shared remote environment) and running the bounded live Qwen reviewer validation on the approved PC runner per `docs/PC-Runner-Session-Handoff.md`.
 
 ## Warnings
 

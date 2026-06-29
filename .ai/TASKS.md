@@ -13,6 +13,22 @@
 | Risk level | RSK-1 paid live execution; each run requires explicit approval |
 | Required mode | Manual repository maintenance |
 
+### Ratified P6-001F execution parameters
+
+The owner confirmed these parameters on 2026-06-28. They are the intended P6-001F
+configuration; ratifying them does **not** authorize a run. P6-001F remains
+`Blocked` pending the per-run approval and the P6-001F execution preflight in the
+Phase 6 plan.
+
+| Parameter | Value |
+|---|---|
+| Approval ID | `P6-001F-RUN-001` |
+| Model | `codex-mini-latest` |
+| Timeout | `30 s` |
+| Budget ceiling | `$0.06` |
+| Approach | Direct runner (`build_codex_adapter` + `run_isolated_validation`); no conductor |
+| Environment | Local-only execution on an approved runner |
+
 ## Phase 6 Work Items
 
 | ID | Task | Status | Dependency / approval |
@@ -22,9 +38,11 @@
 | P6-001C | Implement Claude live adapters behind refusal-by-default controls | Complete | PR #15 merged at `16ae812`; public registry remains empty; 96 tests pass |
 | P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; awaiting explicit per-run human approval and the P6-001D execution preflight in the Phase 6 plan |
 | P6-001E | Implement Codex live adapter and scope-sandbox tests | Complete | PR #18 merged at `c724769`; fake-CLI contracts pass; public registry remains empty |
-| P6-001F | Execute bounded Codex validation | Blocked | Confirm Codex CLI flags, authentication mechanism, fixture, model, timeout, budget, and approval ID per run |
+| P6-001F | Execute bounded Codex validation | Blocked | Parameters ratified 2026-06-28 (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`, direct runner, local-only); still requires verified Codex CLI flags, authentication mechanism, fixture, and per-run approval |
 | P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |
 | P6-001H | Decide Qwen provider and authentication path | Complete; PC runner produced a schema-valid synthetic reviewer artifact; formal live evidence pending | Provider/auth path recorded; shared remote environment returns egress-policy `403 Forbidden` to approved Qwen provider hosts, so live Qwen uses the approved `PC-first, VM-later` runner model |
+| P6-001H-EVID | Capture approval-bound Qwen live evidence (promote staged synthetic reviewer artifact) | Planned | Architect plan in `docs/Phase-6-Qwen-Live-Evidence-Plan.md`; needs builder approval-ledger + Qwen reviewer adapter (separate reviewed PRs) and a bounded live run on the approved PC runner |
+| P6-LEDGER-001 | Implement the approval-ledger mechanism (schema, fail-closed ledger, runner binding, fake-CLI tests) | Implemented; awaiting independent review | Built directly by Claude Code under explicit owner override of the architect/reviewer role boundary (not the usual builder); 128 tests pass (+19). The ledger gates only real credentialed runs (`authentication_class != "test_fixture"`); fixtures are exempt. Because the same model wrote the code, the Claude review is not fully independent — an independent review is recommended |
 | P6-001I | Reassess Antigravity headless interface | Deferred | Supported headless contract required |
 | P6-001J | Integrate approved live roles into the conductor | Blocked | Individual and hybrid evidence approved |
 | P6-001K | Publish Phase 6 validation report and reconcile status | Blocked | Prior Phase 6 gates complete or formally deferred |

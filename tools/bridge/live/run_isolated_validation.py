@@ -20,12 +20,17 @@ from typing import Callable, Mapping, Sequence
 ROOT = Path(__file__).resolve().parents[3]
 METADATA_GATE = ROOT / "tools/bridge/gates/check_live_metadata.py"
 SECRET_GATE = ROOT / "tools/bridge/gates/check_no_secrets.py"
+APPROVAL_LEDGER = ROOT / "tools/bridge/live/approval-ledger.json"
 TASK_ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]+$")
 APPROVAL_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{2,63}$")
 ABSOLUTE_PATH_PATTERN = re.compile(r"(?:^|[\s\"'(])(?:[A-Za-z]:[\\/]|\\{1,2}|/)")
 EMAIL_PATTERN = re.compile(r"\b[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
 VENDORS = ("claude", "codex", "qwen", "antigravity")
 ROLES = ("planner", "builder", "reviewer", "verifier")
+RSK_LEVELS = ("RSK-0", "RSK-1", "RSK-2")
+LEDGER_ENTRY_KEYS = frozenset(
+    {"approval_id", "vendor", "role", "run_date", "approved_by", "rsk_level"}
+)
 BLOCKED_COMMANDS = ("claude", "codex", "qwen", "antigravity-ide", "git", "gh", "curl", "wget")
 BASE_ENVIRONMENT_KEYS = (
     "COMSPEC",
@@ -155,6 +160,58 @@ def validate_adapter(spec: AdapterSpec) -> None:
         raise ValidationError("test fixtures must not claim credentials")
     if spec.authentication_class != "test_fixture" and not spec.credentials_available:
         raise ValidationError("live authentication must be available")
+
+
+def validate_ledger_entry(entry: object) -> dict[str, str]:
+    if not isinstance(entry, dict) or set(entry) != set(LEDGER_ENTRY_KEYS):
+        raise ValidationError("approval ledger entry has unexpected or missing keys")
+    if any(not isinstance(value, str) for value in entry.values()):
+        raise ValidationError("approval ledger entry fields must be strings")
+    if not APPROVAL_ID_PATTERN.fullmatch(entry["approval_id"]):
+        raise ValidationError("approval ledger entry has an invalid approval_id")
+    if entry["vendor"] not in VENDORS:
+        raise ValidationError("approval ledger entry has an unsupported vendor")
+    if entry["role"] not in ROLES:
+        raise ValidationError("approval ledger entry has an unsupported role")
+    try:
+        date.fromisoformat(entry["run_date"])
+    except ValueError as exc:
+        raise ValidationError("approval ledger entry run_date must use YYYY-MM-DD") from exc
+    if not entry["approved_by"]:
+        raise ValidationError("approval ledger entry approved_by must be non-empty")
+    if entry["rsk_level"] not in RSK_LEVELS:
+        raise ValidationError("approval ledger entry has an invalid rsk_level")
+    return entry
+
+
+def load_approval_ledger(path: Path) -> list[dict[str, str]]:
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise ValidationError("approval ledger is missing or unreadable") from exc
+    try:
+        document = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValidationError("approval ledger is not valid JSON") from exc
+    if not isinstance(document, dict) or set(document) != {"entries"}:
+        raise ValidationError("approval ledger must be an object with only an entries key")
+    if not isinstance(document["entries"], list):
+        raise ValidationError("approval ledger entries must be a list")
+    return [validate_ledger_entry(entry) for entry in document["entries"]]
+
+
+def assert_approved(config: ValidationConfig, ledger: Sequence[Mapping[str, str]]) -> None:
+    for entry in ledger:
+        if (
+            entry["approval_id"] == config.approval_id
+            and entry["vendor"] == config.vendor
+            and entry["role"] == config.role
+            and entry["run_date"] == config.run_date
+        ):
+            return
+    raise ValidationError(
+        "approval_id is not approved in the ledger for this vendor, role, and date"
+    )
 
 
 def create_bash_guard(path: Path) -> None:
@@ -369,9 +426,15 @@ def run_isolated_validation(
     spec: AdapterSpec,
     *,
     source_environment: Mapping[str, str] | None = None,
+    ledger_path: Path | None = None,
 ) -> Path:
     validate_config(config)
     validate_adapter(spec)
+    # Real credentialed runs must be bound to an approved ledger entry before any
+    # vendor invocation. Test fixtures declare no credentials and are exempt.
+    if spec.authentication_class != "test_fixture":
+        ledger = load_approval_ledger(APPROVAL_LEDGER if ledger_path is None else ledger_path)
+        assert_approved(config, ledger)
     artifact_root = config.artifact_root.resolve()
     temporary_base = Path(tempfile.gettempdir()).resolve()
     if temporary_base == ROOT or ROOT in temporary_base.parents:

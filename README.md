@@ -129,6 +129,8 @@ When enabled:
 - `docs/Phase-5-Full-Dry-Run-Plan.md`
 - `docs/Phase-5-Full-Dry-Run-Validation.md`
 - `docs/Phase-6-Live-Vendor-Validation-Plan.md`
+- `docs/Phase-6-Qwen-Live-Evidence-Plan.md`
+- `docs/PC-Runner-Session-Handoff.md`
 - `docs/Branch-Cleanup-Log.md`
 - Pipeline planning documents
 

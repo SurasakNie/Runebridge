@@ -38,3 +38,39 @@ nothing unique was lost.
 | Branch | Unique commit | Why kept |
 |---|---|---|
 | `claude/tender-archimedes-3o31n8` | `9ee464f` "Update all status docs for P6-001F execution planning" | Holds proposed P6-001F execution parameters that exist nowhere in `main`: approval ID `P6-001F-RUN-001`, model `codex-mini-latest`, timeout `30 s`, budget `$0.06`, a direct-runner approach (`build_codex_adapter` + `run_isolated_validation`), and local-only execution. The merged history deliberately keeps P6-001F `Blocked`, so these parameters appear unratified; the branch is retained until the owner confirms whether they are the intended P6-001F configuration. If confirmed, the parameters should be lifted into `.ai/TASKS.md` and the Phase 6 plan via a clean change rather than by merging this stale branch (its base is PR #16, nine commits behind `main`, and merging would duplicate changelog entries already in `main`). |
+
+## 2026-06-28 — Reconciliation with actual remote state
+
+A `git fetch --prune` against `origin` showed the remote did not match the
+2026-06-27 decisions above. This entry reconciles the record.
+
+### Retained branch was deleted, but its parameters are preserved
+
+`claude/tender-archimedes-3o31n8` no longer exists on `origin`; its unique commit
+`9ee464f` is not recoverable from the remote. The P6-001F parameters it carried
+survived only as text in the 2026-06-27 entry above. On 2026-06-28 the owner
+ratified those parameters, and they were lifted into `.ai/TASKS.md` and
+`docs/Phase-6-Live-Vendor-Validation-Plan.md` via a clean change, so the loss of
+the branch carries no remaining cost. No action remains for this branch.
+
+### Branches marked "deleted" on 2026-06-27 that still existed on `origin` — now deleted
+
+These four were documented as deleted on 2026-06-27 but remained present. They were
+squash-merged or intentionally superseded (their content is in `main` under new
+SHAs, or was deliberately not carried into the sanitized `main`), so the
+2026-06-27 decision to drop them stood. An attempt to delete them with
+`git push origin --delete` from the managed remote environment returned
+`403 Forbidden` (the environment blocks destructive remote-ref deletion, and the
+GitHub MCP server exposes no delete-branch tool), so the owner deleted them
+manually from the GitHub Branches page on 2026-06-28. A `git fetch --prune`
+confirmed `origin` then held only `main` and the active maintenance branch.
+
+| Branch | Original rationale |
+|---|---|
+| `claude/remaining-tasks-tl4pt5` | Stale; superseded by PR #21. Unique content was DashScope/RAM/`qwen-turbo` operational specifics deliberately not carried into sanitized `main`; the ratified P6-001F parameters are now in `main`, so nothing of value was lost. |
+| `codex/phase-0.6-vendor-cli` | Merged via PR #3. |
+| `codex/phase-5-full-dry-run` | Merged via PR #10. |
+| `codex/phase-6-live-vendor-plan` | Merged via PR #12. |
+
+After this cleanup, `origin` holds only `main` and the active maintenance branch.
+No retained-for-later feature branches remain.

@@ -733,3 +733,95 @@ files_changed:
 test_result: pass; status-consistency test passed (2 passed) and the three protected baseline checks passed on PR #21 and PR #22
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-28
+agent: Claude Code
+task_id: ratify-p6-001f-parameters-and-reconcile-branches
+summary: Ratified the owner-confirmed P6-001F execution parameters into TASKS.md and the Phase 6 plan, and reconciled the branch-cleanup log with the actual remote state.
+files_changed:
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/Phase-6-Live-Vendor-Validation-Plan.md
+  - docs/Branch-Cleanup-Log.md
+test_result: pass; status-consistency test passed (2 passed)
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-28
+agent: Claude Code
+task_id: phase-6-qwen-live-evidence-plan
+summary: Authored the architect plan for promoting staged synthetic Qwen reviewer evidence to official Phase 6 live evidence (approval-ledger binding and runner-emitted live metadata), tracked as P6-001H-EVID.
+files_changed:
+  - docs/Phase-6-Qwen-Live-Evidence-Plan.md
+  - docs/Phase-6-Live-Vendor-Validation-Plan.md
+  - README.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; status-consistency test passed (2 passed)
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-28
+agent: Claude Code
+task_id: P6-LEDGER-001-plan
+summary: Routed the approval-ledger build through the pipeline by seeding the task and writing the Plan-stage artifact (planner claude) for the approval-ledger schema, fail-closed ledger, runner binding, and fake-CLI tests; no live call and no adapter registration.
+files_changed:
+  - .bridge/P6-LEDGER-001/TASK.md
+  - .bridge/P6-LEDGER-001/PLAN.md
+  - docs/Phase-6-Qwen-Live-Evidence-Plan.md
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; check_plan.py exit 0 on PLAN.md, TASK.md valid against task.schema.json, status-consistency test 2 passed
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-28
+agent: Claude Code
+task_id: pc-runner-session-handoff
+summary: Added a kickoff handoff note for the owner's local PC Claude Code session (the approved live Qwen runner) with the recommended ordering build P6-LEDGER-001, register the Qwen reviewer adapter, run the bounded live reviewer validation, then promote and reconcile.
+files_changed:
+  - docs/PC-Runner-Session-Handoff.md
+  - README.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; status-consistency test 2 passed
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-28
+agent: Claude Code
+task_id: P6-LEDGER-001-build
+summary: Implemented the approval-ledger mechanism per .bridge/P6-LEDGER-001/PLAN.md (draft-07 schema, fail-closed committed ledger, runner binding that refuses unapproved real credentialed runs, and 19 fake-CLI tests). Built directly by Claude Code under an explicit owner override of the architect/reviewer role boundary; an independent review is recommended.
+files_changed:
+  - schemas/approval-ledger.schema.json
+  - tools/bridge/live/approval-ledger.json
+  - tools/bridge/live/run_isolated_validation.py
+  - tests/live/test_approval_ledger.py
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/Phase-6-Qwen-Live-Evidence-Plan.md
+test_result: pass; full suite 128 passed (+19), schema valid draft-07, committed ledger validates against schema, check_no_secrets exit 0 over the ledger, python compileall clean
+human_review_needed: true
+```
+
+```yaml
+date: 2026-06-29
+agent: Claude Code
+task_id: P6-LEDGER-001-review
+summary: Produced REVIEW_CLAUDE.json for P6-LEDGER-001 (verdict approve, RSK-1, human_review_required true) after verifying all 128 tests pass, check_plan.py and check_no_secrets.py exit 0, scope matches files_to_touch, and ledger check precedes any vendor invocation.
+files_changed:
+  - .bridge/P6-LEDGER-001/REVIEW_CLAUDE.json
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; 128 passed, check_plan.py exit 0, check_no_secrets.py exit 0, REVIEW_CLAUDE.json valid JSON
+human_review_needed: true
+```
