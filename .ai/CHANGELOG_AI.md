@@ -812,3 +812,16 @@ files_changed:
 test_result: pass; full suite 128 passed (+19), schema valid draft-07, committed ledger validates against schema, check_no_secrets exit 0 over the ledger, python compileall clean
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-29
+agent: Claude Code
+task_id: P6-LEDGER-001-review
+summary: Produced REVIEW_CLAUDE.json for P6-LEDGER-001 (verdict approve, RSK-1, human_review_required true) after verifying all 128 tests pass, check_plan.py and check_no_secrets.py exit 0, scope matches files_to_touch, and ledger check precedes any vendor invocation.
+files_changed:
+  - .bridge/P6-LEDGER-001/REVIEW_CLAUDE.json
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; 128 passed, check_plan.py exit 0, check_no_secrets.py exit 0, REVIEW_CLAUDE.json valid JSON
+human_review_needed: true
+```
