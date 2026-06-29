@@ -8,38 +8,26 @@ below must run on the PC.
 
 ## Before you start (local session)
 
-1. Pull the branch that carries the plans: `claude/next-tasks-mgse3i`.
+1. Pull `main` (Steps 1 and 2 below are already merged).
 2. Read, in order: `AGENTS.md`, `.ai/PROJECT_BRIEF.md`, `.ai/CODING_RULES.md`,
    `.ai/SECURITY_RULES.md`, `.ai/MODEL_ROLES.md`, `.ai/TASKS.md`, then
-   `docs/Phase-6-Qwen-Live-Evidence-Plan.md` and
-   `.bridge/P6-LEDGER-001/PLAN.md`.
-3. Confirm provider egress works from the PC before any live step.
+   `docs/Phase-6-Qwen-Live-Evidence-Plan.md`.
+3. Confirm Qwen provider egress works from the PC before any live step.
 
 ## Recommended ordering
 
-### Step 1 — Build `P6-LEDGER-001` (do this first)
+### Step 1 — Build `P6-LEDGER-001` ✅ Complete (PR #24 merged)
 
-Implement the approval-ledger from `.bridge/P6-LEDGER-001/PLAN.md`. This is
-build-only, RSK-1, **no live call**, and is the prerequisite for the live run.
+The approval-ledger mechanism is implemented and merged. No action needed.
 
-- Touch only the four `files_to_touch` in the PLAN; the scope gate halts on
-  anything else.
-- Verify: full `pytest` suite green; `tools/bridge/gates/check_no_secrets.py`
-  exit 0 over `tools/bridge/live/approval-ledger.json`; the runner refuses when
-  no ledger entry matches and proceeds (fake CLI) when one does.
-- Build it with a builder (Codex/Qwen) per the role split, then run the Claude
-  review stage on the diff.
+### Step 2 — Qwen reviewer adapter ✅ Complete (PR #27 merged)
 
-### Step 2 — Register the Qwen reviewer adapter (PC only)
-
-Add a real Qwen reviewer `AdapterSpec` to `ENABLED_ADAPTERS` in
-`tools/bridge/live/run_isolated_validation.py`, with fake-CLI contract tests
-first. Plan it as its own task (architect → builder → review).
-
-- **Critical:** registration must be controlled so the adapter is *never* active
-  in the shared remote environment. Keep it gated/disabled there; enable it only
-  in the approved PC context. Do not let an enabled real adapter land on `main`
-  in a way that activates it everywhere.
+`tools/bridge/live/qwen_adapters.py` is implemented and merged. The adapter
+is **not** registered in `ENABLED_ADAPTERS`; the PC runner constructs
+`AdapterSpec` directly via `build_qwen_adapter` and passes it to
+`run_isolated_validation`. Note: `qwen --help` flag verification is still a
+PC preflight item — confirm every flag in `build_qwen_adapter`'s command tuple
+before the live run.
 
 ### Step 3 — Bounded live Qwen reviewer run (PC only, per-run approval)
 
