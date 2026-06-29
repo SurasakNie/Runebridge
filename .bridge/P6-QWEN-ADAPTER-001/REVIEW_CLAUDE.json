@@ -1,0 +1,20 @@
+{
+  "task_id": "P6-QWEN-ADAPTER-001",
+  "reviewer": "claude",
+  "verdict": "approve",
+  "blockers": [],
+  "scope_drift": false,
+  "risk_assessment": "RSK-1",
+  "human_review_required": true,
+  "notes": [
+    "All 136 tests pass (+8 new adapter tests). check_no_secrets.py exit 0 over qwen_adapters.py.",
+    "Scope matches files_to_touch exactly: tools/bridge/live/qwen_adapters.py and tests/live/test_qwen_adapters.py. No other files modified.",
+    "ENABLED_ADAPTERS in run_isolated_validation.py is not touched; test_enabled_adapters_stays_empty confirms this after import. The adapter cannot be activated via the CLI in the shared remote environment.",
+    "parse_qwen_result validates in this order: envelope shape, cost ceiling, review schema (Draft7Validator), reviewer == 'qwen', task_id match. The order is correct: schema validation before the explicit field checks.",
+    "test_wrong_reviewer_rejected constructs a schema-valid Claude reviewer payload (with allOf-required risk_assessment, human_review_required, notes fields) so the explicit reviewer guard is exercised rather than the schema check. This tests the right invariant.",
+    "CLI flags in build_qwen_adapter (--print --output-format json --json-schema --tools '' --no-session-persistence --disable-slash-commands --max-budget-usd) are assumed to mirror the Claude Code CLI interface. They are marked with a comment as a PC preflight item. The builder must run `qwen --help` and update the command tuple before the live run if the flags differ.",
+    "authentication_class='environment_secret' and environment_keys=('QWEN_API_KEY',) are correct: the API key is injected from the PC environment and never committed.",
+    "allowed_workspace_files defaults to () (no-write scope) — correct for reviewer role.",
+    "Independence caveat: same model built and reviewed. A second reviewer (Qwen on PC or human) should confirm before the first live credentialed run, particularly the CLI flag assumptions."
+  ]
+}

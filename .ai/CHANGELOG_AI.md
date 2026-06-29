@@ -853,3 +853,19 @@ files_changed:
 test_result: pass; check_plan.py exit 0, task schema valid
 human_review_needed: false
 ```
+
+```yaml
+date: 2026-06-29
+agent: Claude Code
+task_id: P6-QWEN-ADAPTER-001-build
+summary: Implemented qwen_adapters.py and test_qwen_adapters.py per the P6-QWEN-ADAPTER-001 plan; 136 tests pass (+8); REVIEW_CLAUDE.json verdict approve, RSK-1, human_review_required true.
+files_changed:
+  - tools/bridge/live/qwen_adapters.py
+  - tests/live/test_qwen_adapters.py
+  - .bridge/P6-QWEN-ADAPTER-001/REVIEW_CLAUDE.json
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; 136 passed (+8), check_no_secrets.py exit 0, REVIEW_CLAUDE.json valid JSON
+human_review_needed: true
+```
