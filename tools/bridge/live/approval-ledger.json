@@ -1,3 +1,12 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "approval_id": "P6-QWEN-REVIEW-002-RUN-001",
+      "vendor": "qwen",
+      "role": "reviewer",
+      "run_date": "2026-06-29",
+      "approved_by": "owner",
+      "rsk_level": "RSK-1"
+    }
+  ]
 }
