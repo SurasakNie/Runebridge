@@ -780,3 +780,17 @@ files_changed:
 test_result: pass; check_plan.py exit 0 on PLAN.md, TASK.md valid against task.schema.json, status-consistency test 2 passed
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-28
+agent: Claude Code
+task_id: pc-runner-session-handoff
+summary: Added a kickoff handoff note for the owner's local PC Claude Code session (the approved live Qwen runner) with the recommended ordering build P6-LEDGER-001, register the Qwen reviewer adapter, run the bounded live reviewer validation, then promote and reconcile.
+files_changed:
+  - docs/PC-Runner-Session-Handoff.md
+  - README.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; status-consistency test 2 passed
+human_review_needed: true
+```
