@@ -794,3 +794,21 @@ files_changed:
 test_result: pass; status-consistency test 2 passed
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-28
+agent: Claude Code
+task_id: P6-LEDGER-001-build
+summary: Implemented the approval-ledger mechanism per .bridge/P6-LEDGER-001/PLAN.md (draft-07 schema, fail-closed committed ledger, runner binding that refuses unapproved real credentialed runs, and 19 fake-CLI tests). Built directly by Claude Code under an explicit owner override of the architect/reviewer role boundary; an independent review is recommended.
+files_changed:
+  - schemas/approval-ledger.schema.json
+  - tools/bridge/live/approval-ledger.json
+  - tools/bridge/live/run_isolated_validation.py
+  - tests/live/test_approval_ledger.py
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+  - docs/Phase-6-Qwen-Live-Evidence-Plan.md
+test_result: pass; full suite 128 passed (+19), schema valid draft-07, committed ledger validates against schema, check_no_secrets exit 0 over the ledger, python compileall clean
+human_review_needed: true
+```

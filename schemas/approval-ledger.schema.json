@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["entries"],
+  "properties": {
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "approval_id",
+          "vendor",
+          "role",
+          "run_date",
+          "approved_by",
+          "rsk_level"
+        ],
+        "properties": {
+          "approval_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{2,63}$"
+          },
+          "vendor": {
+            "enum": ["claude", "codex", "qwen", "antigravity"]
+          },
+          "role": {
+            "enum": ["planner", "builder", "reviewer", "verifier"]
+          },
+          "run_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "approved_by": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rsk_level": {
+            "enum": ["RSK-0", "RSK-1", "RSK-2"]
+          }
+        }
+      }
+    }
+  }
+}

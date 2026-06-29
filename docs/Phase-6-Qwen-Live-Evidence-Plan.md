@@ -36,7 +36,7 @@ metadata.)
 | ID | Gap | Owner | Blocks |
 |---|---|---|---|
 | G1 | No Qwen reviewer adapter is registered (`ENABLED_ADAPTERS` is empty in `tools/bridge/live/run_isolated_validation.py`); the runner refuses with exit 2. | Pipeline builder | The runner cannot produce metadata until a reviewed adapter is registered. The standing warning forbids registering a real adapter in the shared remote environment. |
-| G2 | No approval-ledger mechanism exists; `approval_id` is only pattern-checked and SHA-256 hashed. | Pipeline builder | Preflight item "approval-ledger binding" cannot pass. |
+| G2 | ~~No approval-ledger mechanism exists~~ Implemented as `P6-LEDGER-001`: a draft-07 schema, a fail-closed committed ledger, and a runner binding that refuses real credentialed runs whose `approval_id`/`vendor`/`role`/`run_date` lack a matching entry. | Done (awaiting independent review) | Preflight item "approval-ledger binding" is now satisfiable; the owner adds an approved entry per live run. |
 | G3 | The shared remote environment returns egress-policy `403 Forbidden` to approved Qwen provider hosts. | Owner / environment | The live run cannot execute here; it must run on the approved PC runner. |
 | G4 | `cli_version`, `model_identifier`, `budget_result`, and the artifact/result hashes are execution-time facts. | Owner (live run) | Official metadata cannot be authored ahead of the run. |
 
