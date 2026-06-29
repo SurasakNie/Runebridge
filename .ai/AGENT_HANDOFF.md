@@ -10,31 +10,23 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 |---|---|
 | Tool | Claude Code |
 | Date | 2026-06-29 |
-| Branch | claude/resume-tasks-lvxf5c (manual maintenance) |
-| Task | Review P6-LEDGER-001 implementation and produce REVIEW_CLAUDE.json |
+| Branch | claude/post-pr24-reconciliation (manual maintenance) |
+| Task | Post-PR #24 reconciliation — mark P6-LEDGER-001 Complete |
 
 ## What Was Changed
 
-- Merged `claude/next-tasks-mgse3i` (5 commits: P6-001F ratification, branch cleanup reconciliation, Qwen live-evidence plan, P6-LEDGER-001 plan + implementation) into the working branch.
-- Ran the full test suite (128 passed), check_plan.py (exit 0), and check_no_secrets.py over the ledger file (exit 0).
-- Produced `.bridge/P6-LEDGER-001/REVIEW_CLAUDE.json` (verdict: approve, RSK-1, human_review_required: true) as the Claude final-review stage artifact. Key findings: all acceptance criteria met, scope matches files_to_touch exactly, ledger check is placed after validate_adapter rather than before it per the plan (validate_adapter makes no vendor call, so the "before any vendor invocation" property is preserved), manual field validation is used in load_approval_ledger instead of jsonschema (explicit, correct, and removes a runtime dependency), approval_id stored as SHA256 only in metadata.
+- Marked P6-LEDGER-001 Complete in `.ai/TASKS.md` (PR #24 merged at `3c39a53`).
+- Updated handoff and changelog.
 
 ## Files Modified
 
+- `.ai/TASKS.md`
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
-- `.bridge/P6-LEDGER-001/REVIEW_CLAUDE.json` (new)
-
-P6-LEDGER-001 implementation surface (from merged branch, now on this branch):
-
-- `schemas/approval-ledger.schema.json`
-- `tools/bridge/live/approval-ledger.json`
-- `tools/bridge/live/run_isolated_validation.py`
-- `tests/live/test_approval_ledger.py`
 
 ## Tests Run
 
-128 passed (19 new ledger tests). check_plan.py exit 0. check_no_secrets.py over approval-ledger.json exit 0. REVIEW_CLAUDE.json validates as JSON.
+Documentation-only reconciliation; no source or test files changed. All three protected checks passed on PR #24.
 
 ## Known Issues
 
@@ -45,10 +37,11 @@ P6-LEDGER-001 implementation surface (from merged branch, now on this branch):
 - Live Qwen depends on the owner's approved PC runner.
 - Antigravity remains deferred until a supported headless interface exists.
 - The conductor GitHub App must be installed and verified before automated PR operations.
+- P6-LEDGER-001 was built and reviewed by the same model; an independent Qwen/human review is recommended before the first live credentialed run.
 
 ## Next Recommended Step
 
-`P6-LEDGER-001` review is complete (verdict: approve; human_review_required: true). This branch (`claude/resume-tasks-lvxf5c`) holds all work from `claude/next-tasks-mgse3i` plus the new review artifact and is ready for a PR into `main`. After the owner merges, update `.ai/TASKS.md` to mark `P6-LEDGER-001` as Complete. The next unblocked item is registering the Qwen reviewer adapter (PC only, never in the shared remote environment) and running the bounded live Qwen reviewer validation on the approved PC runner per `docs/PC-Runner-Session-Handoff.md`.
+P6-LEDGER-001 is Complete. The next unblocked item is registering the Qwen reviewer adapter (PC only, never in the shared remote environment) and running the bounded live Qwen reviewer validation on the approved PC runner to emit a runner-generated `LIVE_RUN_METADATA.json`. See `docs/PC-Runner-Session-Handoff.md` for the kickoff note and recommended ordering: register the Qwen reviewer adapter first, then run the bounded live validation, then promote and reconcile.
 
 ## Warnings
 
