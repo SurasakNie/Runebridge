@@ -2,7 +2,7 @@
 
 ## Current State
 
-Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude planner/reviewer adapter contracts, and Codex builder adapter contract are merged; PR #18 merged P6-001E into `main` at `c724769`. PR #21 merged the PC-first Qwen runner documentation and synthetic reviewer evidence into `main` at `579afe0`, and PR #22 added `docs/Branch-Cleanup-Log.md` recording post-PR #21 branch decisions. The public adapter registry remains empty, so no real vendor or live execution is enabled in the shared remote environment. Qwen provider/auth decisions are recorded, the shared remote environment remains blocked by egress-policy `403 Forbidden`, and the approved operating model is `PC-first, VM-later` for Qwen live execution. P6-001D and P6-001F remain gated on explicit per-run human approval.
+Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude planner/reviewer adapter contracts, Codex builder adapter contract, approval-ledger mechanism (P6-LEDGER-001, PR #24), and Qwen reviewer adapter (P6-QWEN-ADAPTER-001, PR #27) are all merged. The public adapter registry remains empty, so no real vendor or live execution is enabled in the shared remote environment. Qwen provider/auth decisions are recorded, the shared remote environment remains blocked by egress-policy `403 Forbidden`, and the approved operating model is `PC-first, VM-later` for Qwen live execution. P6-001D and P6-001F remain gated on explicit per-run human approval.
 
 ## Last Agent
 
@@ -10,28 +10,24 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 |---|---|
 | Tool | Claude Code |
 | Date | 2026-06-29 |
-| Branch | bridge/P6-QWEN-ADAPTER-001-qwen-reviewer-adapter (manual maintenance, owner override) |
-| Task | Implement P6-QWEN-ADAPTER-001 and produce REVIEW_CLAUDE.json |
+| Branch | claude/resume-tasks-lvxf5c (manual maintenance) |
+| Task | Post-PR #27 reconciliation: mark P6-QWEN-ADAPTER-001 Complete |
 
 ## What Was Changed
 
-- Added `tools/bridge/live/qwen_adapters.py` (`build_qwen_adapter` + `parse_qwen_result`).
-- Added `tests/live/test_qwen_adapters.py` (8 fake-CLI contract tests).
-- Produced `.bridge/P6-QWEN-ADAPTER-001/REVIEW_CLAUDE.json` (verdict: approve, RSK-1, human_review_required: true).
-- Updated `.ai/TASKS.md` status for P6-QWEN-ADAPTER-001.
+- Merged PR #27 at `3a368df` (P6-QWEN-ADAPTER-001 Qwen reviewer adapter).
+- Marked P6-QWEN-ADAPTER-001 Complete in `.ai/TASKS.md`.
+- Updated `.ai/AGENT_HANDOFF.md` and `.ai/CHANGELOG_AI.md`.
 
 ## Files Modified
 
-- `tools/bridge/live/qwen_adapters.py` (new)
-- `tests/live/test_qwen_adapters.py` (new)
-- `.bridge/P6-QWEN-ADAPTER-001/REVIEW_CLAUDE.json` (new)
 - `.ai/TASKS.md`
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
 
 ## Tests Run
 
-136 passed (+8). check_no_secrets.py exit 0 over qwen_adapters.py. REVIEW_CLAUDE.json valid JSON.
+136 passed. No code changes in this reconciliation commit.
 
 ## Known Issues
 
@@ -47,7 +43,7 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 
 ## Next Recommended Step
 
-P6-QWEN-ADAPTER-001 implementation is ready for review and merge. After merge: (1) mark P6-QWEN-ADAPTER-001 Complete in `.ai/TASKS.md`; (2) on the PC runner, verify `qwen --help` flags and update `build_qwen_adapter` command tuple if they differ; (3) add a ledger entry for the live run; (4) execute the bounded live Qwen reviewer validation per `docs/PC-Runner-Session-Handoff.md` Step 3.
+P6-QWEN-ADAPTER-001 is complete (PR #27 merged). Remaining steps are all PC-runner-only: (1) verify `qwen --help` flags and update `build_qwen_adapter` command tuple in `tools/bridge/live/qwen_adapters.py` if they differ from the Claude Code CLI interface; (2) add an approval-ledger entry for the Qwen live run; (3) execute the bounded live Qwen reviewer validation per `docs/PC-Runner-Session-Handoff.md` Step 3; (4) promote evidence and reconcile P6-001H-EVID. After that, P6-001F (bounded Codex validation) may proceed once CLI flags, authentication, and per-run approval are confirmed.
 
 ## Warnings
 
