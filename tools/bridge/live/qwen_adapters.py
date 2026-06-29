@@ -60,23 +60,26 @@ def build_qwen_adapter(
         f"The task_id must be exactly {task_id}. The reviewer must be 'qwen'. "
         f"Fixture: {prompt}"
     )
-    # Flags assume Qwen Code CLI mirrors the Claude Code CLI interface.
-    # Verify with `qwen --help` during PC preflight and update if they differ.
-    command = (
+    # Flags verified against Qwen Code CLI 0.19.2 on 2026-06-29.
+    # --print absent; positional prompt is one-shot by default.
+    # --tools absent; --max-tool-calls 0 blocks non-structured tools (structured_output exempt).
+    # --no-session-persistence absent; --no-chat-recording is the equivalent.
+    # --disable-slash-commands absent; not needed in headless mode.
+    # --max-budget-usd absent; runner validates total_cost_usd from envelope post-run.
+    command_parts: list[str] = [
         str(executable.resolve()),
-        "--print",
         "--output-format",
         "json",
         "--json-schema",
         json.dumps(schema, separators=(",", ":"), sort_keys=True),
-        "--tools",
-        "",
-        "--no-session-persistence",
-        "--disable-slash-commands",
-        "--max-budget-usd",
-        format(budget_ceiling_usd, ".2f"),
-        bound_prompt,
-    )
+        "--max-tool-calls",
+        "0",
+        "--no-chat-recording",
+    ]
+    if model_identifier is not None:
+        command_parts += ["--model", model_identifier]
+    command_parts.append(bound_prompt)
+    command = tuple(command_parts)
     return AdapterSpec(
         command=command,
         cli_name="qwen",
