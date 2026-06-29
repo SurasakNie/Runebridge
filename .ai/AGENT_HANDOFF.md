@@ -10,23 +10,26 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 |---|---|
 | Tool | Claude Code |
 | Date | 2026-06-29 |
-| Branch | claude/post-pr24-reconciliation (manual maintenance) |
-| Task | Post-PR #24 reconciliation — mark P6-LEDGER-001 Complete |
+| Branch | claude/post-pr25-qwen-adapter-plan (manual maintenance) |
+| Task | Author architect plan for P6-QWEN-ADAPTER-001 |
 
 ## What Was Changed
 
-- Marked P6-LEDGER-001 Complete in `.ai/TASKS.md` (PR #24 merged at `3c39a53`).
+- Created `.bridge/P6-QWEN-ADAPTER-001/TASK.md` and `.bridge/P6-QWEN-ADAPTER-001/PLAN.md` (PLAN.md passes `check_plan.py`; TASK.md validates against `task.schema.json`).
+- Added `P6-QWEN-ADAPTER-001` row to `.ai/TASKS.md`.
 - Updated handoff and changelog.
 
 ## Files Modified
 
+- `.bridge/P6-QWEN-ADAPTER-001/TASK.md` (new)
+- `.bridge/P6-QWEN-ADAPTER-001/PLAN.md` (new)
 - `.ai/TASKS.md`
 - `.ai/AGENT_HANDOFF.md`
 - `.ai/CHANGELOG_AI.md`
 
 ## Tests Run
 
-Documentation-only reconciliation; no source or test files changed. All three protected checks passed on PR #24.
+Gate-only: `check_plan.py` exit 0; `task.schema.json` validation pass. No source files changed.
 
 ## Known Issues
 
@@ -38,10 +41,11 @@ Documentation-only reconciliation; no source or test files changed. All three pr
 - Antigravity remains deferred until a supported headless interface exists.
 - The conductor GitHub App must be installed and verified before automated PR operations.
 - P6-LEDGER-001 was built and reviewed by the same model; an independent Qwen/human review is recommended before the first live credentialed run.
+- P6-QWEN-ADAPTER-001 CLI flags and envelope format are PC preflight items; the builder must verify and document them before the live run.
 
 ## Next Recommended Step
 
-P6-LEDGER-001 is Complete. The next unblocked item is registering the Qwen reviewer adapter (PC only, never in the shared remote environment) and running the bounded live Qwen reviewer validation on the approved PC runner to emit a runner-generated `LIVE_RUN_METADATA.json`. See `docs/PC-Runner-Session-Handoff.md` for the kickoff note and recommended ordering: register the Qwen reviewer adapter first, then run the bounded live validation, then promote and reconcile.
+The architect plan for P6-QWEN-ADAPTER-001 is ready. The PC runner session should implement `tools/bridge/live/qwen_adapters.py` and `tests/live/test_qwen_adapters.py` per `.bridge/P6-QWEN-ADAPTER-001/PLAN.md`. CLI flags must be confirmed with `qwen --help` (or equivalent) before the fake-CLI tests are written. After the build is reviewed and merged, add a ledger entry and run the bounded live Qwen reviewer validation per `docs/PC-Runner-Session-Handoff.md` Step 3.
 
 ## Warnings
 
