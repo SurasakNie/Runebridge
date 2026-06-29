@@ -51,8 +51,8 @@ def config(root: Path) -> ValidationConfig:
     )
 
 
-def valid_envelope(task_id: str = TASK_ID, cost: float = 0.02) -> str:
-    payload = {
+def valid_payload(task_id: str = TASK_ID) -> dict:
+    return {
         "task_id": task_id,
         "reviewer": "qwen",
         "verdict": "approve",
@@ -63,7 +63,25 @@ def valid_envelope(task_id: str = TASK_ID, cost: float = 0.02) -> str:
         "security_concerns": [],
         "suggestions": [],
     }
-    return json.dumps({"type": "result", "is_error": False, "structured_output": payload, "total_cost_usd": cost})
+
+
+def valid_envelope(task_id: str = TASK_ID, cost: float = 0.02) -> str:
+    return json.dumps({"type": "result", "is_error": False, "structured_output": valid_payload(task_id), "total_cost_usd": cost})
+
+
+def valid_array_envelope(task_id: str = TASK_ID) -> str:
+    """Mirrors the actual Qwen CLI 0.19.2 --output-format json output (array, no total_cost_usd)."""
+    return json.dumps([
+        {"type": "system", "subtype": "init", "session_id": "test"},
+        {"type": "assistant", "message": {"content": [{"type": "text", "text": "..."}]}},
+        {
+            "type": "result",
+            "subtype": "success",
+            "is_error": False,
+            "structured_output": valid_payload(task_id),
+            "usage": {"input_tokens": 1000, "output_tokens": 100, "total_tokens": 1100},
+        },
+    ])
 
 
 def ok_script(tmp_path: Path) -> Path:
@@ -131,3 +149,43 @@ def test_enabled_adapters_stays_empty(tmp_path: Path) -> None:
     import tools.bridge.live.qwen_adapters  # noqa: F401
     importlib.reload(runner_module)
     assert runner_module.ENABLED_ADAPTERS == {}
+
+
+def test_array_format_accepted(tmp_path: Path) -> None:
+    """Qwen CLI 0.19.2 emits a JSON array; the parser must handle it."""
+    script = write_fake(tmp_path / "array.py", f"print({valid_array_envelope()!r})\n")
+    task_dir = runner_module.run_isolated_validation(
+        config(tmp_path / "artifacts"),
+        fixture_spec(script),
+    )
+    artifact = json.loads((task_dir / "REVIEW_QWEN.json").read_text(encoding="utf-8"))
+    assert artifact["reviewer"] == "qwen"
+    assert artifact["verdict"] == "approve"
+
+
+def test_is_error_true_rejected(tmp_path: Path) -> None:
+    """Qwen returns is_error: true when the model skips the structured_output tool."""
+    error_result = json.dumps([
+        {"type": "system", "subtype": "init", "session_id": "test"},
+        {
+            "type": "result",
+            "subtype": "error_during_execution",
+            "is_error": True,
+            "error": {"message": "Model produced plain text instead of calling the structured_output tool."},
+            "usage": {"input_tokens": 500, "output_tokens": 10, "total_tokens": 510},
+        },
+    ])
+    script = write_fake(tmp_path / "err.py", f"print({error_result!r})\n")
+    with pytest.raises(ValidationError, match="successful result envelope"):
+        runner_module.run_isolated_validation(config(tmp_path / "artifacts"), fixture_spec(script))
+
+
+def test_missing_cost_accepted_with_token_count(tmp_path: Path) -> None:
+    """When total_cost_usd is absent, parse succeeds with budget_result=token_count_only."""
+    script = write_fake(tmp_path / "nocost.py", f"print({valid_array_envelope()!r})\n")
+    task_dir = runner_module.run_isolated_validation(
+        config(tmp_path / "artifacts"),
+        fixture_spec(script),
+    )
+    artifact = json.loads((task_dir / "REVIEW_QWEN.json").read_text(encoding="utf-8"))
+    assert artifact["reviewer"] == "qwen"
