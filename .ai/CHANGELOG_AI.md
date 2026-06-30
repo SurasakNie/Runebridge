@@ -882,3 +882,16 @@ files_changed:
 test_result: skipped; documentation-only reconciliation
 human_review_needed: false
 ```
+
+```yaml
+date: 2026-06-30
+agent: Claude Code
+task_id: post-PR31-reconciliation
+summary: Recorded the P6-001H-EVID live finding (Qwen Code 0.19.2 returns the review JSON in the result string, not structured_output) and the merged parser fallback (PR #31, ff4dfad); marked P6-001H-EVID In progress with the live evidence run still pending on the PC runner.
+files_changed:
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: skipped; documentation-only reconciliation (code suite verified 140 passing on origin/main)
+human_review_needed: false
+```
