@@ -908,3 +908,20 @@ files_changed:
 test_result: skipped; documentation-only reconciliation (code suite 140 passing on origin/main)
 human_review_needed: false
 ```
+
+```yaml
+date: 2026-06-30
+agent: Claude Code
+task_id: P6-001F-prep
+summary: Made P6-001F executable as documented (PR #35, claude/p6-001f-prep) — hardened build_codex_adapter's prompt (create fixture.txt, files_changed=["fixture.txt"], exact a/ b/ diff headers), removed the non-existent run_isolated_validation workspace= arg and phantom external workspace from PLAN.md + runbook, corrected ARTIFACT_ROOT to .bridge, and added the run_p6_001f.py convenience runner; validators/runner unchanged, no live call. P6-001F stays Blocked on merge + the PC run + per-run approval.
+files_changed:
+  - tools/bridge/live/codex_adapters.py
+  - .bridge/P6-001F/PLAN.md
+  - docs/PC-Runner-P6-001F-Handoff.md
+  - run_p6_001f.py
+  - .ai/TASKS.md
+  - .ai/AGENT_HANDOFF.md
+  - .ai/CHANGELOG_AI.md
+test_result: pass; full suite 140 passing, tests/live/test_codex_adapters.py 11 passing, check_plan.py exit 0 on .bridge/P6-001F/PLAN.md, import run_p6_001f clean
+human_review_needed: true
+```
