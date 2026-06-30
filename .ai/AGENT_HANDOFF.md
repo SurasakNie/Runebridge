@@ -6,7 +6,7 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 
 **P6-001H-EVID is COMPLETE — first live Qwen reviewer evidence merged (PR #33, `2351d91`).** The live-invocation blocker was resolved in PR #31 (`ff4dfad`): Qwen Code CLI `0.19.2` returns the schema-valid review JSON in the result envelope's `result` string field, not in `structured_output`, so the parser falls back through `structured_output` → `structured_result` → JSON-parsed `result` (plus runner hardening: daemon-thread stdout/stderr readers for Windows pipe-inheritance, `use_dedicated_vendor_cwd`, `APPDATA`/`LOCALAPPDATA`/`USERPROFILE` passthrough, `--max-tool-calls 3`, tail-not-head diagnostics). The bounded live run then executed on the approved PC runner with model `qwen3.6-plus`: `execution=live`, `exit_code=0`, all gates passed, `blocked_command_count=0`, `budget_result=not_reported`. Evidence lives at `.bridge/P6-001H-EVID/` (REVIEW_QWEN.json, runner-emitted LIVE_RUN_METADATA.json, BLOCKED_COMMANDS.log) with `REVIEW_CLAUDE.json` verdict **approve** (RSK-1, human_review_required true). The Qwen review *content* is synthetic-fixture output, not a real code review — the value is the proven end-to-end live pipeline. Full suite **140 passing**.
 
-**P6-001F prep is staged in PR #35 (`claude/p6-001f-prep`, open, not merged).** Architect exploration found P6-001F could not run as documented and corrected it (docs + one prompt change + a runner script; no runner/validator changes): (1) the runbook/PLAN.md called `run_isolated_validation(config, spec, workspace=WORKSPACE)` but the function has no `workspace` parameter; (2) the docs described an external `fixture.txt` workspace the runner never uses — it provisions its own empty temp workspace, uses it as Codex's cwd, then requires it to contain exactly `fixture.txt`; (3) because the workspace starts empty Codex must *create* `fixture.txt`, yet `validate_synthetic_diff` requires `--- a/fixture.txt` / `+++ b/fixture.txt` headers, so `build_codex_adapter`'s prompt was hardened to pin the create-one-file behavior, `files_changed=["fixture.txt"]`, and those exact diff headers; (4) `ARTIFACT_ROOT` was `.bridge/P6-001F` (would publish to `.bridge/P6-001F/P6-001F`) and is corrected to `.bridge`. Added a tested convenience runner `run_p6_001f.py`. Validators and the command/flag layout are unchanged; the fake-CLI contract tests still pass. Full suite **140 passing**; `tests/live/test_codex_adapters.py` 11 passing; `check_plan.py` exits 0 on the corrected PLAN.md. **No live call was made.** P6-001F stays **Blocked** on the PC run + per-run approval; real Codex diff/scope behavior is only verifiable on the PC.
+**P6-001F prep is MERGED (PR #35, `6f4d48a`).** Architect exploration found P6-001F could not run as documented and corrected it (docs + one prompt change + a runner script; no runner/validator changes): (1) the runbook/PLAN.md called `run_isolated_validation(config, spec, workspace=WORKSPACE)` but the function has no `workspace` parameter; (2) the docs described an external `fixture.txt` workspace the runner never uses — it provisions its own empty temp workspace, uses it as Codex's cwd, then requires it to contain exactly `fixture.txt`; (3) because the workspace starts empty Codex must *create* `fixture.txt`, yet `validate_synthetic_diff` requires `--- a/fixture.txt` / `+++ b/fixture.txt` headers, so `build_codex_adapter`'s prompt was hardened to pin the create-one-file behavior, `files_changed=["fixture.txt"]`, and those exact diff headers; (4) `ARTIFACT_ROOT` was `.bridge/P6-001F` (would publish to `.bridge/P6-001F/P6-001F`) and is corrected to `.bridge`. Added a tested convenience runner `run_p6_001f.py`. Validators and the command/flag layout are unchanged; the fake-CLI contract tests still pass. Full suite **140 passing**; `tests/live/test_codex_adapters.py` 11 passing; `check_plan.py` exits 0 on the corrected PLAN.md. **No live call was made.** P6-001F stays **Blocked** on the PC run + per-run approval; real Codex diff/scope behavior is only verifiable on the PC.
 
 ## Last Agent
 
@@ -14,27 +14,21 @@ Phases 0.5A through 5 are complete. The Phase 6 plan, isolated runner, Claude pl
 |---|---|
 | Tool | Claude Code |
 | Date | 2026-06-30 |
-| Branch | claude/p6-001f-prep (manual maintenance) |
-| Task | P6-001F prep: harden Codex prompt, fix runbook/PLAN.md, add PC runner (PR #35) |
+| Branch | claude/next-steps-t0vai9 (manual maintenance) |
+| Task | Post-PR#35 reconciliation: P6-001F prep merged (`6f4d48a`); P6-001F now Blocked on the PC run + per-run approval only |
 
 ## What Was Changed
 
-- Hardened `build_codex_adapter`'s bound prompt in `tools/bridge/live/codex_adapters.py` (create-one-file `fixture.txt`, `files_changed=["fixture.txt"]`, `tool=codex`, `dry_run=false`, exact `a/`…`b/` diff headers). Validators unchanged.
-- Corrected `.bridge/P6-001F/PLAN.md` and `docs/PC-Runner-P6-001F-Handoff.md`: removed the non-existent `workspace=` arg and the phantom external workspace, fixed `ARTIFACT_ROOT` to `.bridge`, aligned prompt/sandbox/preflight wording with the real runner.
-- Added `run_p6_001f.py` (tested one-command PC runner with preflight checklist).
-- Opened PR #35 (`claude/p6-001f-prep` → `main`); merge stays human-controlled.
+- Documentation-only reconciliation: PR #35 (P6-001F prep) was merged to `main` at `6f4d48a` (merge commit, head `6db8fe9`). Updated the status docs to reflect the merge — the "merge PR #35" step in the prior Next Recommended Step is now done; P6-001F is Blocked on the PC run + per-run approval only.
+- No code, runner, validator, or schema changes. The merged P6-001F prep (hardened `build_codex_adapter` prompt, corrected `.bridge/P6-001F/PLAN.md` + `docs/PC-Runner-P6-001F-Handoff.md`, new `run_p6_001f.py`) is already on `main`.
 
 ## Files Modified
 
-- `tools/bridge/live/codex_adapters.py`
-- `.bridge/P6-001F/PLAN.md`
-- `docs/PC-Runner-P6-001F-Handoff.md`
-- `run_p6_001f.py` (new)
-- `.ai/TASKS.md`, `.ai/AGENT_HANDOFF.md`, `.ai/CHANGELOG_AI.md` (this status save)
+- `.ai/AGENT_HANDOFF.md`, `.ai/TASKS.md`, `.ai/CHANGELOG_AI.md` (this status save)
 
 ## Tests Run
 
-Full suite **140 passed**; `tests/live/test_codex_adapters.py` 11 passed; `check_plan.py` exits 0 on `.bridge/P6-001F/PLAN.md`; `import run_p6_001f` clean. No live vendor call.
+None run this pass (documentation-only reconciliation). Last verified code state: full suite **140 passing** on `main` after the PR #35 merge.
 
 ## Known Issues
 
@@ -50,7 +44,7 @@ Full suite **140 passed**; `tests/live/test_codex_adapters.py` 11 passed; `check
 
 ## Next Recommended Step
 
-P6-001F prep is in **PR #35** (`claude/p6-001f-prep`, open). First **merge PR #35** (CI: `bridge-gates` + `test`). Then, on the approved PC runner, run **P6-001F — bounded Codex builder validation** per the corrected `docs/PC-Runner-P6-001F-Handoff.md` / `.bridge/P6-001F/PLAN.md`:
+P6-001F prep is **merged** (PR #35, `6f4d48a`). The remaining P6-001F work is all gated on the owner's approved PC runner and cannot run in the shared remote environment (egress `403`). On the approved PC runner, run **P6-001F — bounded Codex builder validation** per the corrected `docs/PC-Runner-P6-001F-Handoff.md` / `.bridge/P6-001F/PLAN.md`:
 
 1. Verify `codex --help` flags against `tools/bridge/live/codex_adapters.py` (`exec`, `--json`, `--sandbox workspace-write`, `--schema`, `--budget-usd`); update the adapter + re-run `pytest tests/live/test_codex_adapters.py` if they differ. Record the version.
 2. Add the single-use approval-ledger entry `P6-001F-RUN-001` (vendor codex, role builder, run-day date, RSK-1) and obtain explicit per-run human approval.

@@ -925,3 +925,16 @@ files_changed:
 test_result: pass; full suite 140 passing, tests/live/test_codex_adapters.py 11 passing, check_plan.py exit 0 on .bridge/P6-001F/PLAN.md, import run_p6_001f clean
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-06-30
+agent: Claude Code
+task_id: post-PR35-reconciliation
+summary: Reconciled status after P6-001F prep merged in PR #35 (6f4d48a) — handoff/TASKS still described it as open; P6-001F is now Blocked on the PC run + per-run approval only, and all remaining Phase 6 live work (P6-001F/D/G/J/K) stays gated on the owner's approved PC runner since the shared remote environment returns egress 403.
+files_changed:
+  - .ai/AGENT_HANDOFF.md
+  - .ai/TASKS.md
+  - .ai/CHANGELOG_AI.md
+test_result: skipped; documentation-only reconciliation (code suite 140 passing on main after the PR #35 merge)
+human_review_needed: false
+```
