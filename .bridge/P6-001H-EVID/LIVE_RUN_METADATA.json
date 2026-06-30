@@ -1,0 +1,26 @@
+{
+  "approval_id_sha256": "f974a1a7eccc13cf0f34f594e06693ab335462722371c62f37f3c2e20d993961",
+  "artifact_sha256s": {
+    "REVIEW_QWEN.json": "a88f7ff8d4b438f87ee3d02dd4aa1a3096715a150d763d529ca87f5bc7c17f3a"
+  },
+  "attempt_count": 1,
+  "authentication_class": "interactive_session",
+  "blocked_command_count": 0,
+  "budget_ceiling_usd": 0.1,
+  "budget_result": "not_reported",
+  "cli_name": "qwen",
+  "cli_version": "0.19.2",
+  "credentials_available": true,
+  "execution": "live",
+  "exit_code": 0,
+  "model_identifier": "qwen3.6-plus",
+  "result_sha256": "a88f7ff8d4b438f87ee3d02dd4aa1a3096715a150d763d529ca87f5bc7c17f3a",
+  "role": "reviewer",
+  "run_date": "2026-06-30",
+  "schema_valid": true,
+  "scope_valid": true,
+  "secret_scan_passed": true,
+  "task_id": "P6-001H-EVID",
+  "timeout_seconds": 60,
+  "vendor": "qwen"
+}

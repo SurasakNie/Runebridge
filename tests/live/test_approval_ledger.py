@@ -199,8 +199,12 @@ def test_assert_approved_matches_only_on_all_four_fields() -> None:
         assert_approved(config(Path("."), role="planner"), ledger)
 
 
-def test_committed_ledger_is_empty_and_loads() -> None:
-    assert load_approval_ledger(APPROVAL_LEDGER) == []
+def test_committed_ledger_loads() -> None:
+    # The committed ledger now holds the first approved live-evidence run, so it
+    # must load cleanly (fail-closed parsing) and contain that approval entry.
+    entries = load_approval_ledger(APPROVAL_LEDGER)
+    assert isinstance(entries, list)
+    assert any(entry["approval_id"] == "P6-001H-EVID-RUN-001" for entry in entries)
 
 
 def test_committed_ledger_validates_against_schema() -> None:

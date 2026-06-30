@@ -1,0 +1,18 @@
+{
+  "task_id": "P6-001H-EVID",
+  "reviewer": "claude",
+  "verdict": "approve",
+  "blockers": [],
+  "scope_drift": false,
+  "risk_assessment": "RSK-1",
+  "human_review_required": true,
+  "notes": [
+    "Accepted as valid live evidence: the first approval-bound Qwen reviewer run executed end-to-end through the isolated runner. LIVE_RUN_METADATA.json records execution=live, exit_code=0, attempt_count=1, schema_valid=true, scope_valid=true, secret_scan_passed=true, blocked_command_count=0.",
+    "Integrity is consistent: result_sha256 equals artifact_sha256s[REVIEW_QWEN.json]; approval_id is stored hashed; no absolute paths, email addresses, or secrets appear in any artifact, and all three secret scans exited 0.",
+    "REVIEW_QWEN.json is schema-valid (reviewer=qwen, task_id=P6-001H-EVID). Its content is synthetic-fixture output: the findings are generic and JavaScript/TypeScript-flavored and do not correspond to the actual Python adapter. Qwen's verdict changes_requested reflects the synthetic prompt, not a substantive review of real code, and must not be actioned as real blockers.",
+    "The merged parser fallback (PR #31) correctly sourced the payload from the result string; the live output was bare JSON with no markdown fences, so the fenced-output risk did not materialize on this run.",
+    "budget_result=not_reported is expected and acceptable: Qwen Code 0.19.2 omits total_cost_usd; the runner enforces the ceiling post-run only when a figure is present.",
+    "Approval P6-001H-EVID-RUN-001 is single-use and was matched on vendor, role, and run_date; the ledger remains fail-closed and this approval does not authorize a further run, model, budget, or workspace.",
+    "human_review_required=true: the Qwen reviewer adapter and the approval-ledger mechanism were built and reviewed within the same model lineage; an independent human sign-off is recommended before integrating live Qwen into the conductor (P6-001J)."
+  ]
+}

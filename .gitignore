@@ -43,3 +43,4 @@ coverage/
 
 # NOTE: .bridge/*/ is intentionally NOT listed here.
 # Task artifact directories are committed to feature branches for audit trail.
+!.bridge/*/BLOCKED_COMMANDS.log

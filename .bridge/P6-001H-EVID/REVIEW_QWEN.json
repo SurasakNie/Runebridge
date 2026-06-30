@@ -1,0 +1,35 @@
+{
+  "blockers": [
+    "Adapter must validate that Qwen CLI 0.19.2 output is a JSON array before parsing individual entries \u2014 missing isArray check could throw on malformed scalar or object output",
+    "Missing total_cost_usd fallback to budget_result=not_reported needs a unit test covering the null/undefined/missing key cases explicitly",
+    "is_error detail surfacing must include a max-length truncation guard to prevent oversized error payloads from bloating the review response"
+  ],
+  "bugs_found": [
+    "JSON.parse on CLI output lacks try/catch \u2014 a malformed response from Qwen CLI 0.19.2 will crash the adapter instead of returning a graceful error envelope",
+    "Schema validation error messages are passed through verbatim from the review schema validator \u2014 should be mapped to a stable, human-readable format for downstream consumers",
+    "The adapter does not enforce a timeout on the Qwen CLI subprocess invocation, which could hang indefinitely if the CLI process stalls"
+  ],
+  "missing_tests": [
+    "Test for empty JSON array [] input \u2014 should return a valid empty review result, not an error",
+    "Test for JSON array with mixed valid/invalid entries \u2014 adapter should surface partial results with per-entry error flags",
+    "Test for total_cost_usd = 0 (zero, not missing) \u2014 must distinguish between 'explicitly zero' and 'not reported'",
+    "Test for is_error = true with a very long error message (>4KB) \u2014 verify truncation behavior",
+    "Test for CLI subprocess exit code != 0 combined with partial stdout \u2014 verify error precedence and partial data handling",
+    "Property-based test: generate random JSON structures and assert the adapter either parses them into the review schema or returns a structured error"
+  ],
+  "reviewer": "qwen",
+  "scope_drift": false,
+  "security_concerns": [
+    "CLI output is parsed without sanitization \u2014 if the Qwen CLI output contains user-controlled data, it could inject into downstream structured output fields; apply allowlist validation on all parsed keys before forwarding",
+    "No rate-limiting or quota guard on the adapter itself \u2014 a caller could invoke it in a tight loop, each invocation spawning a Qwen CLI subprocess, consuming CPU and token budget unchecked"
+  ],
+  "suggestions": [
+    "Add a zod or ajv runtime schema guard on the parsed CLI output before mapping to the review envelope \u2014 fail fast with a clear 'upstream schema mismatch' error",
+    "Introduce a structured log line at adapter entry and exit (with request_id correlation) so that debugging malformed CLI output is traceable without reproducing the exact input",
+    "Consider a caching layer keyed on the review input hash \u2014 repeated reviews of unchanged code should short-circuit instead of re-invoking the CLI",
+    "Add a dry-run mode that validates the CLI output format and schema without executing the full review pipeline \u2014 useful for CI gating on adapter version upgrades",
+    "Document the exact Qwen CLI 0.19.2 JSON array shape in a companion .md file so future maintainers can diff the contract when CLI versions change"
+  ],
+  "task_id": "P6-001H-EVID",
+  "verdict": "changes_requested"
+}
