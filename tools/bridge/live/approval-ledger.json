@@ -1,3 +1,12 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "approval_id": "P6-001H-EVID-RUN-001",
+      "vendor": "qwen",
+      "role": "reviewer",
+      "run_date": "2026-06-30",
+      "approved_by": "human",
+      "rsk_level": "RSK-1"
+    }
+  ]
 }
