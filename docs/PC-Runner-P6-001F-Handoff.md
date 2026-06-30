@@ -40,14 +40,12 @@ invoking the runner:
    ```
    Validate: `python3 -c "import json,jsonschema; from pathlib import Path; jsonschema.validate(json.loads(Path('tools/bridge/live/approval-ledger.json').read_text()), json.loads(Path('schemas/approval-ledger.schema.json').read_text())); print('OK')"`
 
-4. **Synthetic fixture workspace.** Create a disposable directory **outside the
-   repository** (e.g. `/tmp/p6-001f-workspace`). Add one file named `fixture.txt`:
-   ```
-   # Synthetic fixture for P6-001F
-   This file is the approved workspace scope for the Codex builder validation run.
-   Task: append a one-line comment at the end of this file.
-   ```
-   Confirm no `.git` directory is present in the workspace.
+4. **Synthetic fixture text.** Decide the benign one-line fixture text to pass via
+   the `prompt` argument (e.g. `# Codex builder contract validated.`). There is **no
+   external workspace directory to create**: the runner provisions its own empty,
+   isolated temporary workspace and Codex creates `fixture.txt` inside it. The runner
+   isolates the run internally — it blocks `git`, `gh`, `curl`, `wget`, and the vendor
+   CLIs via PATH shims and fails the run if `BLOCKED_COMMANDS.log` is non-empty.
 
 5. **Per-run human approval.** Give explicit verbal or written approval for run
    `P6-001F-RUN-001` immediately before invoking the runner. Ratification of
@@ -63,8 +61,7 @@ from tools.bridge.live.codex_adapters import build_codex_adapter
 from tools.bridge.live.run_isolated_validation import ValidationConfig, run_isolated_validation
 import datetime
 
-WORKSPACE = Path("/tmp/p6-001f-workspace")   # disposable, outside repo
-ARTIFACT_ROOT = Path(".bridge/P6-001F")
+ARTIFACT_ROOT = Path(".bridge")   # runner publishes to ARTIFACT_ROOT / task_id → .bridge/P6-001F
 TODAY = datetime.date.today().isoformat()
 CODEX_PATH = Path("/path/to/codex")          # resolved on the runner
 CODEX_VERSION = "<verified version string>"
@@ -74,10 +71,7 @@ spec = build_codex_adapter(
     cli_version=CODEX_VERSION,
     task_id="P6-001F",
     budget_ceiling_usd=0.06,
-    prompt=(
-        "Append a one-line comment '# Codex builder contract validated.' "
-        "at the end of fixture.txt."
-    ),
+    prompt="Create fixture.txt containing the single line '# Codex builder contract validated.'",
     model_identifier="codex-mini-latest",
 )
 
@@ -93,7 +87,7 @@ config = ValidationConfig(
     live=True,
 )
 
-task_dir = run_isolated_validation(config, spec, workspace=WORKSPACE)
+task_dir = run_isolated_validation(config, spec)
 print("Evidence written to:", task_dir)
 ```
 

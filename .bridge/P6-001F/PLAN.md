@@ -53,19 +53,16 @@ validation.
    Validate the updated file against `schemas/approval-ledger.schema.json`.
    The runner refuses if no matching entry is found.
 
-4. **Synthetic fixture.** Create a disposable workspace directory (outside
-   the repository) containing one file named `fixture.txt` with benign content
-   such as:
-   ```
-   # Synthetic fixture for P6-001F
-   This file is the approved workspace scope for the Codex builder validation run.
-   Task: append a one-line comment at the end of this file.
-   ```
-   No repository source, customer data, or secrets may appear in the fixture.
+4. **Synthetic fixture text.** Decide the benign one-line fixture text to pass via
+   the `prompt` argument (for example `# Codex builder contract validated.`). There
+   is **no external workspace directory to create**: the runner provisions its own
+   empty, isolated temporary workspace and Codex creates `fixture.txt` inside it. No
+   repository source, customer data, or secrets may appear in the fixture text.
 
-5. **Write-sandbox confirmation.** Verify the workspace directory contains no
-   `.git` subdirectory and that no tool, network helper, or child process will
-   be invoked beyond the single `codex exec` call.
+5. **Sandbox confirmation.** The runner isolates the run internally — it blocks
+   `git`, `gh`, `curl`, `wget`, and the vendor CLIs via PATH shims and fails the run
+   if `BLOCKED_COMMANDS.log` is non-empty. Confirm the prompt drives only the single
+   `codex exec` call with no other tool or network helper.
 
 6. **Per-run human approval.** The owner must give explicit verbal or written
    approval for `P6-001F-RUN-001` immediately before the runner is invoked.
@@ -78,15 +75,14 @@ from pathlib import Path
 from tools.bridge.live.codex_adapters import build_codex_adapter
 from tools.bridge.live.run_isolated_validation import ValidationConfig, run_isolated_validation
 
-WORKSPACE = Path("/path/to/disposable/workspace")   # outside the repo
-ARTIFACT_ROOT = Path(".bridge/P6-001F")
+ARTIFACT_ROOT = Path(".bridge")   # runner publishes to ARTIFACT_ROOT / task_id → .bridge/P6-001F
 
 spec = build_codex_adapter(
     executable=Path("/path/to/codex"),  # resolved on the runner
     cli_version="<verified version>",
     task_id="P6-001F",
     budget_ceiling_usd=0.06,
-    prompt="Append a one-line comment '# Codex builder contract validated.' at the end of fixture.txt.",
+    prompt="Create fixture.txt containing the single line '# Codex builder contract validated.'",
     model_identifier="codex-mini-latest",
 )
 
@@ -102,7 +98,7 @@ config = ValidationConfig(
     live=True,
 )
 
-task_dir = run_isolated_validation(config, spec, workspace=WORKSPACE)
+task_dir = run_isolated_validation(config, spec)
 ```
 
 ## Post-run verification
