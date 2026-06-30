@@ -106,10 +106,14 @@ def build_codex_adapter(
     schema = read_schema("edit-summary.schema.json")
     bound_prompt = (
         f"Runebridge synthetic builder contract for task {task_id}. "
-        f"Modify only {SYNTHETIC_WORKSPACE_FILE} in the disposable workspace. "
-        "Return one JSON result envelope with structured_output matching the supplied schema "
-        "and changes_diff containing a unified diff for that file. "
-        f"The task_id must be exactly {task_id}. "
+        f"The working directory is empty; create exactly one file named "
+        f"{SYNTHETIC_WORKSPACE_FILE} in it and write no other file. "
+        "Return exactly one JSON result envelope (type=result, is_error=false) whose "
+        f"structured_output matches the supplied schema with task_id exactly {task_id}, "
+        f'tool=codex, dry_run=false, and files_changed exactly ["{SYNTHETIC_WORKSPACE_FILE}"]. '
+        "Put the unified diff in changes_diff and write its headers as exactly "
+        f"'--- a/{SYNTHETIC_WORKSPACE_FILE}' and '+++ b/{SYNTHETIC_WORKSPACE_FILE}' "
+        "(use these a/ and b/ headers even though the file is newly created). "
         f"Fixture: {prompt}"
     )
     command = (

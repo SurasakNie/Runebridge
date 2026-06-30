@@ -7,8 +7,8 @@
 | Task ID | P6-001F |
 | Goal | Execute bounded Codex builder validation only after explicit per-run approval |
 | Owner | Human + Codex |
-| Status | Blocked pending explicit human inputs and per-run approval |
-| Branch | Not started |
+| Status | Prep staged in PR #35 (open); still Blocked on the PC run + per-run approval |
+| Branch | `claude/p6-001f-prep` (PR #35) |
 | Related files | `tools/bridge/live/`, `tools/bridge/gates/`, `schemas/`, `tests/live/`, Phase 6 plan |
 | Risk level | RSK-1 paid live execution; each run requires explicit approval |
 | Required mode | Manual repository maintenance |
@@ -38,7 +38,7 @@ Phase 6 plan.
 | P6-001C | Implement Claude live adapters behind refusal-by-default controls | Complete | PR #15 merged at `16ae812`; public registry remains empty; 96 tests pass |
 | P6-001D | Execute bounded Claude validation | Blocked | P6-001C merged; awaiting explicit per-run human approval and the P6-001D execution preflight in the Phase 6 plan |
 | P6-001E | Implement Codex live adapter and scope-sandbox tests | Complete | PR #18 merged at `c724769`; fake-CLI contracts pass; public registry remains empty |
-| P6-001F | Execute bounded Codex validation | Blocked | Parameters ratified 2026-06-28 (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`, direct runner, local-only); still requires verified Codex CLI flags, authentication mechanism, fixture, and per-run approval |
+| P6-001F | Execute bounded Codex validation | Blocked (prep in PR #35) | Parameters ratified 2026-06-28 (`P6-001F-RUN-001`, `codex-mini-latest`, `30 s`, `$0.06`, direct runner, local-only). Prep PR #35 (`claude/p6-001f-prep`) fixes the documented execution defects — removed the non-existent `workspace=` arg and phantom external workspace, corrected `ARTIFACT_ROOT` to `.bridge`, hardened `build_codex_adapter`'s prompt (create `fixture.txt`, `files_changed=["fixture.txt"]`, exact `a/`…`b/` diff headers), added `run_p6_001f.py`; validators unchanged, full suite 140 passing, no live call. Still requires: merge PR #35, then verified `codex --help` flags + auth + per-run approval on the PC. |
 | P6-001G | Validate one explicit Claude/Codex hybrid pipeline | Blocked | P6-001D and P6-001F complete |
 | P6-001H | Decide Qwen provider and authentication path | Complete | Provider/auth path recorded; shared remote environment returns egress-policy `403 Forbidden` to approved Qwen provider hosts, so live Qwen uses the approved `PC-first, VM-later` runner model. Live evidence produced under P6-001H-EVID. |
 | P6-001H-EVID | Capture approval-bound Qwen live evidence (promote staged synthetic reviewer artifact) | Complete | Bounded live Qwen reviewer run executed on the approved PC runner; evidence merged in PR #33 at `2351d91` (`.bridge/P6-001H-EVID/`: REVIEW_QWEN.json, runner-emitted LIVE_RUN_METADATA.json, BLOCKED_COMMANDS.log). Run was `execution=live`, `exit_code=0`, all gates passed, `blocked_command_count=0`, model `qwen3.6-plus`, `budget_result=not_reported`. REVIEW_CLAUDE.json verdict approve, RSK-1, human_review_required true (REVIEW_QWEN.json content is synthetic-fixture output, not a real code review). Single-use approval-ledger entry `P6-001H-EVID-RUN-001` committed; full suite 140 passing. |
