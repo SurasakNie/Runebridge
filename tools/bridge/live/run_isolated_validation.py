@@ -11,6 +11,7 @@ import signal
 import subprocess
 import sys
 import tempfile
+import threading
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -94,6 +95,11 @@ class AdapterSpec:
     environment_keys: tuple[str, ...] = ()
     result_parser: ResultParser | None = None
     allowed_workspace_files: tuple[str, ...] = ()
+    # When True the vendor process runs with a separate cwd (vendor_cwd) rather
+    # than workspace. Use for Electron/Node CLIs that spawn background processes
+    # (e.g. Qwen's managed-auto-memory-extractor) which would otherwise cause
+    # spurious scope failures or WinError 32 cleanup locks.
+    use_dedicated_vendor_cwd: bool = False
 
 
 @dataclass(frozen=True)
@@ -291,12 +297,24 @@ def terminate_process_tree(process: subprocess.Popen[str]) -> None:
         process.wait()
 
 
+def _drain_pipe(pipe: object, chunks: list[bytes]) -> None:
+    """Read a binary pipe to EOF, tolerating closure from another thread."""
+    try:
+        while True:
+            chunk = pipe.read(65536)  # type: ignore[attr-defined]
+            if not chunk:
+                break
+            chunks.append(chunk)
+    except OSError:
+        pass
+
+
 def invoke(
     command: Sequence[str],
     workspace: Path,
     environment: Mapping[str, str],
     timeout_seconds: int,
-) -> tuple[int, str]:
+) -> tuple[int, str, str]:
     process_options: dict[str, object] = {}
     if os.name == "nt":
         process_options["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
@@ -307,19 +325,41 @@ def invoke(
         cwd=workspace,
         env=dict(environment),
         stdout=subprocess.PIPE,
+        # stderr is captured for diagnostics only; it is never written as durable
+        # evidence. A daemon reader (like stdout) prevents child processes that
+        # inherit the pipe handle on Windows from blocking the main thread.
         stderr=subprocess.PIPE,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
+        text=False,
         **process_options,
     )
+    # Read stdout/stderr in daemon threads so that child processes which inherit
+    # the pipe handles (e.g. Qwen's managed-auto-memory-extractor on Windows)
+    # cannot block the main thread indefinitely after the vendor process exits.
+    stdout_chunks: list[bytes] = []
+    stderr_chunks: list[bytes] = []
+    out_reader = threading.Thread(target=_drain_pipe, args=(process.stdout, stdout_chunks), daemon=True)
+    err_reader = threading.Thread(target=_drain_pipe, args=(process.stderr, stderr_chunks), daemon=True)
+    out_reader.start()
+    err_reader.start()
     try:
-        # Raw stderr is intentionally discarded; vendor diagnostics are never durable evidence.
-        stdout, _stderr = process.communicate(timeout=timeout_seconds)
+        process.wait(timeout=timeout_seconds)
     except subprocess.TimeoutExpired as exc:
         terminate_process_tree(process)
         raise ValidationError("vendor command exceeded the approved timeout") from exc
-    return process.returncode, stdout
+    finally:
+        # Close the read ends so the reader threads unblock even if child
+        # processes still hold the write ends open.
+        for stream in (process.stdout, process.stderr):
+            try:
+                if stream is not None:
+                    stream.close()
+            except OSError:
+                pass
+    out_reader.join(timeout=5)
+    err_reader.join(timeout=5)
+    stdout = b"".join(stdout_chunks).decode("utf-8", errors="replace")
+    stderr = b"".join(stderr_chunks).decode("utf-8", errors="replace")
+    return process.returncode, stdout, stderr
 
 
 def parse_result(stdout: str) -> dict[str, object]:
@@ -447,6 +487,16 @@ def run_isolated_validation(
         workspace.mkdir()
         shim_dir.mkdir()
         candidate.mkdir()
+        # For adapters that opt in, use a separate vendor_cwd so that background
+        # processes (e.g. Qwen's managed-auto-memory-extractor) can write temp
+        # files to their cwd without causing spurious workspace scope failures or
+        # WinError 32 cleanup locks.  Other adapters (e.g. Codex builder) keep
+        # workspace as their cwd so file output goes to the scope-checked area.
+        if spec.use_dedicated_vendor_cwd:
+            vendor_cwd = temporary_path / "vendor_cwd"
+            vendor_cwd.mkdir()
+        else:
+            vendor_cwd = workspace
         log_path = temporary_path / "blocked-commands.log"
         log_path.touch()
         guard_file = temporary_path / "bash-guard.sh"
@@ -460,9 +510,17 @@ def run_isolated_validation(
             guard_file,
             temporary_path,
         )
-        exit_code, stdout = invoke(spec.command, workspace, environment, config.timeout_seconds)
+        exit_code, stdout, stderr = invoke(spec.command, vendor_cwd, environment, config.timeout_seconds)
         if exit_code:
-            raise ValidationError(f"vendor command failed with exit code {exit_code}")
+            # stderr/stdout are transient diagnostics for the operator console
+            # only; they are never persisted as durable evidence. Surface the
+            # tail so large init events do not hide the final result event.
+            detail = " ".join((stderr or stdout).split())[-800:]
+            raise ValidationError(
+                f"vendor command failed with exit code {exit_code}: {detail}"
+                if detail
+                else f"vendor command failed with exit code {exit_code}"
+            )
         blocked_commands = [line for line in log_path.read_text(encoding="utf-8").splitlines() if line]
         if blocked_commands:
             raise ValidationError("blocked command invocation detected")

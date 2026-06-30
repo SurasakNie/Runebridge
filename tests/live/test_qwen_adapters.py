@@ -84,6 +84,20 @@ def valid_array_envelope(task_id: str = TASK_ID) -> str:
     ])
 
 
+def text_result_envelope(task_id: str = TASK_ID) -> str:
+    """Qwen Code 0.19.2 can put schema-constrained JSON in the result string."""
+    return json.dumps([
+        {"type": "system", "subtype": "init", "session_id": "test"},
+        {
+            "type": "result",
+            "subtype": "success",
+            "is_error": False,
+            "result": json.dumps(valid_payload(task_id), separators=(",", ":")),
+            "usage": {"input_tokens": 1000, "output_tokens": 100, "total_tokens": 1100},
+        },
+    ])
+
+
 def ok_script(tmp_path: Path) -> Path:
     return write_fake(tmp_path / "ok.py", f"print({valid_envelope()!r})\n")
 
@@ -160,6 +174,18 @@ def test_array_format_accepted(tmp_path: Path) -> None:
     )
     artifact = json.loads((task_dir / "REVIEW_QWEN.json").read_text(encoding="utf-8"))
     assert artifact["reviewer"] == "qwen"
+    assert artifact["verdict"] == "approve"
+
+
+def test_text_result_payload_accepted(tmp_path: Path) -> None:
+    script = write_fake(tmp_path / "text_result.py", f"print({text_result_envelope()!r})\n")
+    task_dir = runner_module.run_isolated_validation(
+        config(tmp_path / "artifacts"),
+        fixture_spec(script),
+    )
+    artifact = json.loads((task_dir / "REVIEW_QWEN.json").read_text(encoding="utf-8"))
+    assert artifact["reviewer"] == "qwen"
+    assert artifact["task_id"] == TASK_ID
     assert artifact["verdict"] == "approve"
 
 
