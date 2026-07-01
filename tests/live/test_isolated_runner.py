@@ -164,13 +164,23 @@ def test_poll_blocked_descendants_kills_and_logs_absolute_path_invocation(tmp_pa
     # would miss it. Live Codex CLI runs were observed spawning subprocesses
     # this way (e.g. an absolute path to powershell.exe) as ordinary agent
     # behavior, so a blocked vendor CLI invoked the same way must still be caught.
-    fake_name = "git.exe" if os.name == "nt" else "git"
     fake_bin_dir = tmp_path / "fake_bin"
     fake_bin_dir.mkdir()
+    if os.name == "nt":
+        # timeout.exe refuses to run without an attached console; ping.exe has
+        # no such quirk and is present on every Windows install, so it is used
+        # as a "sleep ~5s" stand-in for the renamed fake binary.
+        fake_name = "git.exe"
+        source = Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32" / "PING.EXE"
+        args = ["-n", "6", "127.0.0.1"]
+    else:
+        fake_name = "git"
+        source = Path(shutil.which("sleep") or "/bin/sleep")
+        args = ["5"]
     fake_git = fake_bin_dir / fake_name
-    shutil.copyfile(shutil.which("sleep") or "/bin/sleep", fake_git)
+    shutil.copyfile(source, fake_git)
     fake_git.chmod(0o755)
-    child = subprocess.Popen([str(fake_git), "5"])
+    child = subprocess.Popen([str(fake_git), *args])
     log_path = tmp_path / "blocked-commands.log"
     log_path.touch()
     stop_event = threading.Event()
