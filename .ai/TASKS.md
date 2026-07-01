@@ -28,7 +28,12 @@ account's configured default and ran the synthetic builder contract end-to-end i
 the probes. The **budget ceiling is now advisory, not mechanically enforced**:
 codex-cli 0.141.0 has no `--budget-usd` flag and reports token usage, not a dollar
 cost, so `budget_result` is recorded as `not_reported` (same precedent as the Qwen
-adapter).
+adapter). **`git` is a tolerated (neutralized) blocked command (owner-ratified
+2026-07-01)**: Codex calls `git` internally for diff-tracking; a live probe showed
+the PATH shim turns each call into a no-op (git never runs, workspace stays scoped
+to `fixture.txt`, Codex still produces correct output), so those attempts are
+recorded in `BLOCKED_COMMANDS.log` and the metadata `neutralized_commands` field
+rather than failing the run. `gh`/`curl`/`wget`/foreign vendors remain fatal.
 
 | Parameter | Value |
 |---|---|

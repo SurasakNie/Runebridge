@@ -52,8 +52,13 @@ invoking the runner:
    the `prompt` argument (e.g. `# Codex builder contract validated.`). There is **no
    external workspace directory to create**: the runner provisions its own empty,
    isolated temporary workspace and Codex creates `fixture.txt` inside it. The runner
-   isolates the run internally — it blocks `git`, `gh`, `curl`, `wget`, and the vendor
-   CLIs via PATH shims and fails the run if `BLOCKED_COMMANDS.log` is non-empty.
+   isolates the run internally — it neutralizes `git`, `gh`, `curl`, `wget`, and the
+   vendor CLIs (PATH shims + a process-tree monitor) so they never execute. `gh`,
+   `curl`, `wget` and foreign vendors are fatal: any attempt aborts the run. `git`
+   is **tolerated** (owner-ratified 2026-07-01): Codex calls it internally for
+   diff-tracking, the shim turns each call into a no-op, and the attempts are
+   recorded in `BLOCKED_COMMANDS.log` and the metadata `neutralized_commands`
+   field for transparency rather than failing the run.
 
 5. **Per-run human approval.** Give explicit verbal or written approval for run
    `P6-001F-RUN-001` immediately before invoking the runner. Ratification of

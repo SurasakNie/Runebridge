@@ -35,6 +35,16 @@ LEDGER_ENTRY_KEYS = frozenset(
     {"approval_id", "vendor", "role", "run_date", "approved_by", "rsk_level"}
 )
 BLOCKED_COMMANDS = ("claude", "codex", "qwen", "antigravity-ide", "git", "gh", "curl", "wget")
+# Blocked commands that are TOLERATED when the sandbox has already neutralized
+# them (the PATH shim / process monitor stops them from ever executing). A code
+# agent such as Codex calls `git` internally for diff/change-tracking; those
+# calls are shimmed to a no-op (they never run, touch the network, or write the
+# workspace), so they are recorded in evidence for transparency but do not fail
+# the run. Every other blocked command (network tools gh/curl/wget, foreign
+# vendors) remains fatal. The owner ratified this tolerance for P6-001F on
+# 2026-07-01 after a live probe showed Codex's git calls are non-essential and
+# fully contained by the shim.
+TOLERATED_BLOCKED_COMMANDS = frozenset({"git"})
 BASE_ENVIRONMENT_KEYS = (
     "COMSPEC",
     "LANG",
@@ -601,8 +611,14 @@ def run_isolated_validation(
                 else f"vendor command failed with exit code {exit_code}"
             )
         blocked_commands = [line for line in log_path.read_text(encoding="utf-8").splitlines() if line]
-        if blocked_commands:
+        fatal_blocked = [command for command in blocked_commands if command not in TOLERATED_BLOCKED_COMMANDS]
+        if fatal_blocked:
             raise ValidationError("blocked command invocation detected")
+        # Tolerated commands were neutralized by the shim/monitor (never executed);
+        # record them for transparency but do not fail the run. BLOCKED_COMMANDS.log
+        # (copied into the evidence below) retains the raw record either way.
+        neutralized_commands = sorted({command for command in blocked_commands if command in TOLERATED_BLOCKED_COMMANDS})
+        neutralized_command_count = len(blocked_commands)
         validate_workspace_scope(workspace, spec.allowed_workspace_files)
         parsed = (spec.result_parser or parse_generic_artifact)(stdout, config, workspace)
         validate_normalized_result(parsed.normalized)
@@ -627,7 +643,12 @@ def run_isolated_validation(
             "artifact_sha256s": artifact_sha256s,
             "attempt_count": 1,
             "authentication_class": spec.authentication_class,
+            # Fatal (untolerated) blocked commands; always 0 here since any would
+            # have aborted the run above. Tolerated-but-neutralized attempts are
+            # recorded separately in the neutralized_* fields for transparency.
             "blocked_command_count": 0,
+            "neutralized_command_count": neutralized_command_count,
+            "neutralized_commands": neutralized_commands,
             "budget_ceiling_usd": config.budget_ceiling_usd,
             # Fixtures record the approved ceiling only; vendor adapters must enforce it.
             "budget_result": parsed.budget_result,

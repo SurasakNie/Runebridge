@@ -132,16 +132,37 @@ def test_invalid_approval_refuses_before_invocation(tmp_path: Path) -> None:
 
 
 def test_blocked_child_command_fails_without_evidence(tmp_path: Path) -> None:
+    # curl is a fatal (non-tolerated) blocked command: any invocation aborts the
+    # run with no evidence. (git is tolerated — see the neutralized test below.)
     script = write_fake(
         tmp_path / "blocked.py",
         "import json, subprocess\n"
-        "subprocess.run(['bash', '-c', 'git --version'], check=False)\n"
+        "subprocess.run(['bash', '-c', 'curl --version'], check=False)\n"
         "print(json.dumps({'status': 'ignored-child-failure'}))\n",
     )
     artifact_root = tmp_path / "artifacts"
     with pytest.raises(ValidationError, match="blocked command"):
         run_isolated_validation(config(artifact_root), spec(script))
     assert not artifact_root.exists()
+
+
+def test_tolerated_git_is_recorded_not_fatal(tmp_path: Path) -> None:
+    # git is neutralized by the shim (exits 99, never runs) but is tolerated: the
+    # run succeeds, records the attempt in BLOCKED_COMMANDS.log and the metadata
+    # neutralized_* fields, and keeps blocked_command_count (fatal count) at 0.
+    script = write_fake(
+        tmp_path / "git_user.py",
+        "import json, subprocess\n"
+        "subprocess.run(['bash', '-c', 'git --version'], check=False)\n"
+        "print(json.dumps({'status': 'ok'}))\n",
+    )
+    task_dir = run_isolated_validation(config(tmp_path / "artifacts"), spec(script))
+    metadata = json.loads((task_dir / "LIVE_RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["blocked_command_count"] == 0
+    assert metadata["neutralized_command_count"] >= 1
+    assert metadata["neutralized_commands"] == ["git"]
+    blocked_log = (task_dir / "BLOCKED_COMMANDS.log").read_text(encoding="utf-8")
+    assert "git" in blocked_log
 
 
 @pytest.mark.parametrize(
@@ -239,15 +260,17 @@ def test_poll_blocked_descendants_leaves_excluded_self_name_alone(tmp_path: Path
 
 @pytest.mark.skipif(os.name == "nt", reason="renamed-binary trick is POSIX-specific; verify on Windows via manual PC probe")
 def test_absolute_path_blocked_command_fails_run_without_evidence(tmp_path: Path) -> None:
+    # Uses curl (a fatal, non-tolerated blocked command) invoked by absolute path
+    # so the process-tree monitor — not the PATH shim — is what catches it.
     fake_bin_dir = tmp_path / "fake_bin"
     fake_bin_dir.mkdir()
-    fake_git = fake_bin_dir / "git"
-    shutil.copyfile(shutil.which("sleep") or "/bin/sleep", fake_git)
-    fake_git.chmod(0o755)
+    fake_curl = fake_bin_dir / "curl"
+    shutil.copyfile(shutil.which("sleep") or "/bin/sleep", fake_curl)
+    fake_curl.chmod(0o755)
     script = write_fake(
         tmp_path / "absolute_blocked.py",
         "import json, subprocess\n"
-        f"subprocess.run([{str(fake_git)!r}, '2'], check=False)\n"
+        f"subprocess.run([{str(fake_curl)!r}, '2'], check=False)\n"
         "print(json.dumps({'status': 'ignored-child-failure'}))\n",
     )
     artifact_root = tmp_path / "artifacts"

@@ -62,10 +62,13 @@ validation.
    empty, isolated temporary workspace and Codex creates `fixture.txt` inside it. No
    repository source, customer data, or secrets may appear in the fixture text.
 
-5. **Sandbox confirmation.** The runner isolates the run internally — it blocks
-   `git`, `gh`, `curl`, `wget`, and the vendor CLIs via PATH shims and fails the run
-   if `BLOCKED_COMMANDS.log` is non-empty. Confirm the prompt drives only the single
-   `codex exec` call with no other tool or network helper.
+5. **Sandbox confirmation.** The runner isolates the run internally — it neutralizes
+   `git`, `gh`, `curl`, `wget`, and the vendor CLIs (PATH shims + process-tree monitor)
+   so they never execute. `gh`/`curl`/`wget`/foreign vendors are fatal: any attempt
+   aborts the run. `git` is **tolerated** (owner-ratified 2026-07-01) because Codex
+   invokes it internally for diff-tracking; each call is shimmed to a no-op and
+   recorded (in `BLOCKED_COMMANDS.log` and metadata `neutralized_commands`) rather
+   than failing the run. Confirm the prompt drives only the single `codex exec` call.
 
 6. **Per-run human approval.** The owner must give explicit verbal or written
    approval for `P6-001F-RUN-001` immediately before the runner is invoked.
