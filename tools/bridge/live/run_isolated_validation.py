@@ -17,6 +17,8 @@ from datetime import date
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
+import psutil
+
 
 ROOT = Path(__file__).resolve().parents[3]
 METADATA_GATE = ROOT / "tools/bridge/gates/check_live_metadata.py"
@@ -254,6 +256,56 @@ def create_command_shims(directory: Path) -> None:
             path.chmod(0o755)
 
 
+BLOCKED_COMMANDS_SET = frozenset(BLOCKED_COMMANDS)
+
+
+def _normalize_command_name(name: str) -> str:
+    return Path(name).stem.lower()
+
+
+def poll_blocked_descendants(
+    root_pid: int,
+    stop_event: threading.Event,
+    log_path: Path,
+    poll_interval: float = 0.2,
+) -> None:
+    """Kill and log any descendant process whose executable matches a blocked
+    command, regardless of how it was invoked. The PATH shims in
+    create_command_shims only intercept bare-name lookups; a vendor process
+    that execs a blocked command by absolute path (observed in practice from
+    live Codex CLI runs on Windows) bypasses PATH entirely, so this walks the
+    real process tree by resolved image name instead."""
+    # A pid is only remembered once it has actually been matched and killed;
+    # a non-matching pid is re-checked every poll because the name reported
+    # for a freshly forked child can be transiently wrong until exec()
+    # completes, and we must not let that race permanently whitelist it.
+    blocked_pids: set[int] = set()
+    while not stop_event.is_set():
+        try:
+            descendants = psutil.Process(root_pid).children(recursive=True)
+        except psutil.NoSuchProcess:
+            return
+        for proc in descendants:
+            if proc.pid in blocked_pids:
+                continue
+            try:
+                name = _normalize_command_name(proc.name())
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+            if name in BLOCKED_COMMANDS_SET:
+                blocked_pids.add(proc.pid)
+                try:
+                    with log_path.open("a", encoding="utf-8") as handle:
+                        handle.write(f"{name}\n")
+                except OSError:
+                    pass
+                try:
+                    proc.kill()
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+        stop_event.wait(poll_interval)
+
+
 def build_environment(
     source: Mapping[str, str],
     spec: AdapterSpec,
@@ -314,6 +366,7 @@ def invoke(
     workspace: Path,
     environment: Mapping[str, str],
     timeout_seconds: int,
+    log_path: Path,
 ) -> tuple[int, str, str]:
     process_options: dict[str, object] = {}
     if os.name == "nt":
@@ -341,12 +394,19 @@ def invoke(
     err_reader = threading.Thread(target=_drain_pipe, args=(process.stderr, stderr_chunks), daemon=True)
     out_reader.start()
     err_reader.start()
+    monitor_stop = threading.Event()
+    monitor_thread = threading.Thread(
+        target=poll_blocked_descendants, args=(process.pid, monitor_stop, log_path), daemon=True
+    )
+    monitor_thread.start()
     try:
         process.wait(timeout=timeout_seconds)
     except subprocess.TimeoutExpired as exc:
         terminate_process_tree(process)
         raise ValidationError("vendor command exceeded the approved timeout") from exc
     finally:
+        monitor_stop.set()
+        monitor_thread.join(timeout=5)
         # Close the read ends so the reader threads unblock even if child
         # processes still hold the write ends open.
         for stream in (process.stdout, process.stderr):
@@ -510,7 +570,7 @@ def run_isolated_validation(
             guard_file,
             temporary_path,
         )
-        exit_code, stdout, stderr = invoke(spec.command, vendor_cwd, environment, config.timeout_seconds)
+        exit_code, stdout, stderr = invoke(spec.command, vendor_cwd, environment, config.timeout_seconds, log_path)
         if exit_code:
             # stderr/stdout are transient diagnostics for the operator console
             # only; they are never persisted as durable evidence. Surface the

@@ -3,8 +3,10 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 import pytest
@@ -13,6 +15,8 @@ from tools.bridge.live.run_isolated_validation import (
     AdapterSpec,
     ValidationConfig,
     ValidationError,
+    _normalize_command_name,
+    poll_blocked_descendants,
     run_isolated_validation,
     validate_normalized_result,
 )
@@ -131,6 +135,70 @@ def test_blocked_child_command_fails_without_evidence(tmp_path: Path) -> None:
         tmp_path / "blocked.py",
         "import json, subprocess\n"
         "subprocess.run(['bash', '-c', 'git --version'], check=False)\n"
+        "print(json.dumps({'status': 'ignored-child-failure'}))\n",
+    )
+    artifact_root = tmp_path / "artifacts"
+    with pytest.raises(ValidationError, match="blocked command"):
+        run_isolated_validation(config(artifact_root), spec(script))
+    assert not artifact_root.exists()
+
+
+@pytest.mark.parametrize(
+    ("raw", "expected"),
+    (
+        ("git", "git"),
+        ("git.exe", "git"),
+        ("GIT.EXE", "git"),
+        ("curl.cmd", "curl"),
+        ("antigravity-ide", "antigravity-ide"),
+        ("antigravity-ide.exe", "antigravity-ide"),
+    ),
+)
+def test_normalize_command_name_strips_extension_and_case(raw: str, expected: str) -> None:
+    assert _normalize_command_name(raw) == expected
+
+
+def test_poll_blocked_descendants_kills_and_logs_absolute_path_invocation(tmp_path: Path) -> None:
+    # Reproduces the gap PATH shims cannot cover: a child process exec'd by
+    # absolute path never resolves through PATH, so create_command_shims alone
+    # would miss it. Live Codex CLI runs were observed spawning subprocesses
+    # this way (e.g. an absolute path to powershell.exe) as ordinary agent
+    # behavior, so a blocked vendor CLI invoked the same way must still be caught.
+    fake_name = "git.exe" if os.name == "nt" else "git"
+    fake_bin_dir = tmp_path / "fake_bin"
+    fake_bin_dir.mkdir()
+    fake_git = fake_bin_dir / fake_name
+    shutil.copyfile(shutil.which("sleep") or "/bin/sleep", fake_git)
+    fake_git.chmod(0o755)
+    child = subprocess.Popen([str(fake_git), "5"])
+    log_path = tmp_path / "blocked-commands.log"
+    log_path.touch()
+    stop_event = threading.Event()
+    monitor = threading.Thread(
+        target=poll_blocked_descendants, args=(os.getpid(), stop_event, log_path, 0.05)
+    )
+    monitor.start()
+    try:
+        child.wait(timeout=5)
+    finally:
+        stop_event.set()
+        monitor.join(timeout=5)
+    assert child.returncode != 0
+    logged = [line for line in log_path.read_text(encoding="utf-8").splitlines() if line]
+    assert logged == ["git"]
+
+
+@pytest.mark.skipif(os.name == "nt", reason="renamed-binary trick is POSIX-specific; verify on Windows via manual PC probe")
+def test_absolute_path_blocked_command_fails_run_without_evidence(tmp_path: Path) -> None:
+    fake_bin_dir = tmp_path / "fake_bin"
+    fake_bin_dir.mkdir()
+    fake_git = fake_bin_dir / "git"
+    shutil.copyfile(shutil.which("sleep") or "/bin/sleep", fake_git)
+    fake_git.chmod(0o755)
+    script = write_fake(
+        tmp_path / "absolute_blocked.py",
+        "import json, subprocess\n"
+        f"subprocess.run([{str(fake_git)!r}, '2'], check=False)\n"
         "print(json.dumps({'status': 'ignored-child-failure'}))\n",
     )
     artifact_root = tmp_path / "artifacts"
