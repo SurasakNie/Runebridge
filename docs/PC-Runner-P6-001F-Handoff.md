@@ -19,10 +19,18 @@ on an approved runner**. The shared remote environment cannot invoke a real
 Complete every item in the `.bridge/P6-001F/PLAN.md` preflight checklist before
 invoking the runner:
 
-1. **CLI flag verification.** Run `codex --help`. Confirm `exec`, `--json`,
-   `--sandbox workspace-write`, `--schema`, and `--budget-usd` all exist.
-   If any flag is missing or renamed, update `tools/bridge/live/codex_adapters.py`
-   and re-run `pytest tests/live/test_codex_adapters.py` before continuing.
+1. **CLI flag verification.** Run `codex exec --help`. Confirm `--json`,
+   `--sandbox workspace-write`, `--output-schema <file>`, and `--model` all exist.
+   Verified against a real codex-cli 0.141.0 install on 2026-07-01: `--schema`
+   (inline JSON) and `--budget-usd` do **not** exist — `--output-schema` takes a
+   file path, and the schema file must be written without a UTF-8 BOM or Codex
+   rejects it with "not valid JSON" (a plain `.write_text(..., encoding="utf-8")`
+   is fine; PowerShell's `Set-Content -Encoding utf8` is not — it adds a BOM).
+   The real event stream is JSONL (`--json` = "print events to stdout as JSONL"),
+   not one result envelope, and never reports a dollar cost — only token counts
+   in the final `turn.completed` event's `usage` field. `codex_adapters.py`
+   already reflects this; if any flag differs on your install, update it and
+   re-run `pytest tests/live/test_codex_adapters.py` before continuing.
 
 2. **CLI version.** Record the exact version string; you will pass it as
    `cli_version` to `build_codex_adapter`.
@@ -44,14 +52,30 @@ invoking the runner:
    the `prompt` argument (e.g. `# Codex builder contract validated.`). There is **no
    external workspace directory to create**: the runner provisions its own empty,
    isolated temporary workspace and Codex creates `fixture.txt` inside it. The runner
-   isolates the run internally — it blocks `git`, `gh`, `curl`, `wget`, and the vendor
-   CLIs via PATH shims and fails the run if `BLOCKED_COMMANDS.log` is non-empty.
+   isolates the run internally — it neutralizes `git`, `gh`, `curl`, `wget`, and the
+   vendor CLIs (PATH shims + a process-tree monitor) so they never execute. `gh`,
+   `curl`, `wget` and foreign vendors are fatal: any attempt aborts the run. `git`
+   is **tolerated** (owner-ratified 2026-07-01): Codex calls it internally for
+   diff-tracking, the shim turns each call into a no-op, and the attempts are
+   recorded in `BLOCKED_COMMANDS.log` and the metadata `neutralized_commands`
+   field for transparency rather than failing the run.
 
 5. **Per-run human approval.** Give explicit verbal or written approval for run
    `P6-001F-RUN-001` immediately before invoking the runner. Ratification of
    parameters on 2026-06-28 does **not** constitute per-run approval.
 
 ## Step 2 — Execute
+
+**Preferred:** run `python run_p6_001f.py --codex-version <ver>`. It publishes to a
+fresh temporary staging dir and then relocates the runner-emitted evidence into
+`.bridge/P6-001F/` beside `PLAN.md`/`TASK.md` — necessary because the runner
+refuses to publish into an already-existing directory, and `.bridge/P6-001F/`
+already exists.
+
+The raw snippet below is illustrative only. If you run it by hand, set
+`ARTIFACT_ROOT` to a **fresh empty** directory (not `.bridge`, since
+`.bridge/P6-001F/` exists) and copy the emitted files into `.bridge/P6-001F/`
+afterward, or the runner will fail with `task directory already exists`.
 
 Run the following in a Python session at the repository root:
 
@@ -72,7 +96,7 @@ spec = build_codex_adapter(
     task_id="P6-001F",
     budget_ceiling_usd=0.06,
     prompt="Create fixture.txt containing the single line '# Codex builder contract validated.'",
-    model_identifier="codex-mini-latest",
+    model_identifier="gpt-5.4",  # codex-mini-latest is unsupported with ChatGPT-account auth
 )
 
 config = ValidationConfig(
@@ -82,7 +106,7 @@ config = ValidationConfig(
     approval_id="P6-001F-RUN-001",
     run_date=TODAY,
     artifact_root=ARTIFACT_ROOT,
-    timeout_seconds=30,
+    timeout_seconds=60,  # re-ratified 2026-07-01; was 30 (a live run timed out mid-turn)
     budget_ceiling_usd=0.06,
     live=True,
 )
@@ -102,14 +126,16 @@ python3 tools/bridge/gates/check_no_secrets.py .bridge/P6-001F/LIVE_RUN_METADATA
 # Confirm CHANGES.diff is scoped to fixture.txt only (no other paths)
 grep "^--- \|^+++ " .bridge/P6-001F/CHANGES.diff
 
-# Confirm cost did not exceed $0.06
+# Codex CLI 0.141.0 reports token usage, not a dollar cost, and has no
+# --budget-usd flag; budget_result is recorded as "not_reported" (same
+# precedent already established for the Qwen adapter). $0.06 is the approved
+# ceiling, not a mechanically enforced one — review token usage from the
+# console output at run time for a sanity check instead.
 python3 -c "
-import json, yaml
+import json
 from pathlib import Path
-md = Path('.bridge/P6-001F/EDIT_CODEX.md').read_text()
-fm = md.split('---')[1]
-data = yaml.safe_load(fm)
-print('cost_usd:', data.get('total_cost_usd', 'missing'))
+metadata = json.loads(Path('.bridge/P6-001F/LIVE_RUN_METADATA.json').read_text())
+print('budget_result:', metadata['budget_result'])
 "
 ```
 

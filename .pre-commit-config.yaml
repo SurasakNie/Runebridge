@@ -12,7 +12,7 @@ repos:
         name: Run gate smoke tests
         entry: python -m pytest -q tests
         language: python
-        additional_dependencies: [pytest, PyYAML, jsonschema]
+        additional_dependencies: [pytest, PyYAML, jsonschema, psutil]
         pass_filenames: false
         always_run: true
 

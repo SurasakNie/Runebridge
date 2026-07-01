@@ -1,5 +1,6 @@
 jsonschema>=4.0
 PyYAML>=6.0
+psutil>=5.9
 pytest
 pre-commit
 

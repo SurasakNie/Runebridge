@@ -17,6 +17,8 @@ from datetime import date
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
 
+import psutil
+
 
 ROOT = Path(__file__).resolve().parents[3]
 METADATA_GATE = ROOT / "tools/bridge/gates/check_live_metadata.py"
@@ -33,6 +35,16 @@ LEDGER_ENTRY_KEYS = frozenset(
     {"approval_id", "vendor", "role", "run_date", "approved_by", "rsk_level"}
 )
 BLOCKED_COMMANDS = ("claude", "codex", "qwen", "antigravity-ide", "git", "gh", "curl", "wget")
+# Blocked commands that are TOLERATED when the sandbox has already neutralized
+# them (the PATH shim / process monitor stops them from ever executing). A code
+# agent such as Codex calls `git` internally for diff/change-tracking; those
+# calls are shimmed to a no-op (they never run, touch the network, or write the
+# workspace), so they are recorded in evidence for transparency but do not fail
+# the run. Every other blocked command (network tools gh/curl/wget, foreign
+# vendors) remains fatal. The owner ratified this tolerance for P6-001F on
+# 2026-07-01 after a live probe showed Codex's git calls are non-essential and
+# fully contained by the shim.
+TOLERATED_BLOCKED_COMMANDS = frozenset({"git"})
 BASE_ENVIRONMENT_KEYS = (
     "COMSPEC",
     "LANG",
@@ -81,7 +93,7 @@ class ParsedArtifact:
     extra_artifacts: tuple[tuple[str, bytes], ...] = ()
 
 
-ResultParser = Callable[[str, "ValidationConfig"], ParsedArtifact]
+ResultParser = Callable[[str, "ValidationConfig", Path], ParsedArtifact]
 
 
 @dataclass(frozen=True)
@@ -254,6 +266,65 @@ def create_command_shims(directory: Path) -> None:
             path.chmod(0o755)
 
 
+BLOCKED_COMMANDS_SET = frozenset(BLOCKED_COMMANDS)
+
+
+def _normalize_command_name(name: str) -> str:
+    return Path(name).stem.lower()
+
+
+def poll_blocked_descendants(
+    root_pid: int,
+    stop_event: threading.Event,
+    log_path: Path,
+    watch_set: frozenset[str],
+    poll_interval: float = 0.2,
+) -> None:
+    """Kill and log any descendant process whose executable matches a watched
+    blocked command, regardless of how it was invoked. The PATH shims in
+    create_command_shims only intercept bare-name lookups; a vendor process
+    that execs a blocked command by absolute path (observed in practice from
+    live Codex CLI runs on Windows) bypasses PATH entirely, so this walks the
+    real process tree by resolved image name instead.
+
+    watch_set MUST exclude the vendor's own executable name: a vendor CLI
+    normally spawns helper children that share its name (e.g. the codex.cmd
+    shim launches codex.exe, and Codex spawns further codex helper processes),
+    and killing those would break the legitimate run. Excluding the vendor's
+    own name still leaves every other blocked command watched (git, gh, curl,
+    wget, and the OTHER vendors), so the exfiltration/foreign-vendor threat the
+    monitor exists for stays covered."""
+    # A pid is only remembered once it has actually been matched and killed;
+    # a non-matching pid is re-checked every poll because the name reported
+    # for a freshly forked child can be transiently wrong until exec()
+    # completes, and we must not let that race permanently whitelist it.
+    blocked_pids: set[int] = set()
+    while not stop_event.is_set():
+        try:
+            descendants = psutil.Process(root_pid).children(recursive=True)
+        except psutil.NoSuchProcess:
+            return
+        for proc in descendants:
+            if proc.pid in blocked_pids:
+                continue
+            try:
+                name = _normalize_command_name(proc.name())
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+            if name in watch_set:
+                blocked_pids.add(proc.pid)
+                try:
+                    with log_path.open("a", encoding="utf-8") as handle:
+                        handle.write(f"{name}\n")
+                except OSError:
+                    pass
+                try:
+                    proc.kill()
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    pass
+        stop_event.wait(poll_interval)
+
+
 def build_environment(
     source: Mapping[str, str],
     spec: AdapterSpec,
@@ -314,6 +385,7 @@ def invoke(
     workspace: Path,
     environment: Mapping[str, str],
     timeout_seconds: int,
+    log_path: Path,
 ) -> tuple[int, str, str]:
     process_options: dict[str, object] = {}
     if os.name == "nt":
@@ -341,12 +413,29 @@ def invoke(
     err_reader = threading.Thread(target=_drain_pipe, args=(process.stderr, stderr_chunks), daemon=True)
     out_reader.start()
     err_reader.start()
+    # Watch for blocked commands among descendants, but exclude the vendor's own
+    # executable name: a vendor CLI legitimately spawns helper children that
+    # share its name (e.g. codex.cmd launches codex.exe, which spawns further
+    # codex helpers). Killing those would abort the real run — the symptom that
+    # made the first live Codex run exit 15. git/gh/curl/wget and the other
+    # vendors stay watched.
+    self_name = _normalize_command_name(command[0]) if command else ""
+    watch_set = BLOCKED_COMMANDS_SET - {self_name}
+    monitor_stop = threading.Event()
+    monitor_thread = threading.Thread(
+        target=poll_blocked_descendants,
+        args=(process.pid, monitor_stop, log_path, watch_set),
+        daemon=True,
+    )
+    monitor_thread.start()
     try:
         process.wait(timeout=timeout_seconds)
     except subprocess.TimeoutExpired as exc:
         terminate_process_tree(process)
         raise ValidationError("vendor command exceeded the approved timeout") from exc
     finally:
+        monitor_stop.set()
+        monitor_thread.join(timeout=5)
         # Close the read ends so the reader threads unblock even if child
         # processes still hold the write ends open.
         for stream in (process.stdout, process.stderr):
@@ -373,7 +462,7 @@ def parse_result(stdout: str) -> dict[str, object]:
     return value
 
 
-def parse_generic_artifact(stdout: str, _config: ValidationConfig) -> ParsedArtifact:
+def parse_generic_artifact(stdout: str, _config: ValidationConfig, _workspace: Path) -> ParsedArtifact:
     normalized = parse_result(stdout)
     content = (json.dumps(normalized, indent=2, sort_keys=True) + "\n").encode("utf-8")
     return ParsedArtifact("NORMALIZED_RESULT.json", content, normalized)
@@ -479,7 +568,16 @@ def run_isolated_validation(
     temporary_base = Path(tempfile.gettempdir()).resolve()
     if temporary_base == ROOT or ROOT in temporary_base.parents:
         raise ValidationError("raw temporary storage must be outside the repository")
-    with tempfile.TemporaryDirectory(prefix="runebridge-live-", dir=temporary_base) as temporary:
+    # ignore_cleanup_errors: on Windows a vendor CLI can leave a short-lived
+    # background helper (e.g. Codex's config-driven notify hook / MCP server)
+    # holding a handle to the workspace, so rmtree of this temp tree can raise
+    # WinError 32. Evidence is already copied out to artifact_root by
+    # publish_candidate before this block exits, so a failed cleanup must not
+    # fail an otherwise-successful, gated run — the temp dir is left for the OS
+    # to reclaim.
+    with tempfile.TemporaryDirectory(
+        prefix="runebridge-live-", dir=temporary_base, ignore_cleanup_errors=True
+    ) as temporary:
         temporary_path = Path(temporary)
         workspace = temporary_path / "workspace"
         shim_dir = temporary_path / "guards"
@@ -510,7 +608,7 @@ def run_isolated_validation(
             guard_file,
             temporary_path,
         )
-        exit_code, stdout, stderr = invoke(spec.command, vendor_cwd, environment, config.timeout_seconds)
+        exit_code, stdout, stderr = invoke(spec.command, vendor_cwd, environment, config.timeout_seconds, log_path)
         if exit_code:
             # stderr/stdout are transient diagnostics for the operator console
             # only; they are never persisted as durable evidence. Surface the
@@ -522,10 +620,16 @@ def run_isolated_validation(
                 else f"vendor command failed with exit code {exit_code}"
             )
         blocked_commands = [line for line in log_path.read_text(encoding="utf-8").splitlines() if line]
-        if blocked_commands:
+        fatal_blocked = [command for command in blocked_commands if command not in TOLERATED_BLOCKED_COMMANDS]
+        if fatal_blocked:
             raise ValidationError("blocked command invocation detected")
+        # Tolerated commands were neutralized by the shim/monitor (never executed);
+        # record them for transparency but do not fail the run. BLOCKED_COMMANDS.log
+        # (copied into the evidence below) retains the raw record either way.
+        neutralized_commands = sorted({command for command in blocked_commands if command in TOLERATED_BLOCKED_COMMANDS})
+        neutralized_command_count = len(blocked_commands)
         validate_workspace_scope(workspace, spec.allowed_workspace_files)
-        parsed = (spec.result_parser or parse_generic_artifact)(stdout, config)
+        parsed = (spec.result_parser or parse_generic_artifact)(stdout, config, workspace)
         validate_normalized_result(parsed.normalized)
         artifacts = ((parsed.name, parsed.content), *parsed.extra_artifacts)
         artifact_names: set[str] = set()
@@ -548,7 +652,12 @@ def run_isolated_validation(
             "artifact_sha256s": artifact_sha256s,
             "attempt_count": 1,
             "authentication_class": spec.authentication_class,
+            # Fatal (untolerated) blocked commands; always 0 here since any would
+            # have aborted the run above. Tolerated-but-neutralized attempts are
+            # recorded separately in the neutralized_* fields for transparency.
             "blocked_command_count": 0,
+            "neutralized_command_count": neutralized_command_count,
+            "neutralized_commands": neutralized_commands,
             "budget_ceiling_usd": config.budget_ceiling_usd,
             # Fixtures record the approved ceiling only; vendor adapters must enforce it.
             "budget_result": parsed.budget_result,

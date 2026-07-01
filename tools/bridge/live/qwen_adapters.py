@@ -45,7 +45,7 @@ def _extract_payload(envelope: dict) -> dict | None:
     return None
 
 
-def parse_qwen_result(stdout: str, config: ValidationConfig) -> ParsedArtifact:
+def parse_qwen_result(stdout: str, config: ValidationConfig, _workspace: Path) -> ParsedArtifact:
     try:
         output = json.loads(stdout)
     except json.JSONDecodeError as exc:
