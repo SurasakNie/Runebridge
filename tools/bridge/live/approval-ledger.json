@@ -7,6 +7,14 @@
       "run_date": "2026-06-30",
       "approved_by": "human",
       "rsk_level": "RSK-1"
+    },
+    {
+      "approval_id": "P6-001F-RUN-001",
+      "vendor": "codex",
+      "role": "builder",
+      "run_date": "2026-07-01",
+      "approved_by": "human",
+      "rsk_level": "RSK-1"
     }
   ]
 }
