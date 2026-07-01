@@ -3,7 +3,7 @@
 **Project:** Runebridge
 **Purpose:** Vendor-neutral AI development pipeline coordinating Claude Code, OpenAI Codex CLI, Qwen Code, and Google Antigravity through Git branches, explicit artifacts, deterministic safety gates, independent reviews, and human-approved pull requests.
 **Stack:** Bash, Python 3.11+, GitHub Actions
-**Status:** Phases 0.5A through 5 complete; P6-001E Codex builder adapter contract merged through PR #18, with the public adapter registry empty and P6-001F live execution blocked pending explicit approval. Qwen provider/auth decisions are recorded, the shared remote environment remains blocked by egress-policy `403 Forbidden`, and live Qwen follows the approved `PC-first, VM-later` external-runner model
+**Status:** Phases 0.5A through 5 complete; P6-001E Codex builder adapter contract merged through PR #18, with the public adapter registry still empty. P6-001F (bounded live Codex builder validation) is Complete — evidence merged (PR #37, `4398a80`), reviewed approve. Qwen provider/auth decisions are recorded, the shared remote environment remains blocked by egress-policy `403 Forbidden`, and live Qwen and Codex both follow the approved `PC-first, VM-later` external-runner model
 
 ## Constraints
 
