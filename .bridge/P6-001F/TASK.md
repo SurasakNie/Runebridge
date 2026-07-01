@@ -16,7 +16,7 @@ Execute the bounded Codex builder validation run under explicit per-run human ap
 |---|---|
 | Approval ID | `P6-001F-RUN-001` |
 | Model | `gpt-5.4` (re-ratified 2026-07-01; `codex-mini-latest` is unsupported with ChatGPT-account Codex auth) |
-| Timeout | `30 s` |
+| Timeout | `60 s` (re-ratified 2026-07-01; was `30 s` — a live run timed out mid-turn) |
 | Budget ceiling | `$0.06` (advisory; codex-cli 0.141.0 has no `--budget-usd` and reports no dollar cost) |
 | Approach | Direct runner (`build_codex_adapter` + `run_isolated_validation`); no conductor |
 | Environment | Local-only execution on an approved runner |

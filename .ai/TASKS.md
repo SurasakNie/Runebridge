@@ -34,12 +34,18 @@ the PATH shim turns each call into a no-op (git never runs, workspace stays scop
 to `fixture.txt`, Codex still produces correct output), so those attempts are
 recorded in `BLOCKED_COMMANDS.log` and the metadata `neutralized_commands` field
 rather than failing the run. `gh`/`curl`/`wget`/foreign vendors remain fatal.
+**The timeout was re-ratified `30 s` → `60 s` on 2026-07-01**: a live run timed
+out mid-turn at `30 s` (`ValidationError: vendor command exceeded the approved
+timeout`) — Codex's turn involves several self-verification round-trips (each
+its own model turn plus a `powershell.exe` call), and wall-clock varies enough
+that `30 s` is not a reliable margin. `60 s` matches the ad hoc probe timeouts
+that completed reliably in preflight diagnostics.
 
 | Parameter | Value |
 |---|---|
 | Approval ID | `P6-001F-RUN-001` |
 | Model | `gpt-5.4` (re-ratified 2026-07-01; was `codex-mini-latest`, unusable with ChatGPT-account auth) |
-| Timeout | `30 s` |
+| Timeout | `60 s` (re-ratified 2026-07-01; was `30 s` — a live run timed out mid-turn, since Codex's turn takes several self-verification round-trips) |
 | Budget ceiling | `$0.06` (advisory; not enforced by codex-cli 0.141.0) |
 | Approach | Direct runner (`build_codex_adapter` + `run_isolated_validation`); no conductor |
 | Environment | Local-only execution on an approved runner |

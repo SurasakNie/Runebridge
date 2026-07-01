@@ -10,7 +10,12 @@ Budget:       $0.06 ceiling (approved and recorded, not mechanically enforced â€
               Codex CLI 0.141.0 has no --budget-usd flag and reports token
               usage, not a dollar cost; budget_result is recorded as
               "not_reported", matching the existing Qwen adapter precedent)
-Timeout:      30 s
+Timeout:      60 s (re-ratified 2026-07-01; the original 30s was too tight â€”
+              a live run timed out mid-turn. Codex's turn involves several
+              self-verification round-trips (each its own model turn plus a
+              powershell.exe call), and wall-clock varies enough that 30s is
+              not a reliable margin. 60s matches the ad hoc probe timeouts
+              that completed reliably in preflight diagnostics.)
 
 Prerequisites (see .bridge/P6-001F/PLAN.md for the full preflight)
 ------------------------------------------------------------------
@@ -66,7 +71,12 @@ APPROVAL_ID = "P6-001F-RUN-001"
 # runner uses an API-key Codex auth instead, override with --model.
 DEFAULT_MODEL = "gpt-5.4"
 BUDGET_CEILING_USD = 0.06
-TIMEOUT_SECONDS = 30
+# Re-ratified 30 -> 60 on 2026-07-01: a live run timed out mid-turn at 30s.
+# Codex's turn involves several self-verification round-trips (each its own
+# model turn plus a powershell.exe call), and wall-clock varies enough that
+# 30s is not a reliable margin. 60s matches the probe timeouts that completed
+# reliably in preflight diagnostics.
+TIMEOUT_SECONDS = 60
 # The committed planning dir (.bridge/P6-001F/) already holds PLAN.md and
 # TASK.md, and the runner refuses to publish into an existing directory (a
 # safety rail against clobbering prior evidence). So the runner publishes to a

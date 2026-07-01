@@ -346,17 +346,17 @@ The owner ratified the following P6-001F parameters on 2026-06-28. Ratification 
 |---|---|
 | Approval ID | `P6-001F-RUN-001` |
 | Model | `gpt-5.4` (re-ratified 2026-07-01; `codex-mini-latest` is unsupported with ChatGPT-account Codex auth) |
-| Timeout | `30 s` |
+| Timeout | `60 s` (re-ratified 2026-07-01; was `30 s` — a live run timed out mid-turn, since Codex's turn takes several self-verification round-trips) |
 | Budget ceiling | `$0.06` (advisory; codex-cli 0.141.0 has no `--budget-usd` and reports no dollar cost) |
 | Approach | Direct runner (`build_codex_adapter` + `run_isolated_validation`); not via the conductor |
 | Environment | Local-only execution on an approved runner |
 
 These criteria gate P6-001F. None can be satisfied in CI or the dry-run sandbox; each requires the real `codex` CLI and an approved session, exercised manually under explicit per-run human approval:
 
-1. **CLI flag verification.** Confirm every flag the Codex builder adapter constructs exists and behaves as assumed against the installed CLI version. Codex CLI flags are contract assumptions only — `codex --help` was previously blocked — so a renamed or unsupported flag fails the run; do not proceed on a structurally-tested-only assumption.
+1. **CLI flag verification.** Confirm every flag the Codex builder adapter constructs exists and behaves as assumed against the installed CLI version. Verified against a real codex-cli 0.141.0 install on 2026-07-01; a renamed or unsupported flag on a different install fails the run — do not proceed on a structurally-tested-only assumption.
 2. **Recorded CLI version policy.** Pin and record the verified `cli_version`; reject versions outside the approved policy at preflight.
 3. **Approval-ledger binding.** Connect `approval_id` `P6-001F-RUN-001` to an external approval record. The run must refuse if the identifier is not present in the approved ledger for that vendor, role, and date.
-4. **Confirmed timeout and budget ceilings.** Apply the ratified `30 s` timeout and `$0.06` budget ceiling, and verify the budget-halt path fails closed without retry.
-5. **Write-sandbox confirmation.** Verify the disposable synthetic workspace uses the narrowest supported write sandbox with no Git repository, and that no tool, network helper, or child process executed beyond the single vendor invocation.
+4. **Confirmed timeout and budget ceilings.** Apply the ratified `60 s` timeout. The budget ceiling is advisory only (codex-cli 0.141.0 has no `--budget-usd` flag and reports no dollar cost); `budget_result` is recorded as `not_reported`.
+5. **Write-sandbox confirmation.** Verify the disposable synthetic workspace uses the narrowest supported write sandbox with no Git repository. Codex legitimately spawns `powershell.exe` self-verification calls and internal `git` calls (neutralized by the shim, tolerated per the 2026-07-01 ratification) — confirm no *fatal* blocked command (`gh`/`curl`/`wget`/foreign vendors) executed and the workspace contains only the approved file.
 
 Satisfying these is a prerequisite of the P6-001F acceptance criteria; it does not by itself authorize the run.

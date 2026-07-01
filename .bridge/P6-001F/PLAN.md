@@ -99,7 +99,7 @@ config = ValidationConfig(
     approval_id="P6-001F-RUN-001",
     run_date="<YYYY-MM-DD>",
     artifact_root=ARTIFACT_ROOT,
-    timeout_seconds=30,
+    timeout_seconds=60,  # re-ratified 2026-07-01; was 30 (a live run timed out mid-turn)
     budget_ceiling_usd=0.06,
     live=True,
 )
