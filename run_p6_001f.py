@@ -175,7 +175,7 @@ def main() -> int:
         # .bridge/P6-001F/ already holds PLAN.md/TASK.md. Publish to a fresh
         # temporary staging root, then relocate the runner-emitted evidence
         # beside the plan via publish_evidence().
-        with tempfile.TemporaryDirectory(prefix="p6-001f-staging-") as staging:
+        with tempfile.TemporaryDirectory(prefix="p6-001f-staging-", ignore_cleanup_errors=True) as staging:
             config = ValidationConfig(
                 task_id=TASK_ID,
                 vendor="codex",

@@ -568,7 +568,16 @@ def run_isolated_validation(
     temporary_base = Path(tempfile.gettempdir()).resolve()
     if temporary_base == ROOT or ROOT in temporary_base.parents:
         raise ValidationError("raw temporary storage must be outside the repository")
-    with tempfile.TemporaryDirectory(prefix="runebridge-live-", dir=temporary_base) as temporary:
+    # ignore_cleanup_errors: on Windows a vendor CLI can leave a short-lived
+    # background helper (e.g. Codex's config-driven notify hook / MCP server)
+    # holding a handle to the workspace, so rmtree of this temp tree can raise
+    # WinError 32. Evidence is already copied out to artifact_root by
+    # publish_candidate before this block exits, so a failed cleanup must not
+    # fail an otherwise-successful, gated run — the temp dir is left for the OS
+    # to reclaim.
+    with tempfile.TemporaryDirectory(
+        prefix="runebridge-live-", dir=temporary_base, ignore_cleanup_errors=True
+    ) as temporary:
         temporary_path = Path(temporary)
         workspace = temporary_path / "workspace"
         shim_dir = temporary_path / "guards"
