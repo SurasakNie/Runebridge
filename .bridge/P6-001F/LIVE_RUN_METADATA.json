@@ -1,0 +1,31 @@
+{
+  "approval_id_sha256": "0fe5f03a59367d0257ecf2b300eee9c1024cc9ee510ff5d32c026758a7942213",
+  "artifact_sha256s": {
+    "CHANGES.diff": "74674b8dce563ec660e5faeacc17ab29a96a432fc805108a391821c86bd70e12",
+    "EDIT_CODEX.md": "d0cba23ed7a6e8918a3d7685ae19b7b03c232e7c983e755267d1537b0bed1005"
+  },
+  "attempt_count": 1,
+  "authentication_class": "interactive_session",
+  "blocked_command_count": 0,
+  "budget_ceiling_usd": 0.06,
+  "budget_result": "not_reported",
+  "cli_name": "codex",
+  "cli_version": "0.141.0",
+  "credentials_available": true,
+  "execution": "live",
+  "exit_code": 0,
+  "model_identifier": "gpt-5.4",
+  "neutralized_command_count": 3,
+  "neutralized_commands": [
+    "git"
+  ],
+  "result_sha256": "d0cba23ed7a6e8918a3d7685ae19b7b03c232e7c983e755267d1537b0bed1005",
+  "role": "builder",
+  "run_date": "2026-07-01",
+  "schema_valid": true,
+  "scope_valid": true,
+  "secret_scan_passed": true,
+  "task_id": "P6-001F",
+  "timeout_seconds": 60,
+  "vendor": "codex"
+}
