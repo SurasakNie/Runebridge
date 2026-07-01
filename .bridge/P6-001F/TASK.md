@@ -15,9 +15,9 @@ Execute the bounded Codex builder validation run under explicit per-run human ap
 | Parameter | Value |
 |---|---|
 | Approval ID | `P6-001F-RUN-001` |
-| Model | `codex-mini-latest` |
+| Model | `gpt-5.4` (re-ratified 2026-07-01; `codex-mini-latest` is unsupported with ChatGPT-account Codex auth) |
 | Timeout | `30 s` |
-| Budget ceiling | `$0.06` |
+| Budget ceiling | `$0.06` (advisory; codex-cli 0.141.0 has no `--budget-usd` and reports no dollar cost) |
 | Approach | Direct runner (`build_codex_adapter` + `run_isolated_validation`); no conductor |
 | Environment | Local-only execution on an approved runner |
 
@@ -37,8 +37,11 @@ Execute the bounded Codex builder validation run under explicit per-run human ap
   `tools/bridge/live/approval-ledger.json` before the runner is invoked.
 - The run must pass the P6-001F execution preflight in
   `docs/Phase-6-Live-Vendor-Validation-Plan.md` before execution.
-- The `codex` CLI flags in `build_codex_adapter` are contract assumptions only;
-  verify with `codex --help` and update `codex_adapters.py` if they differ.
+- The `codex` CLI flags in `build_codex_adapter` were verified against a real
+  codex-cli 0.141.0 install on 2026-07-01 (`codex exec --help` + live probes):
+  `--json`, `--sandbox workspace-write`, `--skip-git-repo-check`,
+  `--output-schema <file>`, `--model`. Re-verify with `codex exec --help` and
+  update `codex_adapters.py` if a different install differs.
 - Synthetic fixture only — no repository source, customer data, or secrets.
 - Runner-emitted `LIVE_RUN_METADATA.json` only; do not hand-author it.
 - No credential, API key, host name, email, or absolute path may be committed.

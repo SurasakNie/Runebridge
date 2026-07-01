@@ -276,13 +276,13 @@ def test_codex_command_uses_real_flags_and_relaxed_schema(tmp_path: Path) -> Non
         task_id="P6-CODEX-COMMAND",
         budget_ceiling_usd=0.06,
         prompt="synthetic fixture",
-        model_identifier="codex-mini-latest",
+        model_identifier="gpt-5.4",
     )
     assert spec.command[1:3] == ("exec", "--json")
     assert spec.command[spec.command.index("--sandbox") + 1] == "workspace-write"
     assert "--skip-git-repo-check" in spec.command
     assert "--budget-usd" not in spec.command
-    assert spec.command[spec.command.index("--model") + 1] == "codex-mini-latest"
+    assert spec.command[spec.command.index("--model") + 1] == "gpt-5.4"
     assert "P6-CODEX-COMMAND" in spec.command[-1]
     assert spec.allowed_workspace_files == (SYNTHETIC_WORKSPACE_FILE,)
 

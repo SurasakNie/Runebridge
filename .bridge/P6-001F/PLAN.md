@@ -86,7 +86,7 @@ spec = build_codex_adapter(
     task_id="P6-001F",
     budget_ceiling_usd=0.06,
     prompt="Create fixture.txt containing the single line '# Codex builder contract validated.'",
-    model_identifier="codex-mini-latest",
+    model_identifier="gpt-5.4",  # codex-mini-latest is unsupported with ChatGPT-account auth
 )
 
 config = ValidationConfig(

@@ -4,7 +4,8 @@
 Approval ID:  P6-001F-RUN-001
 Vendor:       codex
 Role:         builder
-Model:        codex-mini-latest (override with --model)
+Model:        gpt-5.4 (override with --model; codex-mini-latest is NOT usable
+              with a ChatGPT-account Codex auth — see DEFAULT_MODEL note)
 Budget:       $0.06 ceiling (approved and recorded, not mechanically enforced —
               Codex CLI 0.141.0 has no --budget-usd flag and reports token
               usage, not a dollar cost; budget_result is recorded as
@@ -56,7 +57,13 @@ from tools.bridge.live.run_isolated_validation import ValidationConfig, run_isol
 
 TASK_ID = "P6-001F"
 APPROVAL_ID = "P6-001F-RUN-001"
-DEFAULT_MODEL = "codex-mini-latest"
+# codex-mini-latest (the 2026-06-28 ratified model) is REJECTED with a
+# ChatGPT-account Codex auth: "The 'codex-mini-latest' model is not supported
+# when using Codex with a ChatGPT account" (HTTP 400, confirmed on codex-cli
+# 0.141.0, 2026-07-01). gpt-5.4 is the account's configured default and was
+# proven to run the synthetic contract end-to-end in preflight probes. If a
+# runner uses an API-key Codex auth instead, override with --model.
+DEFAULT_MODEL = "gpt-5.4"
 BUDGET_CEILING_USD = 0.06
 TIMEOUT_SECONDS = 30
 ARTIFACT_ROOT = REPO_ROOT / ".bridge"   # runner publishes to ARTIFACT_ROOT / task_id

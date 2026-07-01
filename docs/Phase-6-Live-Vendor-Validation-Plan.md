@@ -345,9 +345,9 @@ The owner ratified the following P6-001F parameters on 2026-06-28. Ratification 
 | Parameter | Value |
 |---|---|
 | Approval ID | `P6-001F-RUN-001` |
-| Model | `codex-mini-latest` |
+| Model | `gpt-5.4` (re-ratified 2026-07-01; `codex-mini-latest` is unsupported with ChatGPT-account Codex auth) |
 | Timeout | `30 s` |
-| Budget ceiling | `$0.06` |
+| Budget ceiling | `$0.06` (advisory; codex-cli 0.141.0 has no `--budget-usd` and reports no dollar cost) |
 | Approach | Direct runner (`build_codex_adapter` + `run_isolated_validation`); not via the conductor |
 | Environment | Local-only execution on an approved runner |
 
