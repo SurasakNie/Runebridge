@@ -61,6 +61,17 @@ invoking the runner:
 
 ## Step 2 — Execute
 
+**Preferred:** run `python run_p6_001f.py --codex-version <ver>`. It publishes to a
+fresh temporary staging dir and then relocates the runner-emitted evidence into
+`.bridge/P6-001F/` beside `PLAN.md`/`TASK.md` — necessary because the runner
+refuses to publish into an already-existing directory, and `.bridge/P6-001F/`
+already exists.
+
+The raw snippet below is illustrative only. If you run it by hand, set
+`ARTIFACT_ROOT` to a **fresh empty** directory (not `.bridge`, since
+`.bridge/P6-001F/` exists) and copy the emitted files into `.bridge/P6-001F/`
+afterward, or the runner will fail with `task directory already exists`.
+
 Run the following in a Python session at the repository root:
 
 ```python

@@ -47,6 +47,7 @@ import datetime
 import os
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
@@ -66,7 +67,12 @@ APPROVAL_ID = "P6-001F-RUN-001"
 DEFAULT_MODEL = "gpt-5.4"
 BUDGET_CEILING_USD = 0.06
 TIMEOUT_SECONDS = 30
-ARTIFACT_ROOT = REPO_ROOT / ".bridge"   # runner publishes to ARTIFACT_ROOT / task_id
+# The committed planning dir (.bridge/P6-001F/) already holds PLAN.md and
+# TASK.md, and the runner refuses to publish into an existing directory (a
+# safety rail against clobbering prior evidence). So the runner publishes to a
+# fresh temporary staging root and publish_evidence() relocates the
+# runner-emitted files here, beside the plan, without overwriting anything.
+EVIDENCE_DIR = REPO_ROOT / ".bridge" / TASK_ID
 
 # Synthetic fixture — no customer data, no repo source. Codex creates fixture.txt
 # in the empty isolated workspace and reports a unified diff with a/ b/ headers.
@@ -83,6 +89,29 @@ def resolve_codex(codex_path_arg: str | None) -> Path:
     if not resolved.is_file():
         raise SystemExit(f"codex executable not found: {resolved}")
     return resolved
+
+
+def publish_evidence(produced: Path, evidence_dir: Path) -> list[str]:
+    """Relocate the runner-emitted evidence files from its fresh staging publish
+    dir into the committed planning dir (.bridge/P6-001F/), which already holds
+    PLAN.md and TASK.md. Files are copied byte-for-byte (still runner-emitted,
+    not hand-authored). Refuses to overwrite any existing file so a re-run never
+    silently clobbers prior evidence or the planning artifacts."""
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    copied: list[str] = []
+    for source in sorted(produced.iterdir()):
+        if not source.is_file():
+            continue
+        dest = evidence_dir / source.name
+        if dest.exists():
+            raise SystemExit(
+                f"Refusing to overwrite existing file: {dest}. "
+                "Remove prior P6-001F evidence (keeping PLAN.md/TASK.md) or "
+                "investigate before re-running."
+            )
+        shutil.copy2(source, dest)
+        copied.append(source.name)
+    return copied
 
 
 def parse_args() -> argparse.Namespace:
@@ -131,30 +160,47 @@ def main() -> int:
         model_identifier=args.model,
     )
 
-    config = ValidationConfig(
-        task_id=TASK_ID,
-        vendor="codex",
-        role="builder",
-        approval_id=APPROVAL_ID,
-        run_date=run_date,
-        artifact_root=ARTIFACT_ROOT,
-        timeout_seconds=TIMEOUT_SECONDS,
-        budget_ceiling_usd=BUDGET_CEILING_USD,
-        live=True,
-    )
+    if EVIDENCE_DIR.exists() and any(
+        (EVIDENCE_DIR / name).exists()
+        for name in ("EDIT_CODEX.md", "CHANGES.diff", "LIVE_RUN_METADATA.json", "BLOCKED_COMMANDS.log")
+    ):
+        raise SystemExit(
+            f"{EVIDENCE_DIR} already contains evidence files. Remove them "
+            "(keeping PLAN.md/TASK.md) or investigate before re-running."
+        )
 
     print("Running isolated validation …")
     try:
-        task_dir = run_isolated_validation(config, spec)
+        # The runner refuses to publish into an existing directory, and
+        # .bridge/P6-001F/ already holds PLAN.md/TASK.md. Publish to a fresh
+        # temporary staging root, then relocate the runner-emitted evidence
+        # beside the plan via publish_evidence().
+        with tempfile.TemporaryDirectory(prefix="p6-001f-staging-") as staging:
+            config = ValidationConfig(
+                task_id=TASK_ID,
+                vendor="codex",
+                role="builder",
+                approval_id=APPROVAL_ID,
+                run_date=run_date,
+                artifact_root=Path(staging),
+                timeout_seconds=TIMEOUT_SECONDS,
+                budget_ceiling_usd=BUDGET_CEILING_USD,
+                live=True,
+            )
+            produced = run_isolated_validation(config, spec)
+            copied = publish_evidence(produced, EVIDENCE_DIR)
+    except SystemExit:
+        raise
     except Exception as exc:
         print(f"FAILED: {exc}", file=sys.stderr)
         return 1
 
-    print(f"Evidence written to: {task_dir}")
+    print(f"Evidence written to: {EVIDENCE_DIR}")
+    print(f"  files: {', '.join(copied)}")
     print()
-    print("Next: secret-scan the evidence, then commit only the new .bridge/P6-001F/")
-    print("directory, tools/bridge/live/approval-ledger.json, and .ai/ status files,")
-    print("then open a review-branch PR for human merge.")
+    print("Next: secret-scan the evidence, then commit only the new evidence files")
+    print("under .bridge/P6-001F/, tools/bridge/live/approval-ledger.json, and the")
+    print(".ai/ status files, then open a review-branch PR for human merge.")
     return 0
 
 
