@@ -5,16 +5,22 @@ Approval ID:  P6-001F-RUN-001
 Vendor:       codex
 Role:         builder
 Model:        codex-mini-latest (override with --model)
-Budget:       $0.06 ceiling
+Budget:       $0.06 ceiling (approved and recorded, not mechanically enforced —
+              Codex CLI 0.141.0 has no --budget-usd flag and reports token
+              usage, not a dollar cost; budget_result is recorded as
+              "not_reported", matching the existing Qwen adapter precedent)
 Timeout:      30 s
 
 Prerequisites (see .bridge/P6-001F/PLAN.md for the full preflight)
 ------------------------------------------------------------------
 1. Pull this branch (includes the hardened adapter prompt and corrected runbook).
-2. Run ``codex --help`` and confirm ``exec``, ``--json``, ``--sandbox`` with
-   ``workspace-write``, ``--schema``, and ``--budget-usd`` are present and behave as
-   assumed; update tools/bridge/live/codex_adapters.py and re-run
-   ``pytest tests/live/test_codex_adapters.py`` if any flag differs.
+2. Run ``codex exec --help`` and confirm ``--json``, ``--sandbox`` with
+   ``workspace-write``, ``--output-schema <file>``, and ``--model`` are present and
+   behave as assumed; update tools/bridge/live/codex_adapters.py and re-run
+   ``pytest tests/live/test_codex_adapters.py`` if any flag differs. (Verified
+   against a real codex-cli 0.141.0 install on 2026-07-01: --schema and
+   --budget-usd do not exist; --output-schema takes a file path, not inline
+   JSON, and the file must be written without a UTF-8 BOM or Codex rejects it.)
 3. Record the exact CLI version string and pass it as --codex-version.
 4. Confirm an authenticated Codex/ChatGPT session is active.
 5. Add the single-use approval-ledger entry P6-001F-RUN-001

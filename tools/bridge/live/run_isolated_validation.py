@@ -83,7 +83,7 @@ class ParsedArtifact:
     extra_artifacts: tuple[tuple[str, bytes], ...] = ()
 
 
-ResultParser = Callable[[str, "ValidationConfig"], ParsedArtifact]
+ResultParser = Callable[[str, "ValidationConfig", Path], ParsedArtifact]
 
 
 @dataclass(frozen=True)
@@ -433,7 +433,7 @@ def parse_result(stdout: str) -> dict[str, object]:
     return value
 
 
-def parse_generic_artifact(stdout: str, _config: ValidationConfig) -> ParsedArtifact:
+def parse_generic_artifact(stdout: str, _config: ValidationConfig, _workspace: Path) -> ParsedArtifact:
     normalized = parse_result(stdout)
     content = (json.dumps(normalized, indent=2, sort_keys=True) + "\n").encode("utf-8")
     return ParsedArtifact("NORMALIZED_RESULT.json", content, normalized)
@@ -585,7 +585,7 @@ def run_isolated_validation(
         if blocked_commands:
             raise ValidationError("blocked command invocation detected")
         validate_workspace_scope(workspace, spec.allowed_workspace_files)
-        parsed = (spec.result_parser or parse_generic_artifact)(stdout, config)
+        parsed = (spec.result_parser or parse_generic_artifact)(stdout, config, workspace)
         validate_normalized_result(parsed.normalized)
         artifacts = ((parsed.name, parsed.content), *parsed.extra_artifacts)
         artifact_names: set[str] = set()

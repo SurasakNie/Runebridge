@@ -15,7 +15,7 @@ acceptance_criteria:
   - "CHANGES.diff is runner-emitted, non-empty, and scoped only to fixture.txt"
   - "LIVE_RUN_METADATA.json is runner-emitted (not hand-authored) and contains approval_id P6-001F-RUN-001"
   - "check_no_secrets.py exits 0 over all three committed evidence files"
-  - "total_cost_usd in the envelope does not exceed the $0.06 budget ceiling"
+  - "LIVE_RUN_METADATA.json records a budget_result value (not_reported is acceptable: Codex CLI 0.141.0 reports token usage, not a dollar cost, and has no --budget-usd flag; $0.06 is the approved ceiling, not a mechanically enforced one)"
   - "no raw stdout, stderr, workspace paths, session identifiers, or absolute paths are committed"
 requires_human_approval: true
 ---
@@ -29,11 +29,14 @@ validation.
 
 ## Preflight checklist (must pass before invoking the runner)
 
-1. **CLI flag verification.** Run `codex --help` and confirm every flag in
-   `build_codex_adapter`'s `command` tuple (`exec`, `--json`, `--sandbox`,
-   `workspace-write`, `--schema`, `--budget-usd`) exists and behaves as assumed.
-   If any flag is absent or renamed, update `tools/bridge/live/codex_adapters.py`
-   and re-run the fake-CLI test suite before proceeding.
+1. **CLI flag verification.** Run `codex exec --help` and confirm every flag in
+   `build_codex_adapter`'s `command` tuple (`--json`, `--sandbox workspace-write`,
+   `--skip-git-repo-check`, `--output-schema <file>`, `--model`) exists and
+   behaves as assumed. Verified against a real codex-cli 0.141.0 install on
+   2026-07-01: `--schema` (inline JSON) and `--budget-usd` do not exist; the
+   real event stream is JSONL with no reported dollar cost. If any flag differs
+   on your install, update `tools/bridge/live/codex_adapters.py` and re-run the
+   fake-CLI test suite before proceeding.
 
 2. **CLI version policy.** Record the installed `codex` version; supply it as
    `cli_version` to `build_codex_adapter`. Reject any version that lacks the
@@ -108,7 +111,9 @@ task_dir = run_isolated_validation(config, spec)
 2. Confirm `CHANGES.diff` references only `fixture.txt` (no other paths).
 3. Confirm `LIVE_RUN_METADATA.json` is runner-emitted (creation timestamp matches
    the run, no hand-authored fields).
-4. Confirm `total_cost_usd` in the result envelope ≤ `$0.06`.
+4. Review `budget_result` in `LIVE_RUN_METADATA.json` and the console token-usage
+   output at run time. `not_reported` is expected and acceptable; Codex CLI
+   0.141.0 has no mechanism to enforce or report a dollar-cost ceiling.
 
 ## Evidence commit
 
@@ -123,4 +128,6 @@ must not include absolute paths, API tokens, session identifiers, or email addre
   updated flags only after re-confirming per-run approval.
 - `check_no_secrets.py` exits non-zero over evidence files → do not commit;
   scrub or regenerate before proceeding.
-- Cost ceiling exceeded → `ValidationError` halts the run; no evidence committed.
+- Codex reports a failed turn, writes outside the approved workspace scope, or
+  returns structured output that fails schema/task-ID validation →
+  `ValidationError` halts the run; no evidence committed.

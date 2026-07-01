@@ -19,10 +19,18 @@ on an approved runner**. The shared remote environment cannot invoke a real
 Complete every item in the `.bridge/P6-001F/PLAN.md` preflight checklist before
 invoking the runner:
 
-1. **CLI flag verification.** Run `codex --help`. Confirm `exec`, `--json`,
-   `--sandbox workspace-write`, `--schema`, and `--budget-usd` all exist.
-   If any flag is missing or renamed, update `tools/bridge/live/codex_adapters.py`
-   and re-run `pytest tests/live/test_codex_adapters.py` before continuing.
+1. **CLI flag verification.** Run `codex exec --help`. Confirm `--json`,
+   `--sandbox workspace-write`, `--output-schema <file>`, and `--model` all exist.
+   Verified against a real codex-cli 0.141.0 install on 2026-07-01: `--schema`
+   (inline JSON) and `--budget-usd` do **not** exist — `--output-schema` takes a
+   file path, and the schema file must be written without a UTF-8 BOM or Codex
+   rejects it with "not valid JSON" (a plain `.write_text(..., encoding="utf-8")`
+   is fine; PowerShell's `Set-Content -Encoding utf8` is not — it adds a BOM).
+   The real event stream is JSONL (`--json` = "print events to stdout as JSONL"),
+   not one result envelope, and never reports a dollar cost — only token counts
+   in the final `turn.completed` event's `usage` field. `codex_adapters.py`
+   already reflects this; if any flag differs on your install, update it and
+   re-run `pytest tests/live/test_codex_adapters.py` before continuing.
 
 2. **CLI version.** Record the exact version string; you will pass it as
    `cli_version` to `build_codex_adapter`.
@@ -102,14 +110,16 @@ python3 tools/bridge/gates/check_no_secrets.py .bridge/P6-001F/LIVE_RUN_METADATA
 # Confirm CHANGES.diff is scoped to fixture.txt only (no other paths)
 grep "^--- \|^+++ " .bridge/P6-001F/CHANGES.diff
 
-# Confirm cost did not exceed $0.06
+# Codex CLI 0.141.0 reports token usage, not a dollar cost, and has no
+# --budget-usd flag; budget_result is recorded as "not_reported" (same
+# precedent already established for the Qwen adapter). $0.06 is the approved
+# ceiling, not a mechanically enforced one — review token usage from the
+# console output at run time for a sanity check instead.
 python3 -c "
-import json, yaml
+import json
 from pathlib import Path
-md = Path('.bridge/P6-001F/EDIT_CODEX.md').read_text()
-fm = md.split('---')[1]
-data = yaml.safe_load(fm)
-print('cost_usd:', data.get('total_cost_usd', 'missing'))
+metadata = json.loads(Path('.bridge/P6-001F/LIVE_RUN_METADATA.json').read_text())
+print('budget_result:', metadata['budget_result'])
 "
 ```
 

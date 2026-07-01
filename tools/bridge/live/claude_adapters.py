@@ -46,7 +46,7 @@ def render_plan(payload: dict[str, object]) -> bytes:
     return f"---\n{front_matter}\n---{body}".encode("utf-8")
 
 
-def parse_claude_result(role: str, stdout: str, config: ValidationConfig) -> ParsedArtifact:
+def parse_claude_result(role: str, stdout: str, config: ValidationConfig, _workspace: Path) -> ParsedArtifact:
     try:
         envelope = json.loads(stdout)
     except json.JSONDecodeError as exc:
@@ -115,5 +115,5 @@ def build_claude_adapter(
         authentication_class="interactive_session",
         credentials_available=True,
         model_identifier=model_identifier,
-        result_parser=lambda stdout, config: parse_claude_result(role, stdout, config),
+        result_parser=lambda stdout, config, workspace: parse_claude_result(role, stdout, config, workspace),
     )
