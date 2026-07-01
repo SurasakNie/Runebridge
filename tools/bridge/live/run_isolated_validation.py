@@ -267,14 +267,23 @@ def poll_blocked_descendants(
     root_pid: int,
     stop_event: threading.Event,
     log_path: Path,
+    watch_set: frozenset[str],
     poll_interval: float = 0.2,
 ) -> None:
-    """Kill and log any descendant process whose executable matches a blocked
-    command, regardless of how it was invoked. The PATH shims in
+    """Kill and log any descendant process whose executable matches a watched
+    blocked command, regardless of how it was invoked. The PATH shims in
     create_command_shims only intercept bare-name lookups; a vendor process
     that execs a blocked command by absolute path (observed in practice from
     live Codex CLI runs on Windows) bypasses PATH entirely, so this walks the
-    real process tree by resolved image name instead."""
+    real process tree by resolved image name instead.
+
+    watch_set MUST exclude the vendor's own executable name: a vendor CLI
+    normally spawns helper children that share its name (e.g. the codex.cmd
+    shim launches codex.exe, and Codex spawns further codex helper processes),
+    and killing those would break the legitimate run. Excluding the vendor's
+    own name still leaves every other blocked command watched (git, gh, curl,
+    wget, and the OTHER vendors), so the exfiltration/foreign-vendor threat the
+    monitor exists for stays covered."""
     # A pid is only remembered once it has actually been matched and killed;
     # a non-matching pid is re-checked every poll because the name reported
     # for a freshly forked child can be transiently wrong until exec()
@@ -292,7 +301,7 @@ def poll_blocked_descendants(
                 name = _normalize_command_name(proc.name())
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 continue
-            if name in BLOCKED_COMMANDS_SET:
+            if name in watch_set:
                 blocked_pids.add(proc.pid)
                 try:
                     with log_path.open("a", encoding="utf-8") as handle:
@@ -394,9 +403,19 @@ def invoke(
     err_reader = threading.Thread(target=_drain_pipe, args=(process.stderr, stderr_chunks), daemon=True)
     out_reader.start()
     err_reader.start()
+    # Watch for blocked commands among descendants, but exclude the vendor's own
+    # executable name: a vendor CLI legitimately spawns helper children that
+    # share its name (e.g. codex.cmd launches codex.exe, which spawns further
+    # codex helpers). Killing those would abort the real run — the symptom that
+    # made the first live Codex run exit 15. git/gh/curl/wget and the other
+    # vendors stay watched.
+    self_name = _normalize_command_name(command[0]) if command else ""
+    watch_set = BLOCKED_COMMANDS_SET - {self_name}
     monitor_stop = threading.Event()
     monitor_thread = threading.Thread(
-        target=poll_blocked_descendants, args=(process.pid, monitor_stop, log_path), daemon=True
+        target=poll_blocked_descendants,
+        args=(process.pid, monitor_stop, log_path, watch_set),
+        daemon=True,
     )
     monitor_thread.start()
     try:

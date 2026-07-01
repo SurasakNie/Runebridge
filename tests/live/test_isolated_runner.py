@@ -12,6 +12,7 @@ from pathlib import Path
 import pytest
 
 from tools.bridge.live.run_isolated_validation import (
+    BLOCKED_COMMANDS_SET,
     AdapterSpec,
     ValidationConfig,
     ValidationError,
@@ -185,7 +186,7 @@ def test_poll_blocked_descendants_kills_and_logs_absolute_path_invocation(tmp_pa
     log_path.touch()
     stop_event = threading.Event()
     monitor = threading.Thread(
-        target=poll_blocked_descendants, args=(os.getpid(), stop_event, log_path, 0.05)
+        target=poll_blocked_descendants, args=(os.getpid(), stop_event, log_path, BLOCKED_COMMANDS_SET, 0.05)
     )
     monitor.start()
     try:
@@ -196,6 +197,44 @@ def test_poll_blocked_descendants_kills_and_logs_absolute_path_invocation(tmp_pa
     assert child.returncode != 0
     logged = [line for line in log_path.read_text(encoding="utf-8").splitlines() if line]
     assert logged == ["git"]
+
+
+def test_poll_blocked_descendants_leaves_excluded_self_name_alone(tmp_path: Path) -> None:
+    # Regression: a vendor CLI legitimately spawns helper children that share
+    # its own name (codex.cmd -> codex.exe -> codex helpers). The monitor's
+    # watch_set must exclude the vendor's own name, or it kills the real run
+    # (the first live Codex run exited 15 for exactly this reason). Here "git"
+    # stands in for the vendor's own name and is excluded from watch_set, so the
+    # child must survive and nothing must be logged.
+    fake_bin_dir = tmp_path / "fake_bin"
+    fake_bin_dir.mkdir()
+    if os.name == "nt":
+        fake_name = "git.exe"
+        source = Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32" / "PING.EXE"
+        args = ["-n", "3", "127.0.0.1"]
+    else:
+        fake_name = "git"
+        source = Path(shutil.which("sleep") or "/bin/sleep")
+        args = ["2"]
+    fake_git = fake_bin_dir / fake_name
+    shutil.copyfile(source, fake_git)
+    fake_git.chmod(0o755)
+    child = subprocess.Popen([str(fake_git), *args])
+    log_path = tmp_path / "blocked-commands.log"
+    log_path.touch()
+    stop_event = threading.Event()
+    watch_set = BLOCKED_COMMANDS_SET - {"git"}  # exclude the "vendor's own" name
+    monitor = threading.Thread(
+        target=poll_blocked_descendants, args=(os.getpid(), stop_event, log_path, watch_set, 0.05)
+    )
+    monitor.start()
+    try:
+        rc = child.wait(timeout=10)
+    finally:
+        stop_event.set()
+        monitor.join(timeout=5)
+    assert rc == 0  # not killed
+    assert log_path.read_text(encoding="utf-8").strip() == ""
 
 
 @pytest.mark.skipif(os.name == "nt", reason="renamed-binary trick is POSIX-specific; verify on Windows via manual PC probe")
