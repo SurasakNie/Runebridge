@@ -1,6 +1,6 @@
 # AI Bridge Initial Setup Audit and Revised Implementation Plan
 
-> **Historical audit notice (updated 2026-06-27):** Sections 1-6 preserve the evidence and findings from the 2026-06-19 initial-setup audit. The current implementation state is tracked in `README.md`, `.ai/TASKS.md`, and `.ai/AGENT_HANDOFF.md`. Phases 0.5A through 5 are complete; P6-001E Codex builder adapter contract merged through PR #18 and P6-001F awaits explicit per-run approval. Live Antigravity, automated GitHub operations, and repository-level Actions restrictions remain deferred. Qwen provider/auth decisions are recorded, but live Qwen in the shared remote environment is blocked by egress-policy `403 Forbidden`; the approved operating model is `PC-first, VM-later`, and the PC runner has produced a schema-valid synthetic Qwen reviewer artifact.
+> **Historical audit notice (updated 2026-07-01):** Sections 1-6 preserve the evidence and findings from the 2026-06-19 initial-setup audit. The current implementation state is tracked in `README.md`, `.ai/TASKS.md`, and `.ai/AGENT_HANDOFF.md`. Phases 0.5A through 5 are complete; P6-001E Codex builder adapter contract merged through PR #18, and P6-001F (bounded live Codex builder validation) is Complete — evidence merged and reviewed approve (PR #37, `4398a80`). Live Antigravity, automated GitHub operations, and repository-level Actions restrictions remain deferred. Qwen provider/auth decisions are recorded, but live Qwen in the shared remote environment is blocked by egress-policy `403 Forbidden`; the approved operating model is `PC-first, VM-later` for both live Qwen and Codex execution, and the PC runner has produced schema-valid live evidence for both vendors.
 
 - **Repository:** `SurasakNie/Runebridge`
 - **Default branch:** `main`
@@ -326,6 +326,6 @@ Benchmark cost, latency, correctness, disagreement rate, and human review burden
 
 ## Final Decision
 
-**Phases 0.5A through 5 are complete. P6-001E Codex builder adapter contract merged through PR #18; P6-001F awaits explicit per-run approval, and future merges remain human-controlled.**
+**Phases 0.5A through 5 are complete. P6-001E Codex builder adapter contract merged through PR #18; P6-001F (bounded live Codex builder validation) is Complete with evidence merged and reviewed approve (PR #37, `4398a80`), and future merges remain human-controlled.**
 
 Use deterministic mock adapters for Antigravity until its deferred live integration requirements are met. For Qwen, use deterministic mocks in environments without approved provider egress and use the approved `PC-first, VM-later` external-runner model for live Qwen validation. Install and verify the conductor GitHub App before any automated PR operation. Repository-level Actions restrictions remain deferred pending explicit owner approval.

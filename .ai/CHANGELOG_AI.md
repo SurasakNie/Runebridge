@@ -925,3 +925,43 @@ files_changed:
 test_result: pass; full suite 140 passing, tests/live/test_codex_adapters.py 11 passing, check_plan.py exit 0 on .bridge/P6-001F/PLAN.md, import run_p6_001f clean
 human_review_needed: true
 ```
+
+```yaml
+date: 2026-07-01
+agent: Claude Code
+task_id: P6-001F-codex-adapter-and-sandbox-fixes
+summary: Corrected the Codex builder adapter against a real codex-cli 0.141.0 install via live PC probes (PR #36, 2408c82) — --output-schema (relaxed, BOM-free) replaces nonexistent --schema; dropped nonexistent --budget-usd, budget_result=not_reported; runner now synthesizes CHANGES.diff from the real workspace file since the CLI never emits one; JSONL event parsing replaces single-envelope parsing; --model wired into the command. Also closed an absolute-path bypass in live-adapter command blocking (a process-tree monitor now catches blocked commands regardless of invocation style), fixed the monitor killing the vendor's own child process, added git as a tolerated/neutralized blocked command (owner-ratified), re-ratified model codex-mini-latest to gpt-5.4 and timeout 30s to 60s after live-run failures, and made Windows temp-cleanup errors non-fatal.
+files_changed:
+  - tools/bridge/live/run_isolated_validation.py
+  - tools/bridge/live/codex_adapters.py
+  - tools/bridge/live/claude_adapters.py
+  - tools/bridge/live/qwen_adapters.py
+  - schemas/live-run-metadata.schema.json
+  - run_p6_001f.py
+  - tests/live/test_isolated_runner.py
+  - tests/live/test_codex_adapters.py
+  - tools/requirements.txt
+  - .pre-commit-config.yaml
+  - .ai/TASKS.md
+  - .bridge/P6-001F/PLAN.md
+  - docs/Phase-6-Live-Vendor-Validation-Plan.md
+  - docs/PC-Runner-P6-001F-Handoff.md
+test_result: pass; full suite 155 passing; check_plan.py exit 0 on the updated PLAN.md
+human_review_needed: true
+```
+
+```yaml
+date: 2026-07-01
+agent: Claude Code
+task_id: P6-001F-evidence
+summary: Executed and reviewed the first bounded live Codex builder run for P6-001F on the approved PC runner under explicit per-run approval P6-001F-RUN-001 (PR #37, 4398a80). execution=live, exit_code=0, model gpt-5.4, cli_version 0.141.0, all gates passed, blocked_command_count=0, neutralized_commands=[git], budget_result=not_reported. REVIEW_CLAUDE.json verdict approve, RSK-1, human_review_required true — every PLAN.md acceptance criterion independently re-verified against the committed bytes (schema validation, hash checks, secret scans, gate re-runs), flags the git-tolerance policy and the monitor's vendor-self-exclusion fix for independent human sign-off before P6-001J.
+files_changed:
+  - .bridge/P6-001F/EDIT_CODEX.md
+  - .bridge/P6-001F/CHANGES.diff
+  - .bridge/P6-001F/LIVE_RUN_METADATA.json
+  - .bridge/P6-001F/BLOCKED_COMMANDS.log
+  - .bridge/P6-001F/REVIEW_CLAUDE.json
+  - tools/bridge/live/approval-ledger.json
+test_result: pass; execution=live, exit_code=0, all gates passed, full suite 155 passing
+human_review_needed: true
+```
